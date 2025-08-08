@@ -13,7 +13,7 @@ let handler = async (m, { conn, usedPrefix, text, command }) => {
   // Nombre del bot o subbot
   const botJid = conn.user?.jid?.split('@')[0].replace(/\D/g, '')
   const configPath = path.join('./JadiBots', botJid, 'config.json')
-  let nombreBot = global.namebot || '❀ Mai-Bot ❀'
+  let nombreBot = global.namebot || ''
   if (fs.existsSync(configPath)) {
     try {
       const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'))
@@ -31,26 +31,25 @@ let handler = async (m, { conn, usedPrefix, text, command }) => {
 
     if (!videos.length) {
       await conn.sendMessage(m.chat, {
-        text: `✘ No encontré nada sobre *${text}*.\n> ● Intenta con otras palabras clave.`,
+        text: `_ No encontré nada relacionado con *${text}*._`,
         ...global.rcanal
       }, { quoted: m })
       await m.react('❌')
       return
     }
 
-    let caption = `✎ *Resultados para ›* *${text}*\n\n`
+    let caption = `- _*Resultados para:* ${text}_\n\n`
 
     for (let i = 0; i < videos.length; i++) {
       const video = videos[i]
-      caption += `*${i + 1}.* ✩ *${video.title}*\n\n`
-      caption += `✿ Descripción › *${video.description?.slice(0, 100) || 'Sin descripción'}*\n`
-      caption += `🜲 Autor › *${video.author.name}*\n\n`
-      caption += `✰ Duración › *${video.timestamp}*\n\n`
-      caption += `❒ Publicado el › *${video.ago}*\n\n`
-      caption += `⌦ Link › ${video.url}\n\n`
+      caption += `- _*${i + 1}.* *${video.title}*_\n\n`
+      caption += `- _*Descripción:* ${video.description?.slice(0, 100) || 'Sin descripción'}_\n`
+      caption += `- _*Autor:* ${video.author.name}_\n\n`
+      caption += `- _*Duración:* ${video.timestamp}_\n\n`
+      caption += `- _Publicado el:* ${video.ago}_\n\n`
+      caption += `- _Link:* ${video.url}_\n\n`
     }
 
-    caption += `╰─「 ${nombreBot} 」`
 
     const messagePayload = /^https?:\/\//.test(imgPath)
       ? { image: { url: imgPath } }
@@ -68,10 +67,10 @@ let handler = async (m, { conn, usedPrefix, text, command }) => {
   } catch (e) {
     console.error(e)
     await conn.sendMessage(m.chat, {
-      text: `✘ Ocurrió un error al buscar tu consulta.\n> ● Intenta más tarde.`,
+      text: `_Ocurrió un error, inténtalo de nuevo._`,
       ...global.rcanal
     }, { quoted: m })
-    await m.react('💥')
+    await m.react('❌')
   }
 }
 
