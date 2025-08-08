@@ -46,8 +46,8 @@ let handler = async (m, { conn, usedPrefix, text, command }) => {
       caption += `- _*Descripción:* ${video.description?.slice(0, 100) || 'Sin descripción'}_\n`
       caption += `- _*Autor:* ${video.author.name}_\n\n`
       caption += `- _*Duración:* ${video.timestamp}_\n\n`
-      caption += `- _Publicado el:* ${video.ago}_\n\n`
-      caption += `- _Link:*_ _${video.url}_\n\n`
+      caption += `- _*Publicación:* ${video.ago}_\n\n`
+      caption += `- _*Link:*_ _${video.url}_\n\n`
     }
 
 
