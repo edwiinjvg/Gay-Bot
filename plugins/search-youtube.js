@@ -4,7 +4,7 @@ import path from 'path'
 
 let handler = async (m, { conn, usedPrefix, text, command }) => {
   if (!text) return conn.sendMessage(m.chat, {
-    text: `ꕥ Debes escribir algo para buscar en YouTube.\n> ● *Ejemplo ›* ${usedPrefix + command} lofi anime`,
+    text: `_Escribe lo que quieres buscar en Youtube._`,
     ...global.rcanal
   }, { quoted: m })
 
@@ -31,7 +31,7 @@ let handler = async (m, { conn, usedPrefix, text, command }) => {
 
     if (!videos.length) {
       await conn.sendMessage(m.chat, {
-        text: `_ No encontré nada relacionado con *${text}*._`,
+        text: `_No encontré nada relacionado con *${text}*._`,
         ...global.rcanal
       }, { quoted: m })
       await m.react('❌')
@@ -47,7 +47,7 @@ let handler = async (m, { conn, usedPrefix, text, command }) => {
       caption += `- _*Autor:* ${video.author.name}_\n\n`
       caption += `- _*Duración:* ${video.timestamp}_\n\n`
       caption += `- _Publicado el:* ${video.ago}_\n\n`
-      caption += `- _Link:* ${video.url}_\n\n`
+      caption += `- _Link:*_ _${video.url}_\n\n`
     }
 
 
