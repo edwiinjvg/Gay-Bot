@@ -204,14 +204,14 @@ async function reconnectSubBot(botPath) {
         const yaExiste = global.conns.some(c => c.user?.jid === subBotConn.user?.jid);
         if (!yaExiste) {
           global.conns.push(subBotConn);
-          console.log(chalk.green(`🟢 [DEBUG] Sub-bot agregado a global.conns: ${subBotConn.user?.jid}`));
+          console.log(chalk.green(`🟢 [DEBUG] sub-bot agregado a global.conns: ${subBotConn.user?.jid}`));
         }
       } else if (connection === 'close') {
         const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
         console.error(chalk.red(`[DEBUG] Sub-bot desconectado en ${path.basename(botPath)}. Razón: ${reason}`));
         if (reason === 401) {
           global.conns = global.conns.filter(conn => conn.user?.jid !== subBotConn.user?.jid);
-          console.log(chalk.red(`❌ [DEBUG] Sub-bot removido de global.conns: ${subBotConn.user?.jid}`));
+          console.log(chalk.red(`❌ [DEBUG] sub-bot removido de global.conns: ${subBotConn.user?.jid}`));
         }
       }
     });
@@ -281,8 +281,8 @@ async function handleLogin() {
 
   let loginMethod = await question(
     chalk.green(
-      `🔱 Holas \n` +
-      `❇️ Escribe "code" para iniciar..\n` +
+      `¡Bienvenido!\n` +
+      `Escribe "code" para iniciar..\n` +
       `> `
     )
   );
@@ -290,7 +290,7 @@ async function handleLogin() {
   loginMethod = loginMethod.toLowerCase().trim();
 
   if (loginMethod === 'code') {
-    let phoneNumber = await question(chalk.red('🔥 Ingresa el número de WhatsApp donde estará el bot (incluye código país, ej: 521XXXXXXXXXX):\n'));
+    let phoneNumber = await question(chalk.red('Ingresa el número de WhatsApp donde estará el bot (incluye código país, ej: 571XXXXXXXXXX):\n'));
     phoneNumber = phoneNumber.replace(/\D/g, '');
 
     if (phoneNumber.startsWith('52') && phoneNumber.length === 12) {
