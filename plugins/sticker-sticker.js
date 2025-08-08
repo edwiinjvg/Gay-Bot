@@ -75,19 +75,19 @@ const handler = async (m, { conn }) => {
   if (!/image|video/.test(mime)) {
     return conn.sendMessage(
       m.chat,
-      { text: `✿ Responde a una *imagen o video* para convertirlo en sticker\n`, ...global.rcanal },
+      { text: `_Responde a imagen/video/gif para convertir en sticker_\n`, ...global.rcanal },
       { quoted: m }
     )
   }
 
-  await m.react('🕒')
+  await m.react('⌛')
 
   try {
     const media = await q.download()
     if (!media) throw new Error('No se pudo descargar la media')
 
-    const packname = global.packname || '✦ Michi - AI ✦'
-    const author = global.author || '© Made with ☁︎ Wirk ✧'
+    const packname = global.packname || 'Edwin'
+    const author = global.author || 'GayBot 🤖'
 
     const stiker = await sticker(media, false, packname, author)
 
@@ -100,7 +100,7 @@ const handler = async (m, { conn }) => {
     await m.react('❌')
     await conn.sendMessage(
       m.chat,
-      { text: '╭─❀ *Error de Conversión* ❀─╮\n✘ No se pudo generar el sticker\n╰───────────────────────────╯', ...global.rcanal },
+      { text: '_Ocurrió un error, inténtalo de nuevo_', ...global.rcanal },
       { quoted: m }
     )
   }
