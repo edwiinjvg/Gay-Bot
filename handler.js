@@ -371,7 +371,7 @@ let user = global.db.data.users[m.sender]
 if (!['grupo-unbanchat.js'].includes(name) && chat && chat.isBanned && !isROwner) return
 if (name != 'grupo-unbanchat.js' && name != 'owner-exec.js' && name != 'owner-exec2.js' && name != 'grupo-delete.js' && chat?.isBanned && !isROwner) return
 if (m.text && user.banned && !isROwner) {
-m.reply(`《✦》Estas baneado/a, no puedes usar comandos en este bot!\n\n${user.bannedReason ? `✰ *Motivo:* ${user.bannedReason}` : '✰ *Motivo:* Sin Especificar'}\n\n> ✧ Si este Bot es cuenta oficial y tiene evidencia que respalde que este mensaje es un error, puedes exponer tu caso con un moderador.`)
+m.reply(`_¡Estás baneado/a, no puedes usar comandos en este bot!_\n\n${user.bannedReason ? `*Motivo:* ${user.bannedReason}` : '*Motivo:* Sin Especificar'}\n\n_Si tienes evidencia que respalde que este mensaje es un error, puedes exponer tu caso con un moderador._`)
 return
 }
 
@@ -431,11 +431,11 @@ m.isCommand = true
 let xp = 'exp' in plugin ? parseInt(plugin.exp) : 10
 m.exp += xp
 if (!isPrems && plugin.coin && global.db.data.users[m.sender].coin < plugin.coin * 1) {
-conn.reply(m.chat, `❮✦❯ Se agotaron tus ${moneda}`, m)
+conn.reply(m.chat, `_¡Te quedaste sin ${moneda}!_`, m)
 continue
 }
 if (plugin.level > _user.level) {
-conn.reply(m.chat, `❮✦❯ Se requiere el nivel: *${plugin.level}*\n\n• Tu nivel actual es: *${_user.level}*\n\n• Usa este comando para subir de nivel:\n*${usedPrefix}levelup*`, m)
+conn.reply(m.chat, `_Necesitas ser nivel: *${plugin.level}*_\n\n_Tu nivel actual es: *${_user.level}*_\n\n_Para subir de nivel usa:\n*${usedPrefix}levelup*_`, m)
 continue
 }
 let extra = {
@@ -484,7 +484,7 @@ await plugin.after.call(this, m, extra)
 console.error(e)
 }}
 if (m.coin)
-conn.reply(m.chat, `❮✦❯ Utilizaste ${+m.coin} ${moneda}`, m)
+conn.reply(m.chat, `_ Gastaste *${+m.coin}* *${moneda}*_`, m)
 }
 break // Este break debería estar fuera del finally si quieres que el loop siga
 // O sea, si un plugin lanza un error, break termina el loop, si no, el loop continua.
@@ -551,7 +551,7 @@ let settingsREAD = global.db.data.settings[this.user.jid] || {}
 if (opts['autoread']) await this.readMessages([m.key])
 
 if (db.data.chats[m.chat].reaction && m.text.match(/(ción|dad|aje|oso|izar|mente|pero|tion|age|ous|ate|and|but|ify|ai|yuki|a|s)/gi)) {
-let emot = pickRandom(["🍟", "😃", "😄", "😁", "😆", "🍓", "😅", "😂", "🤣", "🥲", "☺️", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "🌺", "🌸", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🌟", "🤓", "😎", "🥸", "🤩", "🥳", "😏", "💫", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😶‍🌫️", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🫣", "🤭", "🤖", "🍭", "🤫", "🫠", "🤥", "😶", "📇", "😐", "💧", "😑", "🫨", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😮‍💨", "😵", "😵‍💫", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👺", "🧿", "🌩", "👻", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾", "🫶", "👍", "✌️", "🙏", "🫵", "🤏", "🤌", "☝️", "🖕", "🙏", "🫵", "🫂", "🐱", "🤹‍♀️", "🤹‍♂️", "🗿", "✨", "⚡", "🔥", "🌈", "🩷", "❤️", "🧡", "💛", "💚", "🩵", "💙", "💜", "🖤", "🩶", "🤍", "🤎", "💔", "❤️‍🔥", "❤️‍🩹", "❣️", "💕", "💞", "💓", "💗", "💖", "💘", "💝", "🚩", "👊", "⚡️", "💋", "🫰", "💅", "👑", "🐣", "🐤", "🐈"])
+let emot = pickRandom(["🍟", "😃", "😄", "😁", "😆", "🍓", "😅", "😂", "🤣", "🥲", "☺️", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "🌺", "🌸", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🌟", "🤓", "😎", "🥸", "🤩", "🥳", "😏", "💫", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "🍆", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😶‍🌫️", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🫣", "🤭", "🤖", "🍭", "🤫", "🫠", "🤥", "😶", "📇", "😐", "💧", "😑", "🫨", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😮‍💨", "😵", "😵‍💫", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👺", "🏳️‍🌈", "🌩", "👻", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾", "🫶", "👍", "✌️", "🙏", "🫵", "🤏", "🤌", "☝️", "🖕", "🙏", "🫵", "🫂", "🐱", "🤹‍♀️", "🤹‍♂️", "🗿", "✨", "⚡", "🔥", "🌈", "🩷", "❤️", "🧡", "💛", "💚", "🩵", "💙", "💜", "🖤", "🩶", "🤍", "🤎", "💔", "❤️‍🔥", "❤️‍🩹", "❣️", "💕", "💞", "💓", "💗", "💖", "💘", "💝", "🚩", "👊", "⚡️", "💋", "🫰", "💅", "👑", "🐣", "🐤", "🐈"])
 if (!m.fromMe) return this.sendMessage(m.chat, { react: { text: emot, key: m.key }})
 }
 function pickRandom(list) { return list[Math.floor(Math.random() * list.length)]}
@@ -564,20 +564,20 @@ global.dfail = (type, m, conn, usedPrefix, command) => { // 'conn' es el tercer 
     let verifyaleatorio = ['registrar', 'reg', 'verificar', 'verify', 'register'].getRandom()
 
     const msg = {
-    rowner: '🔐 Solo el Creador del Bot puede usar este comando.',
-    owner: '👑 Solo el Creador y Sub Bots pueden usar este comando.',
-    mods: '🛡️ Solo los Moderadores pueden usar este comando.',
-    premium: '💎 Solo usuarios Premium pueden usar este comando.',
-    group: '「✧」 Este comando es sólo para grupos.',
-    private: '🔒 Solo en Chat Privado puedes usar este comando.',
-    admin: '⚔️ Solo los Admins del Grupo pueden usar este comando.',
-    botAdmin: 'El bot debe ser Admin para ejecutar esto.',
-    unreg: '> 🔰 Debes estar Registrado para usar este comando.\n\n Ejemplo : #reg Ado.55',
-    restrict: '⛔ Esta función está deshabilitada.'
+    rowner: '_¡Solo mi creador puede utilizar este comando!_',
+    owner: '_¡Solo mi creador y sub-bots pueden utilizar este comando!_',
+    mods: '_¡Solo los moderadores pueden utilizar este comando!_',
+    premium: '_¡Solo usuarios Premium pueden utilizar este comando!_',
+    group: '_¡Este comando es solo puede ser utilizado en grupos!_',
+    private: '_¡Este comando solo puede ser utilizado en chats privados!_',
+    admin: '_¡Este comando solo puede ser utilizado por administradores!_',
+    botAdmin: '_¡Debo ser administrador para poder ejecutar este comando!_',
+    unreg: '_¡Debes estar registrado para utilizar este comando!_',
+    restrict: '_¡Esta función está deshabilitada!_'
     }[type];
 
     if (msg)
-        return conn.reply(m.chat, msg, m, { contextInfo: rcanal }).then(() => conn.sendMessage(m.chat, { react: { text: '✖️', key: m.key } }))
+        return conn.reply(m.chat, msg, m, { contextInfo: rcanal }).then(() => conn.sendMessage(m.chat, { react: { text: '❌', key: m.key } }))
 
     let file = global.__filename(import.meta.url, true)
     watchFile(file, async () => {
