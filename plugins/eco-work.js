@@ -6,7 +6,7 @@ let handler = async (m, { conn, isPrems }) => {
 
   if (cooldowns[m.sender] && Date.now() - cooldowns[m.sender] < tiempo * 1000) {
     const tiempo2 = segundosAHMS(Math.ceil((cooldowns[m.sender] + tiempo * 1000 - Date.now()) / 1000))
-    return conn.reply(m.chat, `_¡Acabaste de chambear!_\n_Espera *${tiempo2}* para volver a trabajar._`, m)
+    return conn.reply(m.chat, `_¡Acabaste de chambear!_\n_Espera *${tiempo2}* para volver a trabajar._ ⏰`, m)
   }
 
   let rsl = Math.floor(Math.random() * 500)
