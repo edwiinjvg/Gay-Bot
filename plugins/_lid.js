@@ -21,7 +21,7 @@ const handler = async (msg, { conn }) => {
 
 - _*Identificador:* ${objetivo}_ 🔗
 - _*Número:* +${numero}_ 📱
-- _*Tipo de cuenta:* ${tipo}*🔐`.trim()
+- _*Tipo de cuenta:* ${tipo}_ 🔐`.trim()
 
   await conn.sendMessage(chatId, {
     text: mensaje
