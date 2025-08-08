@@ -3,7 +3,7 @@ import baileys from '@whiskeysockets/baileys';
 import cheerio from 'cheerio';
 
 let handler = async (m, { conn, text, args }) => {
-  if (!text) return m.reply(`_Escribe lo que quieras buscar en Pinterest_`);
+  if (!text) return m.reply(`_Escribe lo que quieres buscar en Pinterest._`);
 
   try {
     if (text.includes("https://")) {
@@ -21,7 +21,7 @@ let handler = async (m, { conn, text, args }) => {
       const results = await pins(text);
       if (!results.length) return conn.sendMessage(m.chat, { text: `_No encontré resultados para *${text}*._`, ...rcanal }, { quoted: m });
 
-      const medias = results.slice(0, 10).map(img => ({ type: 'image', data: { url: img.image_large_url } }));
+      const medias = results.slice(0, 4).map(img => ({ type: 'image', data: { url: img.image_large_url } }));
 
       await conn.sendSylphy(
         m.chat,
