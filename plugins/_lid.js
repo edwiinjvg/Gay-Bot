@@ -17,11 +17,12 @@ const handler = async (msg, { conn }) => {
   const numero = objetivo.replace(/[^0-9]/g, '')
 
   const mensaje = `
-- _Información del usuario:_ 👤
+- _*Información del usuario:*_ 
 
-- _*Identificador:* ${objetivo}_ 🔗
 - _*Número:* +${numero}_ 📱
-- _*Tipo de cuenta:* ${tipo}_ 🔐`.trim()
+- _*Tipo de cuenta:* ${tipo}_ 🔐
+- _*Identificador:* ${objetivo}_ 🔗
+`.trim()
 
   await conn.sendMessage(chatId, {
     text: mensaje
