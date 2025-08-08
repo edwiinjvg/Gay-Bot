@@ -17,7 +17,7 @@ export async function before(m, { conn }) {
         if (config.name) nombreBot = config.name
         if (config.banner) bannerFinal = config.banner
       } catch (err) {
-        console.log('⚠️ No se pudo leer config del subbot en rcanal:', err)
+        console.log('_No se pudo leer config del sub-bot en rcanal:_', err)
       }
     }
 
