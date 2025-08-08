@@ -3,11 +3,11 @@ import baileys from '@whiskeysockets/baileys';
 import cheerio from 'cheerio';
 
 let handler = async (m, { conn, text, args }) => {
-  if (!text) return m.reply(`🤍 Ingresa un texto. Ejemplo: .pinterest bmw`);
+  if (!text) return m.reply(`_Escribe lo que quieras buscar en Pinterest_`);
 
   try {
     if (text.includes("https://")) {
-      m.react("🕒");
+      m.react("⌛");
       let i = await dl(args[0]);
       let isVideo = i.download.includes(".mp4");
       await conn.sendMessage(
@@ -15,11 +15,11 @@ let handler = async (m, { conn, text, args }) => {
         { [isVideo ? "video" : "image"]: { url: i.download }, caption: i.title, ...rcanal },
         { quoted: fkontak }
       );
-      m.react("☑️");
+      m.react("✅");
     } else {
-      m.react('🕒');
+      m.react('⌛');
       const results = await pins(text);
-      if (!results.length) return conn.sendMessage(m.chat, { text: `No se encontraron resultados para "${text}".`, ...rcanal }, { quoted: m });
+      if (!results.length) return conn.sendMessage(m.chat, { text: `_No encontré resultados para *${text}*._`, ...rcanal }, { quoted: m });
 
       const medias = results.slice(0, 10).map(img => ({ type: 'image', data: { url: img.image_large_url } }));
 
