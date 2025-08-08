@@ -19,9 +19,9 @@ const handler = async (msg, { conn }) => {
   const mensaje = `
 - _*Información del usuario:*_ 
 
-- _*Número:* +${numero}_ 📱
-- _*Tipo de cuenta:* ${tipo}_ 🔐
-- _*Identificador:* ${objetivo}_ 🔗
+- _*Número:* +${numero}_
+- _*Tipo de cuenta:* ${tipo}_
+- _*Identificador:* ${objetivo}_
 `.trim()
 
   await conn.sendMessage(chatId, {
