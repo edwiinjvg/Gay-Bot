@@ -52,7 +52,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
     user.lastRob = now; // El cooldown se activa antes del resultado del robo
 
     // 80% de probabilidad de éxito
-    if (Math.random() < 0.8) {
+    if (Math.random() < 0.1) {
         // --- LÓGICA DE ÉXITO ---
         const cantidadRobadaMonedas = BigInt(Math.floor(Math.random() * (1000 - 500 + 1)) + 500);
         const cantidadRobadaDiamantes = BigInt(Math.floor(Math.random() * (100 - 50 + 1)) + 50);
