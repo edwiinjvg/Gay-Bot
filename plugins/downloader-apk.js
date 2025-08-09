@@ -63,7 +63,7 @@ let handler = async (m, { conn, usedPrefix, command, text }) => {
     let caption = data
       .map((v, i) => {
         return `
-- _*${i + 1}. ${v.name}*_
+_*${i + 1}. ${v.name}*_
 - _*Tamaño:* ${v.size}_
 - _*Versión:* ${v.version}_
 - _*Descargas:* ${v.download}_
