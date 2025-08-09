@@ -6,11 +6,11 @@ const pendingProposals = new Map();
 
 let handler = async (m, { conn, usedPrefix, command, args, groupMetadata }) => {
 
-    // Verificación más confiable para saber si es un grupo
     const isGroup = m.chat.endsWith('@g.us');
-
     if (!isGroup) {
-        return m.reply('_Este comando solo puede ser utilizado en grupos._');
+        if (['pareja', 'proponer', 'aceptar', 'rechazar', 'terminar', 'romper'].includes(command)) {
+            return m.reply('_Este comando solo puede ser utilizado en grupos._');
+        }
     }
 
     // Lógica para 'proponer'
@@ -20,7 +20,7 @@ let handler = async (m, { conn, usedPrefix, command, args, groupMetadata }) => {
         if (user && user.marry) {
             const partnerJid = user.marry;
             const partnerNumber = partnerJid.split('@')[0];
-            return m.reply(`_Ya tienes pareja, infiel de mierda._ 💔\n\n@${partnerNumber} es tu pareja.`, null, { mentions: [partnerJid] });
+            return m.reply(`_Ya tienes pareja, infiel de mierda._ 💔\n_*@${partnerNumber}* date cuenta._`, null, { mentions: [partnerJid] });
         }
 
         let targetUserJid;
@@ -48,11 +48,10 @@ let handler = async (m, { conn, usedPrefix, command, args, groupMetadata }) => {
             } else if (existingProposal.target === m.sender) {
                 return m.reply(`_Ya tienes una propuesta pendiente de ${mentionedProposer}, aún no has respondido._`);
             } else {
-                return m.reply(`_Ya hay una propuesta pendiente entre ${mentionedProposer} y ${mentionedTarget}.`);
+                return m.reply(`_Ya hay una propuesta pendiente entre ${mentionedProposer} y ${mentionedTarget}._`);
             }
         }
         
-        // Agregar propuesta al estado
         pendingProposals.set(m.sender, {
             proposer: m.sender,
             target: targetUserJid,
@@ -63,13 +62,12 @@ let handler = async (m, { conn, usedPrefix, command, args, groupMetadata }) => {
         const mentionTarget = `@${targetUserJid.split('@')[0]}`;
         const replyMessage = `_*${mentionProposer}* le propuso a ${mentionTarget} ser su pareja._ 💕\n\n_*${mentionTarget}*, tienes 1 minuto para aceptar con *${usedPrefix}aceptar* o rechazar con *${usedPrefix}rechazar*._`;
         
-        // Temporizador para que la propuesta caduque
         setTimeout(() => {
             if (pendingProposals.has(m.sender) && pendingProposals.get(m.sender).target === targetUserJid) {
                 pendingProposals.delete(m.sender);
                 conn.reply(m.chat, `_La propuesta de ${mentionProposer} a ${mentionTarget} ha caducado porque no respondió a tiempo._ ⏰`, m, { mentions: [m.sender, targetUserJid] });
             }
-        }, 60 * 1000); // 1 minuto
+        }, 60 * 1000);
 
         await conn.reply(m.chat, replyMessage, m, { mentions: [m.sender, targetUserJid] });
 
@@ -92,11 +90,9 @@ let handler = async (m, { conn, usedPrefix, command, args, groupMetadata }) => {
 
         const proposerJid = proposal.proposer;
         
-        // Asignar pareja en la base de datos de ambos
         global.db.data.users[m.sender].marry = proposerJid;
         global.db.data.users[proposerJid].marry = m.sender;
         
-        // Eliminar propuesta del estado
         pendingProposals.delete(proposerJid);
         
         const mentionProposer = `@${proposerJid.split('@')[0]}`;
@@ -122,7 +118,6 @@ let handler = async (m, { conn, usedPrefix, command, args, groupMetadata }) => {
         }
         
         const proposerJid = proposal.proposer;
-        // Eliminar propuesta del estado
         pendingProposals.delete(proposerJid);
         
         const mentionProposer = `@${proposerJid.split('@')[0]}`;
@@ -130,12 +125,49 @@ let handler = async (m, { conn, usedPrefix, command, args, groupMetadata }) => {
         const replyMessage = `_*${mentionTarget}* rechazó la propuesta de *${mentionProposer}*._ 💔`;
         await conn.reply(m.chat, replyMessage, m, { mentions: [proposerJid, m.sender] });
 
+    // Lógica para 'terminar'
+    } else if (['terminar', 'romper'].includes(command)) {
+
+        const user = global.db.data.users[m.sender];
+        if (!user.marry) {
+            return m.reply("_No tienes pareja como para terminar una relación, perdedor._ 😹");
+        }
+
+        const partnerJid = user.marry;
+        const partner = global.db.data.users[partnerJid];
+
+        if (partner) {
+            partner.marry = null;
+        }
+        user.marry = null;
+        
+        const mentionUser = `@${m.sender.split('@')[0]}`;
+        const mentionPartner = `@${partnerJid.split('@')[0]}`;
+
+        await conn.reply(m.chat, `_*${mentionUser}* terminó con *${mentionPartner}*._ 💔`, m, {
+            mentions: [m.sender, partnerJid]
+        });
+
+    // Lógica para 'mipareja'
+    } else if (command === 'mipareja') {
+
+        const user = global.db.data.users[m.sender];
+        
+        if (user.marry) {
+            const partnerJid = user.marry;
+            const mention = `@${partnerJid.split('@')[0]}`;
+            await conn.reply(m.chat, `_Tu pareja es ${mention}._ 💕`, m, {
+                mentions: [partnerJid]
+            });
+        } else {
+            await conn.reply(m.chat, "_No tienes pareja, perdedor._ 😹", m);
+        }
     }
 };
 
-handler.help = ['pareja', 'proponer', 'aceptar', 'rechazar'];
+handler.help = ['pareja', 'proponer', 'aceptar', 'rechazar', 'terminar', 'romper', 'mipareja'];
 handler.tags = ['juegos'];
-handler.command = ['pareja', 'proponer', 'aceptar', 'rechazar'];
+handler.command = ['pareja', 'proponer', 'aceptar', 'rechazar', 'terminar', 'romper', 'mipareja'];
 handler.group = true;
 
 export default handler;
