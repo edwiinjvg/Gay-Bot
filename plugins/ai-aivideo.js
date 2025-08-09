@@ -1,11 +1,11 @@
 import fetch from 'node-fetch';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
-  if (!text) return conn.reply(m.chat, `⚠️ *Uso:* ${usedPrefix + command} <texto del video>`, m);
+  if (!text) return conn.reply(m.chat, `_Describe el video que quieres generar._`, m);
 
   try {
     let wait = await conn.sendMessage(m.chat, { 
-      text: '🗣️ *Generando tu video con IA, espera un toque...*' 
+      text: '_Generando tu video, espera un momento..._' 
     }, { quoted: m });
 
     
@@ -14,7 +14,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     let res = await fetch(apiURL);
     let json = await res.json();
 
-    if (!json.success || !json.video_url) throw new Error(json.message || 'No se pudo generar el video');
+    if (!json.success || !json.video_url) throw new Error(json.message || '_No se pudo generar el video_');
 
     
     let video = await fetch(json.video_url);
@@ -22,18 +22,18 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
     await conn.sendMessage(m.chat, { 
       video: buffer, 
-      caption: `🎬 *Video generado:* ${json.prompt}\n\n`, 
+      caption: `_*Video generado:* ${json.prompt}_`, 
       gifPlayback: false 
     }, { quoted: m });
 
     await conn.sendMessage(m.chat, { delete: wait.key });
   } catch (e) {
-    await conn.reply(m.chat, `❌ *Error generando el video:* \n${e.message || e}`, m);
+    await conn.reply(m.chat, `_*Error generando el video:* ${e.message || e}_`, m);
   }
 };
 
 handler.help = ['aivideo'];
 handler.tags = ['ia'];
-handler.command = ['aivideo', 'videoai', 'iavideo'];
+handler.command = ['aivideo', 'videoai', 'iavideo', 'iavid', 'aivid'];
 
 export default handler;
