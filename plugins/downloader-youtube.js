@@ -6,7 +6,7 @@ import fs from 'fs'
 import path from 'path'
 
 let handler = async (m, { conn, args, command, usedPrefix }) => {
-  if (!args[0]) return m.reply(`✅ Uso correcto: ${usedPrefix + command} <enlace o nombre>`)
+  if (!args[0]) return m.reply(`_Escribe lo que quieres buscar._`)
 
   try {
     const botActual = conn.user?.jid?.split('@')[0].replace(/\D/g, '')
@@ -35,7 +35,7 @@ let handler = async (m, { conn, args, command, usedPrefix }) => {
     }
 
     if (videoInfo.seconds > 3780) {
-      return m.reply(`⛔ El video supera el límite de duración permitido (63 minutos).`)
+      return m.reply(`_El video supera el límite de duración permitido (63 minutos)._`)
     }
 
     let apiUrl = ''
@@ -47,7 +47,7 @@ let handler = async (m, { conn, args, command, usedPrefix }) => {
     } else if (command == 'play2' || command == 'ytmp4') {
       apiUrl = `https://myapiadonix.vercel.app/api/ytmp4?url=${encodeURIComponent(url)}`
     } else {
-      return m.reply('Comando no reconocido.')
+      return m.reply('_Comando no reconocido._')
     }
 
     let res = await fetch(apiUrl)
@@ -59,11 +59,11 @@ let handler = async (m, { conn, args, command, usedPrefix }) => {
     let duration = videoInfo?.timestamp || 'Desconocida'
 
     let details = `
-📌 Título : *${title}*
-📁 Duración : *${duration}*
-📥 Calidad : *${quality}*
-🎧 Tipo : *${isAudio ? 'Audio' : 'Video'}*
-🌐 Fuente : *YouTube*`.trim()
+- _Título:* ${title}_
+- _Duración:* ${duration}_
+- _Calidad:* ${quality}_
+- _Tipo:* ${isAudio ? 'Audio' : 'Video'}_
+- _Fuente:* YouTube_`.trim()
 
     await conn.sendMessage(m.chat, {
       text: details,
@@ -95,7 +95,7 @@ let handler = async (m, { conn, args, command, usedPrefix }) => {
     }
 
   } catch {
-    m.reply('❌ Se produjo un error al procesar la solicitud.')
+    m.reply('_Ocurrió un error, inténtalo de nuevo._')
   }
 }
 
