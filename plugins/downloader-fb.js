@@ -17,6 +17,8 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
     for (let item of json) {
       if (!item.url || !item.resolution) continue
 
+let caption = `_Aquí tienes :D_`.trim()
+
 
       await conn.sendMessage(m.chat, {
         video: { url: item.url },
