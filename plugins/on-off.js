@@ -1,8 +1,5 @@
-import fetch from 'node-fetch'
 
-let linkRegex = /chat\.whatsapp\.com\/[0-9A-Za-z]{20,24}/i
-let linkRegex1 = /whatsapp\.com\/channel\/[0-9A-Za-z]{20,24}/i
-const defaultImage = 'https://files.catbox.moe/ubftco.jpg'
+import fetch from 'node-fetch'
 
 async function isAdminOrOwner(m, conn) {
   try {
@@ -15,8 +12,8 @@ async function isAdminOrOwner(m, conn) {
 }
 
 const handler = async (m, { conn, command, args, isAdmin, isOwner, usedPrefix }) => {
-  if (!m.isGroup) return m.reply('🔒 Solo funciona en grupos.')
-  if (!(isAdmin || isOwner)) return m.reply('❌ Solo admins pueden activar o desactivar funciones.')
+  if (!m.isGroup) return m.reply('_¡Este comando solo puede ser utilizado en grupos!_')
+  if (!(isAdmin || isOwner)) return m.reply('_¡Solo administradores pueden utilizar este comando!_')
 
   if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {}
   const chat = global.db.data.chats[m.chat]
@@ -29,36 +26,43 @@ const handler = async (m, { conn, command, args, isAdmin, isOwner, usedPrefix })
     'autosticker', 'autoresponder', 'detect', 'antiBot', 'antiBot2', 
     'reaction', 'nsfw', 'antifake', 'delete'
   ];
+  
+  // Mapa de alias para las variables
+  const variableAliases = {
+    'modohorny': 'nsfw',
+    'nivelup': 'autolevelup',
+    'antifakes': 'antifake'
+  };
 
-  // Si no se especifica una variable, mostrar el menú
+  // Si no se especifica una variable, mostrar el menú con los alias
   if (!type) {
     let menuText = `
-*⚙️ Menú de Configuración de Grupo ⚙️*
-_Usa ${usedPrefix}on <opción> o ${usedPrefix}off <opción> para cambiar el estado._
+_Usa *${usedPrefix}on <opción>* o *${usedPrefix}off <opción>* para cambiar el estado._
 ------------------------------------------
 `.trim();
 
     for (const variable of allowedVariables) {
-      const status = chat[variable] ? '✅ Activado' : '❌ Desactivado';
-      menuText += `\n*${variable}:* ${status}`;
+      const alias = Object.keys(variableAliases).find(key => variableAliases[key] === variable);
+      const nameToShow = alias ? `${variable} (${alias})` : variable;
+      const status = chat[variable] ? 'Activado' : 'Desactivado';
+      menuText += `\n_*${nameToShow}:* ${status}._`;
     }
 
     return m.reply(menuText);
   }
   
-  // Verificar si la variable está en la lista de permitidas
-  if (!allowedVariables.includes(type)) {
+  const variableName = variableAliases[type] || type;
+
+  if (!allowedVariables.includes(variableName)) {
     return m.reply(`La variable *"${type}"* no existe o no se puede modificar.\n\nVariables disponibles:\n- ${allowedVariables.join('\n- ')}`);
   }
 
-  // Verificar si la configuración ya está en el estado deseado
-  if (chat[type] === enable) {
-    return m.reply(`La opción *"${type}"* ya está ${enable ? 'activada' : 'desactivada'}.`);
+  if (chat[variableName] === enable) {
+    return m.reply(`La opción *"${variableName}"* ya está ${enable ? 'activada' : 'desactivada'}.`);
   }
 
-  // Cambiar el estado de la variable
-  chat[type] = enable;
-  m.reply(`✅ Se ha ${enable ? 'activado' : 'desactivado'} la opción *"${type}"* para este grupo.`);
+  chat[variableName] = enable;
+  m.reply(`Se ${enable ? 'activó' : 'desactivó'} la opción *"${variableName}"* para este grupo._`);
 }
 
 handler.command = ['on', 'off']
@@ -76,7 +80,7 @@ handler.before = async (m, { conn }) => {
   if (chat.modoadmin) {
     const groupMetadata = await conn.groupMetadata(m.chat)
     const isUserAdmin = groupMetadata.participants.find(p => p.id === m.sender)?.admin
-    if (!isUserAdmin && !m.fromMe) return true // Ignora si no es admin ni owner
+    if (!isUserAdmin && !m.fromMe) return true
   }
 
   // ANTIARABE
@@ -92,91 +96,6 @@ handler.before = async (m, { conn }) => {
       await conn.sendMessage(m.chat, { text: `Este pndj ${newJid} será expulsado, no queremos los العرب aca, adiosito. [ Anti Arabe Activado ]` })
       await conn.groupParticipantsUpdate(m.chat, [newJid], 'remove')
       return true
-    }
-  }
-
-  // ANTILINK
-  if (chat.antilink) {
-    const groupMetadata = await conn.groupMetadata(m.chat)
-    const isUserAdmin = groupMetadata.participants.find(p => p.id === m.sender)?.admin
-    const text = m?.text || ''
-
-    if (!isUserAdmin && (linkRegex.test(text) || linkRegex1.test(text))) {
-      const userTag = `@${m.sender.split('@')[0]}`
-      const delet = m.key.participant
-      const msgID = m.key.id
-
-      try {
-        const ownGroupLink = `https://chat.whatsapp.com/${await conn.groupInviteCode(m.chat)}`
-        if (text.includes(ownGroupLink)) return
-      } catch { }
-
-      try {
-        await conn.sendMessage(m.chat, {
-          text: `🚫 Hey ${userTag}, no se permiten links aquí.`,
-          mentions: [m.sender]
-        }, { quoted: m })
-
-        await conn.sendMessage(m.chat, {
-          delete: {
-            remoteJid: m.chat,
-            fromMe: false,
-            id: msgID,
-            participant: delet
-          }
-        })
-
-        await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
-      } catch {
-        await conn.sendMessage(m.chat, {
-          text: `⚠️ No pude eliminar ni expulsar a ${userTag}. Puede que no tenga permisos.`,
-          mentions: [m.sender]
-        }, { quoted: m })
-      }
-      return true
-    }
-  }
-
-  // WELCOME / BYE
-  if (chat.welcome && [27, 28, 32].includes(m.messageStubType)) {
-    const groupMetadata = await conn.groupMetadata(m.chat)
-    const groupSize = groupMetadata.participants.length
-    const userId = m.messageStubParameters?.[0] || m.sender
-    const userMention = `@${userId.split('@')[0]}`
-    let profilePic
-
-    try {
-      profilePic = await conn.profilePictureUrl(userId, 'image')
-    } catch {
-      profilePic = defaultImage
-    }
-
-    if (m.messageStubType === 27) {
-      const txtWelcome = '↷✦; w e l c o m e ❞'
-      const bienvenida = `
-✿ *Bienvenid@* a *${groupMetadata.subject}* ✰ ${userMention}, qué gusto :D 
-✦ Ahora somos *${groupSize}*
-`.trim()
-
-      await conn.sendMessage(m.chat, {
-        image: { url: profilePic },
-        caption: `${txtWelcome}\n\n${bienvenida}`,
-        contextInfo: { mentionedJid: [userId] }
-      })
-    }
-
-    if (m.messageStubType === 28 || m.messageStubType === 32) {
-      const txtBye = '↷✦; b y e ❞'
-      const despedida = `
-✿ *Adiós* de *${groupMetadata.subject}* ✰ ${userMention}, vuelve pronto :>  
-✦ Somos *${groupSize}* aún.  
-`.trim()
-
-      await conn.sendMessage(m.chat, {
-        image: { url: profilePic },
-        caption: `${txtBye}\n\n${despedida}`,
-        contextInfo: { mentionedJid: [userId] }
-      })
     }
   }
 }
