@@ -1,7 +1,7 @@
 const handler = async (m, { conn, args, usedPrefix, command }) => {
     const user = global.db.data.users[m.sender];
     const now = Date.now();
-    const cooldown = 2 * 60 * 60 * 1000; // 2 horas
+    const cooldown = 0 * 00 * 10 * 1000; // 2 horas
 
     if (now - (user.lastRob || 0) < cooldown) {
         const tiempoRestante = cooldown - (now - user.lastRob);
