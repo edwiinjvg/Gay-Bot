@@ -11,8 +11,6 @@ let handler = async (m, { conn, usedPrefix, command }) => {
         m.chat,
         {
             image: { url: ronaldo },
-            caption: "Aquí tienes.",
-            viewOnce: true
         },
         { quoted: m }
     );
