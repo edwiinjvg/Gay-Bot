@@ -27,7 +27,7 @@ let handler = async (m, { conn, args, usedPrefix, command, groupMetadata, isOwne
         if (!number) return m.reply('_Número inválido._');
         user = number + '@s.whatsapp.net';
     } else {
-        return m.reply('_Etiqueta o responde a un administrador para degradarlo._');
+        return m.reply('_Menciona o responde a un administrador para degradarlo._');
     }
     
     // Obtener info del usuario objetivo para verificar si es admin
