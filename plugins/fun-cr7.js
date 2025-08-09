@@ -7,20 +7,11 @@ let handler = async (m, { conn, usedPrefix, command }) => {
 
     let ronaldo = cristiano[Math.floor(Math.random() * cristiano.length)];
 
-    const buttons = [
-        {
-            buttonId: `${usedPrefix + command}`,
-            buttonText: { displayText: "⚜️ Otro" },
-            type: 1
-        }
-    ];
-
     await conn.sendMessage(
         m.chat,
         {
             image: { url: ronaldo },
             caption: "Aquí tienes.",
-            buttons: buttons,
             viewOnce: true
         },
         { quoted: m }
