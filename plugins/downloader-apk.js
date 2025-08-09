@@ -66,12 +66,12 @@ let handler = async (m, { conn, usedPrefix, command, text }) => {
 - _*${i + 1}. ${v.name}*_
 - _*Tamaño:* ${v.size}_
 - _*Versión:* ${v.version}_
-- _Descargas:* ${v.download}_
-- _ID:* ${v.id}_`.trim()
+- _*Descargas:* ${v.download}_
+- _*ID:* ${v.id}_`.trim()
       })
       .join("\n\n")
 
-    let header = `- _*Para descargar responde con:* ${usedPrefix + command} y el número._\n_*Ejemplo:* ${usedPrefix + command} 1_\n\n`
+    let header = `- _*Para descargar usa:* ${usedPrefix + command} y el número._\n- _*Ejemplo:* ${usedPrefix + command} 1_\n\n`
 
     conn.sendMessage(m.chat, { text: header + caption, ...global.rcanal }, { quoted: m })
 
@@ -87,7 +87,7 @@ let handler = async (m, { conn, usedPrefix, command, text }) => {
 
 handler.help = ["apk"]
 handler.tags = ["downloader"]
-handler.command = /^(apk)$/i
+handler.command = /^(apk|aptoide)$/i
 handler.register = true
 
 export default handler
