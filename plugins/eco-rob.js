@@ -1,7 +1,7 @@
 const handler = async (m, { conn, args, usedPrefix, command }) => {
     const user = global.db.data.users[m.sender];
     const now = Date.now();
-    const cooldown = 2 * 1000; // 2 horas
+    const cooldown = 10 * 1000; // 2 horas
 
     if (now - (user.lastRob || 0) < cooldown) {
         const tiempoRestante = cooldown - (now - user.lastRob);
@@ -11,9 +11,9 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         return m.reply(`_¡Acabaste de robar!_\n_Puedes volver a robar en ${horas}h ${minutos}m ${segundos}s._ ⏰`);
     }
 
-    let targetUserJid;
+    let targetUserJid = null;
     if (m.isGroup) {
-        targetUserJid = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : false;
+        targetUserJid = m.mentionedJid[0] || m.quoted?.sender || null;
     } else {
         targetUserJid = m.chat;
     }
@@ -26,9 +26,10 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         return m.reply("_No puedes robarte a ti mismo, gilipollas._");
     }
 
-    const targetUser = global.db.data.users[targetUserJid] || {};
-
-    if (!targetUser.registered) {
+    const targetUser = global.db.data.users[targetUserJid]; // No usar || {} para evitar el error
+    
+    // Nueva verificación más segura para ver si el usuario existe y está registrado
+    if (!targetUser || !targetUser.registered) {
         return m.reply(`_*@${targetUserJid.split('@')[0]}* no está registrado, no puedes robarle._`, {
             contextInfo: { mentionedJid: [targetUserJid] }
         });
@@ -85,7 +86,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         
         user.money = (robMoneyBig - cantidadPerdida < 0n) ? 0n.toString() : (robMoneyBig - cantidadPerdida).toString();
         
-        await m.reply(`_¡El robo a *@${targetUserJid.split('@')[0]}* falló!_ 👮\n_En tu huida perdiste *${cantidadPerdida}* monedas._ 🪙`, {
+        await m.reply(`_El robo a *@${targetUserJid.split('@')[0]}* falló._ 👮\n_En tu huida perdiste *${cantidadPerdida}* monedas._ 🪙`, {
             contextInfo: { mentionedJid: [m.sender, targetUserJid] }
         });
     }
