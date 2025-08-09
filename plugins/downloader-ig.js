@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 
 const handler = async (m, { conn, text, args, usedPrefix, command }) => {
-  if (!text) return m.reply(`_Ingresa el link de lo que quieres descargar junto con el comando._`)
+  if (!text) return m.reply(`_Ingresa el link del video o foto que quieres descargar junto con el comando._`)
 
   try {
     m.react('⌛')
