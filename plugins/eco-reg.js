@@ -27,7 +27,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
                 user.reg_date = user.reg_date || new Date().toLocaleDateString();
                 return m.reply(`_Detectamos que estabas registrado pero no tenías un ID. Se te ha asignado uno nuevo: *${new_reg_id}*_\n_Guárdalo, lo necesitarás para eliminar tu registro._`);
             }
-            return m.reply(`- _Ya estás registrado como *${user.name}*, no puedes registrarte dos veces._`);
+            return m.reply(`_Ya estás registrado como *${user.name}*, no puedes registrarte dos veces._`);
         }
         
         const reg_id = Math.random().toString(36).substring(2, 8).toUpperCase();
