@@ -27,7 +27,7 @@ let handler = async (m, { conn, args, groupMetadata, isAdmin, isBotAdmin }) => {
         if (!number) return m.reply('_Número inválido._');
         user = number + '@s.whatsapp.net';
     } else {
-        return m.reply('_Etiqueta o responde a un usuario para darle admin._');
+        return m.reply('_Menciona o responde a un usuario para promoverlo._');
     }
     
     // Protecciones
