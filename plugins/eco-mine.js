@@ -7,11 +7,13 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         global.db.data.users[m.sender] = {};
     }
     const user = global.db.data.users[m.sender];
-    
-    // El bot ya se encarga de la verificación de registro gracias a `handler.register = true`
 
     // --- LÓGICA DEL COMANDO .MINE (.MINAR) ---
     if (command === 'mine' || command === 'minar') {
+        if (!user.registered) {
+            return m.reply(`_¡Necesitas estar registrado para utilizar este comando!_`);
+        }
+
         const now = Date.now();
         const cooldown = 1 * 60 * 60 * 1000; // 1 hora
         if (now - (user.lastMine || 0) < cooldown) {
@@ -42,13 +44,17 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
     // --- LÓGICA DEL COMANDO .MINEXP (.MINAR2) ---
     else if (command === 'minexp' || command === 'mine2' || command === 'minar2') {
+        if (!user.registered) {
+            return m.reply(`_No estás registrado. Usa el comando *${usedPrefix}reg* para registrarte._`);
+        }
+
         const now = Date.now();
         const cooldown = 1 * 60 * 60 * 1000; // 1 hora
         if (now - (user.lastMineXP || 0) < cooldown) {
             const tiempoRestante = cooldown - (now - user.lastMineXP);
             const horas = Math.floor(tiempoRestante / (60 * 60 * 1000));
             const minutos = Math.floor((tiempoRestante % (60 * 60 * 1000)) / (60 * 1000));
-            const segundos = Math.floor((tiempoRestante % (60 * 1000)) / 1000);
+            const segundos = Math.floor((remainingMilliseconds % (1000 * 60)) / 1000);
             return m.reply(`_¡Acabaste de minar!_ ⛏️\n_Puedes volver a minar *XP* en ${horas}h ${minutos}m y ${segundos}s._ ⏰`);
         }
 
@@ -76,6 +82,10 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
     
     // --- LÓGICA DEL COMANDO .MINE3 (.MINEDI) ---
     else if (command === 'mine3' || command === 'minedi' || command === 'diamantes') {
+        if (!user.registered) {
+            return m.reply(`_No estás registrado. Usa el comando *${usedPrefix}reg* para registrarte._`);
+        }
+        
         const now = Date.now();
         const cooldown = 1.5 * 60 * 60 * 1000; // 1.5 horas
         if (now - (user.lastMine3 || 0) < cooldown) {
