@@ -1,0 +1,58 @@
+// Archivo: grupo-promote.js
+
+let handler = async (m, { conn, args, groupMetadata, isAdmin, isBotAdmin }) => {
+    // Verificar si es un grupo
+    if (!m.isGroup) {
+        return m.reply('_¡Este comando solo puede ser utilizado en grupos!_');
+    }
+
+    // Verificar si el que usa el comando es admin
+    if (!isAdmin) {
+        return m.reply('_¡Solo administradores pueden utilizar este comando!_');
+    }
+    
+    // Verificar si el bot es admin
+    if (!isBotAdmin) {
+        return m.reply('_¡Necesito ser administrador para poder ejecutar este comando!_');
+    }
+    
+    // Identificar al usuario a promover
+    let user;
+    if (m.mentionedJid && m.mentionedJid[0]) {
+        user = m.mentionedJid[0];
+    } else if (m.quoted) {
+        user = m.quoted.sender;
+    } else if (args[0]) {
+        const number = args[0].replace(/[^0-9]/g, '');
+        if (!number) return m.reply('_Número inválido._');
+        user = number + '@s.whatsapp.net';
+    } else {
+        return m.reply('_Etiqueta o responde a un usuario para promoverlo._');
+    }
+    
+    // Protecciones
+    const ownerGroup = groupMetadata.owner || m.chat.split`-`[0] + '@s.whatsapp.net';
+    const ownerBot = global.owner[0][0] + '@s.whatsapp.net';
+
+    if (user === conn.user.jid) return m.reply(`_¡No puedo darme admin a mí mismo!_`);
+    if (user === ownerGroup) return m.reply(`_Ese es el dueño del grupo, ya tiene admin._`);
+    if (user === ownerBot) return m.reply(`_El dueño del bot ya tiene todos los permisos de administrador._`);
+    if (user === m.sender) return m.reply(`_¡No puedes darte admin a ti mismo!_`)
+
+    try {
+        await conn.groupParticipantsUpdate(m.chat, [user], 'promote');
+        await m.reply('_¡Usuario promovido con éxito!_');
+    } catch (e) {
+        console.error(e);
+        await m.reply('_¡Necesito ser administrador para promover a otros usuarios!_');
+    }
+};
+
+handler.help = ['promote @usuario'];
+handler.tags = ['group'];
+handler.command = ['promote', 'admin'];
+handler.group = true;
+handler.admin = true;
+handler.botAdmin = true;
+
+export default handler;
