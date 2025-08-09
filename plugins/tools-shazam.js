@@ -13,13 +13,11 @@ let handler = async (m, { conn, usedPrefix, command }) => {
   let { status, metadata } = await acr.identify(buffer)
   if (status.code !== 0) throw status.msg 
   let { title, artists, album, genres, release_date } = metadata.music[0]
-      txt += `
-_ *Titulo:* ${title} ${artists ? `\n- _*Artista:* ${artists.map(v => v.name).join(', ')}` : ''}`
+      txt += `*Título:* ${title}${artists ? _`\n_*Artista:* ${artists.map(v => v.name).join(', ')}` : ''}_`
       txt += `${album ? `\n- _*Album:* ${album.name}_` : ''}${genres ? `\n- _*Género:* ${genres.map(v => v.name).join(', ')}` : ''}_\n`
       txt += `- _*Fecha de lanzamiento:* ${release_date}_\n`
-      txt += `╰─⬣`
      conn.reply(m.chat, txt, m)
-  } else return conn.reply(m.chat, `_Envia o responde a un audio o video de poca duración para ver que música contiene._`, m)
+  } else return conn.reply(m.chat, `Etiqueta un audio o video de poca duración con el comando *${usedPrefix + command}* para ver que música contiene.`, m)
 }
 handler.help = ['whatmusic <audio/video>']
 handler.tags = ['tools']
