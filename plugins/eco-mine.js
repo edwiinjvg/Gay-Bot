@@ -58,7 +58,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
             return m.reply(`_¡Acabaste de minar!_ ⛏️\n_Puedes volver a minar *XP* en ${horas}h ${minutos}m y ${segundos}s._ ⏰`);
         }
 
-        const minedXP = Math.floor(Math.random() * (300 - 100 + 1)) + 100;
+        const minedXP = Math.floor(Math.random() * (200 - 100 + 1)) + 100;
         user.exp = (user.exp || 0) + minedXP;
         user.lastMineXP = now;
 
