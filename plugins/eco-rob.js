@@ -1,7 +1,7 @@
 Const handler = async (m, { conn, args, usedPrefix, command }) => {
     const user = global.db.data.users[m.sender];
     const now = Date.now();
-    const cooldown = 10 * 1000; // 2 horas
+    const cooldown = 2 * 60 * 60 * 1000; // 2 horas
 
     if (now - (user.lastRob || 0) < cooldown) {
         const tiempoRestante = cooldown - (now - user.lastRob);
@@ -52,7 +52,7 @@ Const handler = async (m, { conn, args, usedPrefix, command }) => {
     user.lastRob = now; // El cooldown se activa antes del resultado del robo
 
     // 60% de probabilidad de éxito
-    if (Math.random() < 0.8) {
+    if (Math.random() < 0.7) {
         // --- LÓGICA DE ÉXITO ---
         const cantidadRobadaMonedas = BigInt(Math.floor(Math.random() * (1000 - 500 + 1)) + 500);
         const cantidadRobadaDiamantes = BigInt(Math.floor(Math.random() * (100 - 50 + 1)) + 50);
@@ -87,7 +87,7 @@ Const handler = async (m, { conn, args, usedPrefix, command }) => {
         user.money = (robMoneyBig - cantidadPerdida < 0n) ? 0n.toString() : (robMoneyBig - cantidadPerdida).toString();
         
         await conn.sendMessage(m.chat, {
-            text: `_El robo a *@${targetUserJid.split('@')[0]}* falló._ 👮\n_En tu huida perdiste *${cantidadPerdida}* monedas._ 🪙`,
+            text: `- _El robo a *@${targetUserJid.split('@')[0]}* falló._ 👮\n- _En tu huida perdiste *${cantidadPerdida}* monedas._ 🪙`,
             contextInfo: { mentionedJid: [m.sender, targetUserJid] }
         });
     }
@@ -99,3 +99,5 @@ handler.command = ['rob', 'robar'];
 handler.register = true;
 
 export default handler;
+
+Este comando ya sirve, el único problema es que cuando robas tira el mensaje del robo al aire, o sea no responde el mensaje a la persona que usó el comando, quiero que haga eso
