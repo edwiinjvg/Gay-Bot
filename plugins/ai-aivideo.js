@@ -22,7 +22,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
     await conn.sendMessage(m.chat, { 
       video: buffer, 
-      caption: `_*Video generado:* ${json.prompt}_`, 
+      caption: `_*Video generado de:* ${json.prompt}_`, 
       gifPlayback: false 
     }, { quoted: m });
 
