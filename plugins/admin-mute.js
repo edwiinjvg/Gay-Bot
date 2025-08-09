@@ -8,12 +8,12 @@ let handler = async (m, { conn, args, usedPrefix, command, groupMetadata, isOwne
     
     // Verificar si el que usa el comando es admin
     if (!isAdmin) {
-        return m.reply('❌ Solo los admins pueden usar este comando.');
+        return m.reply('_¡Este comando solo puede ser utilizado por administradores!_');
     }
     
     // Verificar si el bot es admin
     if (!isBotAdmin) {
-        return m.reply('❌ Debo ser admin del grupo para usar este comando.');
+        return m.reply('_¡Necesito ser administrador del grupo para poder ejecutar este comando!_');
     }
     
     // Identificar al usuario a silenciar
@@ -24,10 +24,10 @@ let handler = async (m, { conn, args, usedPrefix, command, groupMetadata, isOwne
         user = m.quoted.sender;
     } else if (args[0]) {
         const number = args[0].replace(/[^0-9]/g, '');
-        if (!number) return m.reply('⚠️ Número inválido.');
+        if (!number) return m.reply('_Número inválido._');
         user = number + '@s.whatsapp.net';
     } else {
-        return m.reply('_Mencione a un usuario para silenciarlo._');
+        return m.reply('_Menciona o responde a un usuario para silenciarlo._');
     }
 
     // Protecciones
@@ -64,7 +64,7 @@ let handler = async (m, { conn, args, usedPrefix, command, groupMetadata, isOwne
       userTarget.muto = true;
       await m.reply(`_¡@${user.split('@')[0]} fue silenciado con éxito en este grupo!_`, null, { mentions: [user] });
     } else {
-      await m.reply(`El usuario @${user.split('@')[0]} no existe en la base de datos. No se puede silenciar.`, null, { mentions: [user] });
+      await m.reply(`_El usuario @${user.split('@')[0]} no existe en la base de datos. No se puede silenciar._`, null, { mentions: [user] });
     }
 };
 
