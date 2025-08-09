@@ -37,15 +37,13 @@ const handler = async (m, { conn, command, args, isAdmin, isOwner, usedPrefix })
   // Si no se especifica una variable, mostrar el menú con los alias
   if (!type) {
     let menuText = `
-_Usa *${usedPrefix}on <opción>* o *${usedPrefix}off <opción>* para cambiar el estado._
-------------------------------------------
-`.trim();
+_Usa *${usedPrefix}on <opción>* o *${usedPrefix}off <opción>* para cambiar el estado._`.trim();
 
     for (const variable of allowedVariables) {
       const alias = Object.keys(variableAliases).find(key => variableAliases[key] === variable);
       const nameToShow = alias ? `${variable} (${alias})` : variable;
-      const status = chat[variable] ? 'Activado' : 'Desactivado';
-      menuText += `\n_*${nameToShow}:* ${status}._`;
+      const status = chat[variable] ? 'Activado ✅' : 'Desactivado ❌';
+      menuText += `\n- _*${nameToShow}:* ${status}._`;
     }
 
     return m.reply(menuText);
