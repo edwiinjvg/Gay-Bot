@@ -3,17 +3,17 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
     // --- VERIFICACIÓN DE REGISTRO AL INICIO DEL COMANDO ---
     const user = global.db.data.users[m.sender];
     if (!user || !user.registered) {
-        return m.reply('_Debes estar registrado para poder usar este comando._');
+        return m.reply('_¡Necesitas estar registrado para poder utilizar este comando!_');
     }
 
     // --- Lógica para el comando 'transfer' (guía) ---
     if (command === 'trans' || command === 'transferir' || command === 'transfer') {
-        const replyMessage = `_Usa *${usedPrefix}transferir1 <cantidad> [@usuario]* para transferir monedas._ 🪙\n_Usa *${usedPrefix}transferir2 <cantidad> [@usuario]* para transferir diamantes._ 💎`;
+        const replyMessage = `_Usa *${usedPrefix}transfer1 <cantidad> [@usuario]* para transferir monedas._ 🪙\n_Usa *${usedPrefix}transfer2 <cantidad> [@usuario]* para transferir diamantes._ 💎`;
         return m.reply(replyMessage);
     }
 
     // --- Lógica para el comando 'transferir1' (monedas) ---
-    if (command === 'transferir1' || command === 'trans1') {
+    if (command === 'transfer1' || command === 'trans1') {
 
         let cantidad = Number(args[0]);
 
@@ -21,7 +21,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
             return m.reply(`_Ingresa una cantidad válida para transferir._\n_Uso correcto: *${usedPrefix}${command} <cantidad> @usuario*_`);
         }
 
-        const MIN_TRANSFER = 250n;
+        const MIN_TRANSFER = 500n;
         if (BigInt(cantidad) < MIN_TRANSFER) {
             return m.reply(`_La cantidad mínima para transferir es de *${MIN_TRANSFER}* monedas._`);
         }
@@ -30,7 +30,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         if (m.isGroup) {
             targetUserJid = m.mentionedJid[0] || m.quoted?.sender || null;
         } else {
-            return m.reply("_Este comando solo puede ser utilizado en grupos para transferir a otro usuario._");
+            return m.reply("_¡Este comando solo puede ser utilizado en grupos!_");
         }
 
         if (!targetUserJid) {
@@ -76,7 +76,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
     }
 
     // --- Lógica para el comando 'transferir2' (diamantes) ---
-    if (command === 'transferir2' || command === 'trans2') {
+    if (command === 'transfer2' || command === 'trans2') {
         
         let cantidad = Number(args[0]);
 
@@ -84,7 +84,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
             return m.reply(`_Ingresa una cantidad válida para transferir._\n_Uso correcto: *${usedPrefix}${command} <cantidad> @usuario*_`);
         }
 
-        const MIN_TRANSFER = 25n;
+        const MIN_TRANSFER = 50n;
         if (BigInt(cantidad) < MIN_TRANSFER) {
             return m.reply(`_La cantidad mínima para transferir es de *${MIN_TRANSFER}* diamantes._`);
         }
@@ -141,7 +141,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
 handler.help = ['trans', 'transferir', 'transfer', 'transferir1 <cantidad> [@usuario]', 'trans1 <cantidad> [@usuario]', 'transferir2 <cantidad> [@usuario]', 'trans2 <cantidad> [@usuario]'];
 handler.tags = ['economía'];
-handler.command = ['trans', 'transferir', 'transfer', 'transferir1', 'trans1', 'transferir2', 'trans2'];
+handler.command = ['trans', 'transferir', 'transfer', 'transfer1', 'trans1', 'transfer2', 'trans2'];
 handler.group = true; // Solo funciona en grupos
 
 export default handler;
