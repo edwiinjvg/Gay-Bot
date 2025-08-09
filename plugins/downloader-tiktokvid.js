@@ -10,9 +10,9 @@ const handler = async (m, { conn, args, usedPrefix, text, command }) => {
 
   let vid = json.data[0]
 
-  let caption = `_${vid.title}_\n\n` +
+  let caption = `${vid.title}\n\n` +
                 `- _*Autor:* ${vid.author}_\n` +
-                `- _*Vistas:* ${vid.views.toLocaleString()}\n` +
+                `- _*Vistas:* ${vid.views.toLocaleString()}_\n` +
                 `_*Link:* ${vid.url}_`
 
   await conn.sendMessage(m.chat, {
