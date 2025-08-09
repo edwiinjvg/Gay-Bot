@@ -33,12 +33,11 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         const reg_id = Math.random().toString(36).substring(2, 8).toUpperCase();
         const reg_date = new Date().toLocaleDateString();
 
-        let hasBonus = false;
-        if (!user.hasRegistered) {
-            user.money = (user.money || 0) + 2500;
-            user.diamonds = (user.diamonds || 0) + 250;
-            user.hasRegistered = true;
-            hasBonus = true;
+        let profilePic;
+        try {
+            profilePic = await conn.profilePictureUrl(m.sender, 'image');
+        } catch {
+            profilePic = defaultImage;
         }
 
         user.name = name;
@@ -47,32 +46,31 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         user.reg_id = reg_id;
         user.reg_date = reg_date;
         user.exp = (user.exp || 0) + 50;
+
+        let bonusMessage = '';
+        if (!user.bonusReceived) {
+            user.money = (user.money || 0) + 2500;
+            user.diamonds = (user.diamonds || 0) + 250;
+            user.bonusReceived = true; // Variable que no se borrará al desregistrar
+            bonusMessage = `_¡Registro exitoso!_ 🎉\n_Recibiste una bonificación de *2500* monedas 🪙 y *250* diamantes._ 💎`;
+        } else {
+            bonusMessage = `_¡Bienvenido de nuevo, *${name}*!_ 🎉\n_Te has registrado exitosamente._`;
+        }
         
         let certificate = `
 - _*CERTIFICADO DE REGISTRO*_\n\n- _*Nombre:* ${name}_\n- _*Edad:* ${age}_\n- _*ID de Registro:* ${reg_id}_\n- _*Fecha de Registro:* ${reg_date}_
 `.trim();
+        
+        // Enviar el certificado con la foto de perfil
+        await conn.sendMessage(m.chat, {
+            image: { url: profilePic },
+            caption: certificate,
+            contextInfo: { mentionedJid: [m.sender] }
+        });
+        
+        // Enviar el mensaje de la bonificación aparte
+        await m.reply(bonusMessage);
 
-        if (hasBonus) {
-            let profilePic;
-            try {
-                profilePic = await conn.profilePictureUrl(m.sender, 'image');
-            } catch {
-                profilePic = defaultImage;
-            }
-            
-            // Enviar el certificado con la foto de perfil
-            await conn.sendMessage(m.chat, {
-                image: { url: profilePic },
-                caption: certificate,
-                contextInfo: { mentionedJid: [m.sender] }
-            });
-            
-            // Enviar el mensaje de la bonificación aparte
-            await m.reply(`_¡Registro exitoso!_ 🎉\n_Recibiste una bonificación de *2500* monedas 🪙 y *250* diamantes._ 💎`);
-
-        } else {
-            m.reply(`_¡Bienvenido de nuevo, *${name}*!_ 🎉\n_Te has registrado exitosamente._`);
-        }
     } 
     
     // --- LÓGICA DEL COMANDO .UNREG (.UNREGISTER) ---
@@ -80,7 +78,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         const input_id = args[0] ? args[0].toUpperCase() : '';
         
         if (!user.registered) {
-            return m.reply("_No estás registrado, usa el comando .reg para registrarte._");
+            return m.reply("_No estás registrado, usa el comando *.reg* para registrarte._");
         }
         
         if (!input_id || input_id !== user.reg_id) {
@@ -92,7 +90,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         delete user.registered;
         delete user.reg_id;
         delete user.reg_date;
-        delete user.hasRegistered;
+        // Se deja user.bonusReceived para que no se entregue la bonificación de nuevo
         
         return m.reply("_Eliminaste tu registro con éxito. Puedes volver a registrarte con el comando *.reg*._");
     }
@@ -103,7 +101,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
             return m.reply("_No estás registrado. Usa el comando *.reg* para obtener tu ID._");
         }
         
-        return m.reply(`- _*Tu ID de registro es:* ${user.reg_id}_`);
+        return m.reply(`- _*Tu ID de registro es:* ${user.reg_id || 'N/A'}_`);
     }
 };
 
