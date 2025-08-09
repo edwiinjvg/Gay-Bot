@@ -27,7 +27,7 @@ const trabajo = [
 ];
 
 const pickRandom = (list) => {
-    return list[Math.floor(Math.length * Math.random())];
+    return list[Math.floor(list.length * Math.random())];
 };
 
 const handler = async (m, { conn, usedPrefix, command }) => {
@@ -47,7 +47,7 @@ const handler = async (m, { conn, usedPrefix, command }) => {
         return m.reply(`_¡Estás cansado!_ ⚠️\n_Vuelve a trabajar en ${minutos}m ${segundos}s._ ⏰`);
     }
     
-    // Rango de dinero a ganar de 50 a 200 (el original)
+    // Rango de dinero a ganar de 100 a 300
     const minMoney = 100n;
     const maxMoney = 300n;
     
@@ -58,7 +58,8 @@ const handler = async (m, { conn, usedPrefix, command }) => {
     
     user.exp = (user.exp || 0) + 10;
     
-    const replyMessage = `_¡${pickRandom(trabajo)} *{earnedMoneyBig}* monedas!_ 🪙`;
+    // Mensaje de respuesta corregido
+    const replyMessage = `_¡${pickRandom(trabajo)} *${earnedMoneyBig}* monedas!_ 🪙`;
     
     await m.reply(replyMessage);
 };
