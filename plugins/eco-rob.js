@@ -100,4 +100,3 @@ handler.register = true;
 
 export default handler;
 
-Este comando ya sirve, el único problema es que cuando robas tira el mensaje del robo al aire, o sea no responde el mensaje a la persona que usó el comando, quiero que haga eso
