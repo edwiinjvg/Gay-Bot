@@ -71,7 +71,7 @@ _*${i + 1}. ${v.name}*_
       })
       .join("\n\n")
 
-    let header = `_*Para descargar usa: *${usedPrefix + command}* y el número._\n- _Ejemplo: *${usedPrefix + command} 1*_\n\n`
+    let header = `_Para descargar usa: *${usedPrefix + command}* y el número._\n- _Ejemplo: *${usedPrefix + command} 1*_\n\n`
 
     conn.sendMessage(m.chat, { text: header + caption, ...global.rcanal }, { quoted: m })
 
