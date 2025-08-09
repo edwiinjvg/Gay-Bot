@@ -14,7 +14,7 @@ Recuerda que la imagen puede tardar unos segundos en generarse.
 
   try {
     // Reaccionar con reloj mientras genera
-    await conn.sendMessage(m.chat, { react: { text: '🕒', key: m.key } })
+    await conn.sendMessage(m.chat, { react: { text: '⌛', key: m.key } })
 
     // Llamada a tu API que devuelve la imagen directamente
     const api = `https://myapiadonix.vercel.app/api/IAimagen?prompt=${encodeURIComponent(prompt)}`
@@ -41,12 +41,12 @@ Detalles:
 
   } catch (e) {
     console.error('Error generando imagen:', e)
-    await conn.sendMessage(m.chat, { react: { text: '✖️', key: m.key } })
-    m.reply('✿ *Error ›* No se pudo generar la imagen, inténtalo más tarde.')
+    await conn.sendMessage(m.chat, { react: { text: '❌', key: m.key } })
+    m.reply('_Ocurrió un error, inténtalo más tarde._')
   }
 }
 
-handler.command = ['imgia', 'iaimg']
+handler.command = ['imgia', 'iaimg', 'dalle', 'dall-e']
 handler.help = ['imgia']
 handler.tags = ['ia']
 
