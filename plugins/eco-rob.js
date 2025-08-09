@@ -1,36 +1,38 @@
 const handler = async (m, { conn, args, usedPrefix, command }) => {
     const user = global.db.data.users[m.sender];
     const now = Date.now();
-    const cooldown = 2 * 60 * 60 * 1000; // 2 horas
+    const cooldown = 10 * 1000; // 2 horas
 
     if (now - (user.lastRob || 0) < cooldown) {
         const tiempoRestante = cooldown - (now - user.lastRob);
         const horas = Math.floor(tiempoRestante / (60 * 60 * 1000));
         const minutos = Math.floor((tiempoRestante % (60 * 60 * 1000)) / (60 * 1000));
         const segundos = Math.floor((tiempoRestante % (60 * 1000)) / 1000);
-        return m.reply(`_¡Acabaste de robar!_\n_Puedes volver a robar en ${horas}h ${minutos}m ${segundos}s._ ⏰`);
+        return conn.reply(m.chat, `_¡Acabaste de robar!_\n_Puedes volver a robar en ${horas}h ${minutos}m ${segundos}s._ ⏰`, m);
     }
 
-    let targetUserJid;
+    let targetUserJid = null;
     if (m.isGroup) {
-        targetUserJid = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : false;
+        targetUserJid = m.mentionedJid[0] || m.quoted?.sender || null;
     } else {
         targetUserJid = m.chat;
     }
     
     if (!targetUserJid) {
-        return m.reply(`_Menciona a un usuario o responde a su mensaje para robarle._`);
+        return conn.reply(m.chat, '_Menciona a un usuario o responde a su mensaje para robarle._', m);
     }
 
     if (targetUserJid === m.sender) {
-        return m.reply("_No puedes robarte a ti mismo, gilipollas._");
+        return conn.reply(m.chat, "_No puedes robarte a ti mismo, gilipollas._", m);
     }
 
-    const targetUser = global.db.data.users[targetUserJid] || {};
-
-    if (!targetUser.registered) {
-        return m.reply(`_*@${targetUserJid.split('@')[0]}* no está registrado, no puedes robarle._`, {
-            contextInfo: { mentionedJid: [targetUserJid] }
+    const targetUser = global.db.data.users[targetUserJid];
+    
+    // Verificación segura para ver si el usuario existe y está registrado
+    if (!targetUser || !targetUser.registered) {
+        const mentioned = targetUserJid && typeof targetUserJid === 'string' ? [targetUserJid] : [];
+        return conn.reply(m.chat, `_*@${String(targetUserJid).split('@')[0]}* no está registrado, no puedes robarle._`, m, {
+            mentions: mentioned
         });
     }
 
@@ -44,14 +46,15 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
     if (targetMoneyBig < MIN_MONEY && targetDiamondsBig < MIN_DIAMONDS) {
         user.lastRob = now;
-        return m.reply(`_*@${targetUserJid.split('@')[0]}* no tiene suficientes monedas ni diamantes para robarle, es un pobretón._ 😹`, {
-            contextInfo: { mentionedJid: [targetUserJid] }
+        const mentioned = targetUserJid && typeof targetUserJid === 'string' ? [targetUserJid] : [];
+        return conn.reply(m.chat, `_*@${String(targetUserJid).split('@')[0]}* no tiene suficientes monedas ni diamantes para robarle, es un pobretón._ 😹`, m, {
+            mentions: mentioned
         });
     }
 
     user.lastRob = now; // El cooldown se activa antes del resultado del robo
 
-    // 80% de probabilidad de éxito
+    // 70% de probabilidad de éxito
     if (Math.random() < 0.7) {
         // --- LÓGICA DE ÉXITO ---
         const cantidadRobadaMonedas = BigInt(Math.floor(Math.random() * (1000 - 500 + 1)) + 500);
@@ -75,9 +78,10 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         
         user.exp = (user.exp || 0) + 25;
 
-        await conn.sendMessage(m.chat, {
-            text: `_¡Robo exitoso!_ 😈\n_Le robaste a *@${targetUserJid.split('@')[0]}* ${mensajeRobado.join(' y ')}._`,
-            contextInfo: { mentionedJid: [m.sender, targetUserJid] }
+        // Construcción segura del array de menciones
+        const mentioned = [m.sender, targetUserJid].filter(jid => jid && typeof jid === 'string');
+        await conn.reply(m.chat, `_¡Robo exitoso!_ 😈\n_Le robaste a *@${String(targetUserJid).split('@')[0]}* ${mensajeRobado.join(' y ')}._`, m, {
+            mentions: mentioned
         });
 
     } else {
@@ -86,9 +90,10 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         
         user.money = (robMoneyBig - cantidadPerdida < 0n) ? 0n.toString() : (robMoneyBig - cantidadPerdida).toString();
         
-        await conn.sendMessage(m.chat, {
-            text: `_El robo a *@${targetUserJid.split('@')[0]}* falló._ 👮\n_En tu huida perdiste *${cantidadPerdida}* monedas._ 🪙`,
-            contextInfo: { mentionedJid: [m.sender, targetUserJid] }
+        // Construcción segura del array de menciones
+        const mentioned = [m.sender, targetUserJid].filter(jid => jid && typeof jid === 'string');
+        await conn.reply(m.chat, `- _El robo a *@${String(targetUserJid).split('@')[0]}* falló._ 👮\n- _En tu huida perdiste *${cantidadPerdida}* monedas._ 🪙`, m, {
+            mentions: mentioned
         });
     }
 };
