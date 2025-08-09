@@ -1,18 +1,8 @@
-/**
- * Comando: .apk
- * Autor: Ado-rgb
- * Repositorio: github.com/Ado-rgb
- * 🚫 No quitar créditos
- * 
- * Funcionalidad:
- * 🔍 Buscar aplicaciones en Aptoide y descargarlas en formato .apk directamente desde WhatsApp
- */
-
 let handler = async (m, { conn, usedPrefix, command, text }) => {
   if (!text) {
     return conn.sendMessage(
       m.chat,
-      { text: `⚡ Ingresa el nombre de la aplicación que quieres buscar\n\n📌 Ejemplo:\n${usedPrefix + command} Facebook Lite`, ...global.rcanal },
+      { text: `_Escribe el nombre de la apk que quieres buscar._`, ...global.rcanal },
       { quoted: m }
     )
   }
@@ -23,7 +13,7 @@ let handler = async (m, { conn, usedPrefix, command, text }) => {
     text = text.replace(/http:\/\/|https:\/\//i, "")
 
     let dt = conn.apk[m.sender]
-    if (dt.download) return conn.sendMessage(m.chat, { text: "⏳ Ya estás descargando un archivo, espera...", ...global.rcanal }, { quoted: m })
+    if (dt.download) return conn.sendMessage(m.chat, { text: "_Ya estás descargando un archivo, espera..._", ...global.rcanal }, { quoted: m })
 
     try {
       dt.download = true
@@ -31,9 +21,8 @@ let handler = async (m, { conn, usedPrefix, command, text }) => {
       let data = await aptoide.download(dt.data[text - 1].id)
 
       let caption = `
-📱 *Nombre:* ${data.appname}
-👨‍💻 *Desarrollador:* ${data.developer}
-`.trim()
+- _*Nombre:* ${data.appname}_
+- _*Desarrollador:* ${data.developer}_`.trim()
 
       await conn.sendMessage(
         m.chat,
@@ -59,7 +48,7 @@ let handler = async (m, { conn, usedPrefix, command, text }) => {
 
     } catch (e) {
       console.error(e)
-      conn.sendMessage(m.chat, { text: "❌ Ocurrió un error al descargar el APK.", ...global.rcanal }, { quoted: m })
+      conn.sendMessage(m.chat, { text: "_Ocurrió un error al descargar el apk_.", ...global.rcanal }, { quoted: m })
     } finally {
       dt.download = false
     }
@@ -68,22 +57,21 @@ let handler = async (m, { conn, usedPrefix, command, text }) => {
     let data = await aptoide.search(text)
 
     if (!data || data.length === 0) {
-      return conn.sendMessage(m.chat, { text: "⚠️ No se encontraron resultados para tu búsqueda.", ...global.rcanal }, { quoted: m })
+      return conn.sendMessage(m.chat, { text: "_No se encontraron resultados para tu búsqueda._", ...global.rcanal }, { quoted: m })
     }
 
     let caption = data
       .map((v, i) => {
         return `
-${i + 1}. ${v.name}
-📦 Tamaño: ${v.size}
-🆚 Versión: ${v.version}
-⬇️ Descargas: ${v.download}
-🆔 ID: ${v.id}
-`.trim()
+- _*${i + 1}. ${v.name}*_
+- _*Tamaño:* ${v.size}_
+- _*Versión:* ${v.version}_
+- _Descargas:* ${v.download}_
+- _ID:* ${v.id}_`.trim()
       })
       .join("\n\n")
 
-    let header = `> 💡 Para descargar, responde con: *${usedPrefix + command} y el número.*\n\nEjemplo:\n${usedPrefix + command} 1\n\n`
+    let header = `- _*Para descargar responde con:* ${usedPrefix + command} y el número._\n_*Ejemplo:* ${usedPrefix + command} 1_\n\n`
 
     conn.sendMessage(m.chat, { text: header + caption, ...global.rcanal }, { quoted: m })
 
@@ -129,7 +117,7 @@ const aptoide = {
     res = await res.json()
 
     if (!res.datalist?.list?.length) {
-      throw new Error("Aplicación no encontrada.")
+      throw new Error("_Aplicación no encontrada._")
     }
 
     const app = res.datalist.list[0]
