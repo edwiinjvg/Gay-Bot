@@ -1,4 +1,4 @@
-Const handler = async (m, { conn, args, usedPrefix, command }) => {
+const handler = async (m, { conn, args, usedPrefix, command }) => {
 
     const isGroup = m.chat.endsWith('@g.us');
     if (!isGroup) {
