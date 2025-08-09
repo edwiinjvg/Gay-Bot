@@ -7,27 +7,25 @@ const handler = async (m, { conn }) => {
 
     if (!memeUrl) {
       return conn.sendMessage(m.chat, {
-        text: '❌ No se pudo obtener el meme.',
+        text: '_No se pudo obtener el meme._',
         ...global.rcanal
       }, { quoted: m })
     }
 
     await conn.sendMessage(m.chat, {
       image: { url: memeUrl },
-      caption: `> ✿ *Aqui tienes*`,
-      ...global.rcanal
     }, { quoted: m })
 
   } catch (e) {
     console.error(e)
     await conn.sendMessage(m.chat, {
-      text: '⚠️ Hubo un error al intentar obtener el meme.',
+      text: '-Ocurrió un error, inténtalo de nuevo._',
       ...global.rcanal
     }, { quoted: m })
   }
 }
 
-handler.command = ['meme']
+handler.command = ['meme', 'momo']
 handler.help = ['meme']
 handler.tags = ['fun']
 export default handler
