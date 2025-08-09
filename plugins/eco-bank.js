@@ -15,7 +15,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         const userBankMoney = BigInt(user.bankMoney || 0);
         const total = userMoney + userBankMoney;
 
-        const saldoMessage = `_Saldo en el banco: *${userBankMoney}* monedas._ 🏦\n_Dinero total: *${total}* monedas._ 🪙`;
+        const saldoMessage = `- _*Saldo en el banco:* ${userBankMoney} monedas._ 🏦\n- _*Dinero total:* ${total} monedas._ 🪙`;
         
         const instruccionesMessage = `_Usa *${usedPrefix}guardar <cantidad>* para guardar monedas._ 🪙\n_Usa *${usedPrefix}retirar <cantidad>* para retirar monedas._ 💸`;
         
@@ -51,7 +51,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         user.bankMoney = (userBankMoney + cantidadBig).toString();
         user.exp = (user.exp || 0) + 20;
 
-        return m.reply(`_Guardaste *${cantidadBig}* monedas en el banco._ 🏦\n_*Comisión cobrada:* ${comision} monedas._ 🤖\n_*Dinero en el banco:* ${user.bankMoney} monedas._ 🪙\n_*Tu saldo actual:* ${user.money} monedas_ 💰`);
+        return m.reply(`- _Guardaste *${cantidadBig}* monedas en el banco._ 🏦\n- _*Comisión cobrada:* ${comision} monedas._ 🤖\n- _*Dinero en el banco:* ${user.bankMoney} monedas._ 🪙\n- _*Tu saldo actual:* ${user.money} monedas_ 💰`);
     }
 
     // --- LÓGICA DEL COMANDO .BANKR (.RETIRAR) ---
@@ -74,7 +74,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         user.bankMoney = (userBankMoney - cantidadBig).toString();
         user.exp = (user.exp || 0) + 20;
 
-        return m.reply(`_Retiraste *${cantidadBig}* monedas del banco._ 🏦\n_*Dinero en el banco:* ${user.bankMoney} monedas._ 🪙\n_*Tu saldo actual:* ${user.money} monedas._ 💰`);
+        return m.reply(`- _Retiraste *${cantidadBig}* monedas del banco._ 🏦\n- _*Dinero en el banco:* ${user.bankMoney} monedas._ 🪙\n- _*Tu saldo actual:* ${user.money} monedas._ 💰`);
     }
 };
 
