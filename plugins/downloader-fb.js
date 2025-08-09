@@ -2,7 +2,7 @@ import fetch from 'node-fetch'
 
 let handler = async (m, { conn, args, usedPrefix, command }) => {
   if (!args[0]) return m.reply(
-    `_Ingresa el link de lo que quieres descargar junto con el comando._`
+    `_Ingresa el link del video que quieres descargar junto con el comando._`
   )
 
   try {
