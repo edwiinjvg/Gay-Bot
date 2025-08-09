@@ -1,58 +1,60 @@
 var handler = async (m, { conn, args }) => {
+    // Verificación de grupo
     if (!m.isGroup) return m.reply('🔒 Este comando solo se usa en grupos.');
 
     const groupMetadata = await conn.groupMetadata(m.chat);
 
-    // Debug: mostrar participantes y sus roles en consola
-    console.log('🔎 Participantes del grupo:');
-    groupMetadata.participants.forEach(p => {
-        console.log(`- ${p.id} admin: ${p.admin || 'miembro'}`);
-    });
-
-    // Buscar info del usuario que manda el comando
+    // Obtener información del usuario que envía el comando
     const userParticipant = groupMetadata.participants.find(p => p.id === m.sender);
+    const isUserAdmin = userParticipant?.admin === 'admin' || userParticipant?.admin === 'superadmin';
 
-    console.log('🔎 Info usuario que manda:', userParticipant);
-
-    // Check si es admin o dueño del grupo
-    const isUserAdmin = userParticipant?.admin === 'admin' || userParticipant?.admin === 'superadmin' || m.sender === groupMetadata.owner;
-
+    // Verificación de admin
     if (!isUserAdmin) {
         return m.reply('❌ Solo los admins pueden usar este comando.');
     }
 
-    // Obtener usuario a expulsar
-    let user;
+    // Identificación del usuario a expulsar
+    let memberToRemoveId = null;
+
     if (m.mentionedJid && m.mentionedJid[0]) {
-        user = m.mentionedJid[0];
+        memberToRemoveId = m.mentionedJid[0];
     } else if (m.quoted) {
-        user = m.quoted.sender;
+        memberToRemoveId = m.quoted.sender;
     } else if (args[0]) {
         const number = args[0].replace(/[^0-9]/g, '');
         if (!number) return m.reply('⚠️ Número inválido.');
-        user = number + '@s.whatsapp.net';
+        memberToRemoveId = number + '@s.whatsapp.net';
     } else {
         return m.reply('🚫 Mencioná, respondé o escribí un número para expulsar.');
     }
 
-    const ownerGroup = groupMetadata.owner || m.chat.split`-`[0] + '@s.whatsapp.net';
+    // Protecciones
     const ownerBot = global.owner[0][0] + '@s.whatsapp.net';
+    const ownerGroup = groupMetadata.owner || m.chat.split`-`[0] + '@s.whatsapp.net';
 
-    if (user === conn.user.jid) return m.reply(`😂 Calma no me puedo sacar yo mismo`);
-    if (user === ownerGroup) return m.reply(`Ese es el dueño del no lo eliminaré grupo`);
-    if (user === ownerBot) return m.reply(`Que piensas? ¿qué sacaré a el dueño del bot?`);
+    if (memberToRemoveId === m.sender) {
+        return m.reply('_¡No puedes eliminarte a ti mismo!_');
+    }
+    if (memberToRemoveId === ownerGroup) {
+        return m.reply('_¡No puedes eliminar al dueño del grupo!_');
+    }
+    if (memberToRemoveId === ownerBot) {
+        return m.reply('_¡No puedes eliminar al dueño del bot!_');
+    }
 
+    // Ejecución del comando
     try {
-        await conn.groupParticipantsUpdate(m.chat, [user], 'remove');
-        await m.reply(`Se nos fue el User :c JJAJAJAJ`);
+        await conn.groupParticipantsUpdate(m.chat, [memberToRemoveId], 'remove');
+        await conn.sendMessage(m.chat, { text: '_¡Un imbécil fue eliminado con éxito!_ 🔥' });
     } catch (e) {
-        await m.reply(`No pude expulsar al usuario. Puede que no sea admin o que no tenga permisos nmms da admin.`);
+        await m.reply(`No pude expulsar al usuario. Puede que no tenga permisos.`);
     }
 };
 
-handler.help = ['kick'];
+handler.help = ['ban', 'kick'];
 handler.tags = ['group'];
-handler.command = ['kick','echar','hechar','sacar','ban'];
-handler.register = true
+handler.command = ['ban', 'kick'];
+handler.group = true;
+handler.admin = true;
 
 export default handler;
