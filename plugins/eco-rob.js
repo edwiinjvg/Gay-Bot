@@ -87,7 +87,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         user.money = (robMoneyBig - cantidadPerdida < 0n) ? 0n.toString() : (robMoneyBig - cantidadPerdida).toString();
         
         await conn.sendMessage(m.chat, {
-            text: `_El robo a *@${targetUserJid.split('@')[0]}* falló._ 👮\n_En tu huida perdiste *${cantidadPerdida}* monedas._ 🪙`,
+            text: `- _El robo a *@${targetUserJid.split('@')[0]}* falló._ 👮\n- _En tu huida perdiste *${cantidadPerdida}* monedas._ 🪙`,
             contextInfo: { mentionedJid: [m.sender, targetUserJid] }
         });
     }
