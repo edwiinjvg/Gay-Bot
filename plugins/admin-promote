@@ -13,7 +13,7 @@ let handler = async (m, { conn, args, groupMetadata, isAdmin, isBotAdmin }) => {
     
     // Verificar si el bot es admin
     if (!isBotAdmin) {
-        return m.reply('_¡Necesito ser administrador para poder ejecutar este comando!_');
+        return m.reply('_¡Necesito ser administrador para ejecutar este comando!_');
     }
     
     // Identificar al usuario a promover
@@ -27,7 +27,7 @@ let handler = async (m, { conn, args, groupMetadata, isAdmin, isBotAdmin }) => {
         if (!number) return m.reply('_Número inválido._');
         user = number + '@s.whatsapp.net';
     } else {
-        return m.reply('_Etiqueta o responde a un usuario para promoverlo._');
+        return m.reply('_Etiqueta o responde a un usuario para darle admin._');
     }
     
     // Protecciones
@@ -35,8 +35,8 @@ let handler = async (m, { conn, args, groupMetadata, isAdmin, isBotAdmin }) => {
     const ownerBot = global.owner[0][0] + '@s.whatsapp.net';
 
     if (user === conn.user.jid) return m.reply(`_¡No puedo darme admin a mí mismo!_`);
-    if (user === ownerGroup) return m.reply(`_Ese es el dueño del grupo, ya tiene admin._`);
-    if (user === ownerBot) return m.reply(`_El dueño del bot ya tiene todos los permisos de administrador._`);
+    if (user === ownerGroup) return m.reply(`_El dueño del grupo ya tiene admin, imbécil._`);
+    if (user === ownerBot) return m.reply(`_Mi dueño ya tiene todos los permisos de administrador._`);
     if (user === m.sender) return m.reply(`_¡No puedes darte admin a ti mismo!_`)
 
     try {
