@@ -49,7 +49,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         }
 
         const cantidadBig = BigInt(cantidad);
-        const comision = cantidadBig / 7n;
+        const comision = cantidadBig / 8n;
         const totalDescontar = cantidadBig + comision;
 
         const senderMoney = BigInt(user.money || 0);
@@ -112,7 +112,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         }
 
         const cantidadBig = BigInt(cantidad);
-        const comision = cantidadBig / 7n;
+        const comision = cantidadBig / 8n;
         const totalDescontar = cantidadBig + comision;
 
         const senderDiamonds = BigInt(user.diamonds || 0);
