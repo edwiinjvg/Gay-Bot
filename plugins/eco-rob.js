@@ -51,7 +51,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
     user.lastRob = now; // El cooldown se activa antes del resultado del robo
 
-    // 60% de probabilidad de éxito
+    // 70% de probabilidad de éxito
     if (Math.random() < 0.7) {
         // --- LÓGICA DE ÉXITO ---
         const cantidadRobadaMonedas = BigInt(Math.floor(Math.random() * (1000 - 500 + 1)) + 500);
@@ -75,8 +75,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         
         user.exp = (user.exp || 0) + 25;
 
-        await conn.sendMessage(m.chat, {
-            text: `_¡Robo exitoso!_ 😈\n_Le robaste a *@${targetUserJid.split('@')[0]}* ${mensajeRobado.join(' y ')}._`,
+        await m.reply(`_¡Robo exitoso!_ 😈\n_Le robaste a *@${targetUserJid.split('@')[0]}* ${mensajeRobado.join(' y ')}._`, {
             contextInfo: { mentionedJid: [m.sender, targetUserJid] }
         });
 
@@ -86,8 +85,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         
         user.money = (robMoneyBig - cantidadPerdida < 0n) ? 0n.toString() : (robMoneyBig - cantidadPerdida).toString();
         
-        await conn.sendMessage(m.chat, {
-            text: `- _El robo a *@${targetUserJid.split('@')[0]}* falló._ 👮\n- _En tu huida perdiste *${cantidadPerdida}* monedas._ 🪙`,
+        await m.reply(`_¡El robo a *@${targetUserJid.split('@')[0]}* falló!_ 👮\n_En tu huida perdiste *${cantidadPerdida}* monedas._ 🪙`, {
             contextInfo: { mentionedJid: [m.sender, targetUserJid] }
         });
     }
