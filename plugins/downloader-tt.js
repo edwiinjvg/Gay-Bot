@@ -17,7 +17,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
 
     let info = data.result
 
-    let caption = `- _*Título:* ${info.title}_\n- _*Autor:* @${info.author.username || 'Desconocido'}_\n- _*Duración:* ${info.duration || 'N/D'}s_\n- _*Likes:* ${info.likes?.toLocaleString() || 0}_\n- _*Comentarios:* ${info.comments?.toLocaleString() || 0}_\n- _*Compartidos:* ${info.shares?.toLocaleString() || 0}_\n- _*Vistas:* ${info.views?.toLocaleString() || 0}_`.trim()
+    let caption = `- _*Título:*_ ${info.title}\n- _*Autor:* @${info.author.username || 'Desconocido'}_\n- _*Duración:* ${info.duration || 'N/D'}s_\n- _*Likes:* ${info.likes?.toLocaleString() || 0}_\n- _*Comentarios:* ${info.comments?.toLocaleString() || 0}_\n- _*Compartidos:* ${info.shares?.toLocaleString() || 0}_\n- _*Vistas:* ${info.views?.toLocaleString() || 0}_`.trim()
 
     await conn.sendMessage(m.chat, {
       video: { url: info.video },
