@@ -1,4 +1,10 @@
-const handler = async (m, { conn, args, usedPrefix, command }) => {
+Const handler = async (m, { conn, args, usedPrefix, command }) => {
+
+    const isGroup = m.chat.endsWith('@g.us');
+    if (!isGroup) {
+        return conn.reply(m.chat, '_¡Este comando solo puede ser utilizado en grupos!_', m);
+    }
+    
     const user = global.db.data.users[m.sender];
     const now = Date.now();
     const cooldown = 2 * 60 * 60 * 1000; // 2 horas
@@ -102,5 +108,6 @@ handler.help = ['rob', 'robar'];
 handler.tags = ['juegos', 'economía'];
 handler.command = ['rob', 'robar'];
 handler.register = true;
+handler.group = true; // Agregado para indicar que solo funciona en grupos
 
 export default handler;
