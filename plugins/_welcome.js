@@ -52,7 +52,7 @@ handler.before = async (m, { conn }) => {
             const welcomeText = chat.welcomeMessage ? 
                 chat.welcomeMessage.replace('@user', userMention).replace('@group', groupName) : 
                 `
-- _¡*Bienvenid@* a *${groupName}* *${userMention}*!_\n- _Ahora somos *${groupSize}*_.`.trim();
+- _¡*Bienvenido* a *${groupName}* *${userMention}*!_\n- _Ahora somos *${groupSize}*_.`.trim();
 
             await conn.sendMessage(m.chat, {
                 image: { url: profilePic },
