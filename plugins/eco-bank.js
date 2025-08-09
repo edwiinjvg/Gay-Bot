@@ -15,9 +15,12 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         const userBankMoney = BigInt(user.bankMoney || 0);
         const total = userMoney + userBankMoney;
 
-        const replyMessage = `_Saldo en el banco: *${userBankMoney}* monedas._ 🏦\n_Dinero total: *${total}* monedas._ 🪙\n\n_Usa *${usedPrefix}guardar <cantidad>* para guardar monedas._ 🪙\n_Usa *${usedPrefix}retirar <cantidad>* para retirar monedas._ 💸`;
+        const saldoMessage = `_Saldo en el banco: *${userBankMoney}* monedas._ 🏦\n_Dinero total: *${total}* monedas._ 🪙`;
         
-        await m.reply(replyMessage);
+        const instruccionesMessage = `_Usa *${usedPrefix}guardar <cantidad>* para guardar monedas._ 🪙\n_Usa *${usedPrefix}retirar <cantidad>* para retirar monedas._ 💸`;
+        
+        await m.reply(saldoMessage);
+        await m.reply(instruccionesMessage);
     }
 
     // --- LÓGICA DEL COMANDO .BANKG (.GUARDAR) ---
@@ -28,7 +31,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
             return m.reply("_Ingresa una cantidad válida para guardar._");
         }
 
-        const MIN_GUARDAR = 500;
+        const MIN_GUARDAR = 1000;
         if (cantidad < MIN_GUARDAR) {
             return m.reply(`_El monto mínimo para guardar dinero en el banco es de *${MIN_GUARDAR}* monedas._`);
         }
