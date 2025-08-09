@@ -59,11 +59,11 @@ let handler = async (m, { conn, args, command, usedPrefix }) => {
     let duration = videoInfo?.timestamp || 'Desconocida'
 
     let details = `
-- _Título:* ${title}_
-- _Duración:* ${duration}_
-- _Calidad:* ${quality}_
-- _Tipo:* ${isAudio ? 'Audio' : 'Video'}_
-- _Fuente:* YouTube_`.trim()
+- _*Título:* ${title}_
+- _*Duración:* ${duration}_
+- _*Calidad:* ${quality}_
+- _*Tipo:* ${isAudio ? 'Audio' : 'Video'}_
+- _*Fuente:* YouTube_`.trim()
 
     await conn.sendMessage(m.chat, {
       text: details,
@@ -99,8 +99,8 @@ let handler = async (m, { conn, args, command, usedPrefix }) => {
   }
 }
 
-handler.help = ['play', 'ytmp3', 'play2', 'ytmp4']
+handler.help = ['play', 'ytmp3', 'play2', 'ytmp4', 'yt', 'yt2']
 handler.tags = ['downloader']
-handler.command = ['play', 'play2', 'ytmp3', 'ytmp4']
+handler.command = ['play', 'play2', 'ytmp3', 'ytmp4', 'yt', 'yt2']
 
 export default handler
