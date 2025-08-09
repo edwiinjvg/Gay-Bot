@@ -8,12 +8,12 @@ let handler = async (m, { conn, args, usedPrefix, command, groupMetadata, isOwne
 
     // Verificar si el que usa el comando es admin
     if (!isAdmin) {
-        return m.reply('❌ Solo los admins pueden usar este comando.');
+        return m.reply('_¡Este comando solo puede ser utilizado por administradores!_');
     }
     
     // Verificar si el bot es admin
     if (!isBotAdmin) {
-        return m.reply('❌ Debo ser admin del grupo para usar este comando.');
+        return m.reply('_¡Necesito ser admin para poder ejecutar este comando!_');
     }
     
     // Identificar al usuario a degradar
@@ -24,10 +24,10 @@ let handler = async (m, { conn, args, usedPrefix, command, groupMetadata, isOwne
         user = m.quoted.sender;
     } else if (args[0]) {
         const number = args[0].replace(/[^0-9]/g, '');
-        if (!number) return m.reply('⚠️ Número inválido.');
+        if (!number) return m.reply('_Número inválido._');
         user = number + '@s.whatsapp.net';
     } else {
-        return m.reply('_Etiquete a un administrador para degradarlo._');
+        return m.reply('_Etiqueta o responde a un administrador para degradarlo._');
     }
     
     // Obtener info del usuario objetivo para verificar si es admin
@@ -37,14 +37,14 @@ let handler = async (m, { conn, args, usedPrefix, command, groupMetadata, isOwne
     const ownerGroup = groupMetadata.owner || m.chat.split`-`[0] + '@s.whatsapp.net';
     const ownerBot = global.owner[0][0] + '@s.whatsapp.net';
 
-    if (user === conn.user.jid) return m.reply(`😂 Calma no me puedo sacar yo mismo`);
-    if (user === ownerGroup) return m.reply(`Ese es el dueño del grupo, no lo degradaré`);
-    if (user === ownerBot) return m.reply(`Que piensas? ¿que degradaré al dueño del bot?`);
-    if (user === m.sender) return m.reply(`¿A ti mismo?`)
+    if (user === conn.user.jid) return m.reply(`_No me quitaré admin a mí mismo._ 😹`);
+    if (user === ownerGroup) return m.reply(`_No puedo quitarle admin al dueño del grupo._`);
+    if (user === ownerBot) return m.reply(`_No puedo quitarle admin a mi dueño._`);
+    if (user === m.sender) return m.reply(`_No puedes quitarte admin a ti mismo, imbécil._`)
 
     // Verificar si el usuario a degradar es admin
     if (!userTarget || (userTarget.admin !== 'admin' && userTarget.admin !== 'superadmin')) {
-        return m.reply('_El usuario mencionado no es administrador._');
+        return m.reply('_Este usuario no es administrador._');
     }
 
     try {
@@ -52,7 +52,7 @@ let handler = async (m, { conn, args, usedPrefix, command, groupMetadata, isOwne
         await m.reply('_¡Administrador degradado con éxito!_');
     } catch (e) {
         console.error(e);
-        await m.reply('_¡Necesito ser administrador del grupo para degradar a otros administradores!_');
+        await m.reply('_¡Necesito ser administrador del grupo para utilizar este comando!_');
     }
 };
 
