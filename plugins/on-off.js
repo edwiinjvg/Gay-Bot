@@ -56,11 +56,11 @@ _Usa *${usedPrefix}on <opción>* o *${usedPrefix}off <opción>* para cambiar el 
   }
 
   if (chat[variableName] === enable) {
-    return m.reply(`La opción *"${variableName}"* ya está ${enable ? 'activada' : 'desactivada'}.`);
+    return m.reply(`_La opción *"${variableName}"* ya está ${enable ? 'activada' : 'desactivada'}_.`);
   }
 
   chat[variableName] = enable;
-  m.reply(`Se ${enable ? 'activó' : 'desactivó'} la opción *"${variableName}"* para este grupo._`);
+  m.reply(`_Se ${enable ? 'activó' : 'desactivó'} la opción *"${variableName}"* para este grupo._`);
 }
 
 handler.command = ['on', 'off']
