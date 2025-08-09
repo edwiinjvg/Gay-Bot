@@ -1,7 +1,7 @@
 const handler = async (m, { conn, args, usedPrefix, command }) => {
     const user = global.db.data.users[m.sender];
     const now = Date.now();
-    const cooldown = 10 * 1000; // 2 horas
+    const cooldown = 2 * 60 * 60 * 1000; // 2 horas
 
     if (now - (user.lastRob || 0) < cooldown) {
         const tiempoRestante = cooldown - (now - user.lastRob);
@@ -54,8 +54,8 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
     user.lastRob = now; // El cooldown se activa antes del resultado del robo
 
-    // 70% de probabilidad de éxito
-    if (Math.random() < 0.7) {
+    // 80% de probabilidad de éxito
+    if (Math.random() < 0.8) {
         // --- LÓGICA DE ÉXITO ---
         const cantidadRobadaMonedas = BigInt(Math.floor(Math.random() * (1000 - 500 + 1)) + 500);
         const cantidadRobadaDiamantes = BigInt(Math.floor(Math.random() * (100 - 50 + 1)) + 50);
