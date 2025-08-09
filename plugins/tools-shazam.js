@@ -13,13 +13,13 @@ let handler = async (m, { conn, usedPrefix, command }) => {
   let { status, metadata } = await acr.identify(buffer)
   if (status.code !== 0) throw status.msg 
   let { title, artists, album, genres, release_date } = metadata.music[0]
-  let txt = '╭─⬣「 *Whatmusic Tool* 」⬣\n'
-      txt += `│  ≡◦ *Titulo ∙* ${title}${artists ? `\n│  ≡◦ *Artista ∙* ${artists.map(v => v.name).join(', ')}` : ''}`
-      txt += `${album ? `\n│  ≡◦ *Album ∙* ${album.name}` : ''}${genres ? `\n│  ≡◦ *Genero ∙* ${genres.map(v => v.name).join(', ')}` : ''}\n`
-      txt += `│  ≡◦ *Fecha de lanzamiento ∙* ${release_date}\n`
+      txt += `
+_ *Titulo:* ${title} ${artists ? `\n- _*Artista:* ${artists.map(v => v.name).join(', ')}` : ''}`
+      txt += `${album ? `\n- _*Album:* ${album.name}_` : ''}${genres ? `\n- _*Género:* ${genres.map(v => v.name).join(', ')}` : ''}_\n`
+      txt += `- _*Fecha de lanzamiento:* ${release_date}_\n`
       txt += `╰─⬣`
      conn.reply(m.chat, txt, m)
-  } else return conn.reply(m.chat, `Etiqueta un audio o video de poca duración con el comando *${usedPrefix + command}* para ver que música contiene.`, m)
+  } else return conn.reply(m.chat, `_Envia o responde a un audio o video de poca duración para ver que música contiene._`, m)
 }
 handler.help = ['whatmusic <audio/video>']
 handler.tags = ['tools']
