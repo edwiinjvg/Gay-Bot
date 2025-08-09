@@ -3,14 +3,7 @@ import fetch from 'node-fetch'
 let handler = async (m, { conn, args, usedPrefix, command }) => {
   const prompt = args.join(' ')
   if (!prompt) return m.reply(
-`✿ *Generador de Imágenes AI*
-
-Sigue las instrucciones:
-✎ *Uso correcto ›* ${usedPrefix + command} <texto para la imagen>
-✎ *Ejemplo ›* ${usedPrefix + command} gatito kawaii con fondo rosa
-
-Recuerda que la imagen puede tardar unos segundos en generarse.
-↺ Sé paciente mientras se crea tu imagen.`)
+`_Describe la imagen que quieres generar._`)
 
   try {
     // Reaccionar con reloj mientras genera
@@ -28,12 +21,7 @@ Recuerda que la imagen puede tardar unos segundos en generarse.
     await conn.sendMessage(m.chat, {
       image: buffer,
       caption: `
-✿ *¡Imagen Generada!*
-
-Detalles:
-✎ *Prompt ›* ${prompt}
-↺ Disfruta tu nueva creación.
-`.trim()
+_*Imagen generada de:* ${prompt}_`.trim()
     }, { quoted: m })
 
     // Reaccionar con check
