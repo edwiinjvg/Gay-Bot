@@ -1,17 +1,17 @@
 import fetch from 'node-fetch'
 
 const handler = async (m, { conn, text, args, usedPrefix, command }) => {
-  if (!text) return m.reply(`🚫 Ingresa el enlace de un post o reel de Instagram.\n\n📌 Ejemplo:\n${usedPrefix + command} https://www.instagram.com/reel/abc123/`)
+  if (!text) return m.reply(`_Ingresa el link de lo que quieres descargar junto con el comando._`)
 
   try {
-    m.react('🕒')
+    m.react('⌛')
     const res = await fetch(`https://api.dorratz.com/igdl?url=${encodeURIComponent(text)}`)
     const json = await res.json()
 
     if (!json.data || !json.data.length) throw 'No se pudo obtener el contenido'
 
     for (let media of json.data) {
-      await conn.sendFile(m.chat, media.url, 'igdl.mp4', `*Aquí tienes :D*`, m, false, {
+      await conn.sendFile(m.chat, media.url, 'igdl.mp4', `_Aquí tienes :D_`, m, false, {
         thumbnail: media.thumbnail ? await (await fetch(media.thumbnail)).buffer() : null,
         mimetype: 'video/mp4'
       })
@@ -19,7 +19,7 @@ const handler = async (m, { conn, text, args, usedPrefix, command }) => {
 
   } catch (e) {
     console.error(e)
-    m.reply('⚠️ Ocurrió un error al descargar el video.')
+    m.reply('_Ocurrió un error, inténtalo de nuevo._')
   }
 }
 
