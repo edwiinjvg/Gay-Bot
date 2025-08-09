@@ -187,7 +187,7 @@ chat.expired = 0
 global.db.data.chats[m.chat] = {
 isBanned: false,
 sAutoresponder: '',
-welcome: true,
+welcome: false,
 autolevelup: false,
 autoresponder: false,
 delete: false,
@@ -215,7 +215,7 @@ if (!('antiPrivate' in settings)) settings.antiPrivate = false
 if (!('autoread' in settings)) settings.autoread = false
 } else global.db.data.settings[this.user.jid] = {
 self: false,
-restrict: true,
+restrict: false,
 jadibotmd: true,
 antiPrivate: false,
 autoread: false,
