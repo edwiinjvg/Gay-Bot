@@ -27,7 +27,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
                 user.reg_date = user.reg_date || new Date().toLocaleDateString();
                 return m.reply(`_Detectamos que estabas registrado pero no tenías un ID. Se te ha asignado uno nuevo: *${new_reg_id}*_\n_Guárdalo, lo necesitarás para eliminar tu registro._`);
             }
-            return m.reply(`_Ya estás registrado como *${user.name}*, no puedes registrarte dos veces. Tu ID de registro es: *${user.reg_id}*_`);
+            return m.reply(`- _Ya estás registrado como *${user.name}*, no puedes registrarte dos veces._`);
         }
         
         const reg_id = Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -82,7 +82,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         }
         
         if (!input_id || input_id !== user.reg_id) {
-            return m.reply(`_ID de registro incorrecto o faltante._\n_Para eliminar tu registro necesitas poner tu ID seguido del comando *.unreg*._\n_Puedes ver tu ID usando el comando *.id*_`);
+            return m.reply(`- _ID de registro incorrecto o faltante._\n- _Para eliminar tu registro necesitas poner tu ID seguido del comando *.unreg*._\n- _Puedes ver tu ID utilizando el comando *.id*_`);
         }
         
         delete user.name;
