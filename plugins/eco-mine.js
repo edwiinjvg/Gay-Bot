@@ -11,7 +11,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
     // --- LÓGICA DEL COMANDO .MINE (.MINAR) ---
     if (command === 'mine' || command === 'minar') {
         if (!user.registered) {
-            return m.reply(`_No estás registrado. Usa el comando *${usedPrefix}reg* para registrarte._`);
+            return m.reply(`_¡Necesitas estar registrado para utilizar este comando!_`);
         }
 
         const now = Date.now();
@@ -74,7 +74,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         }
 
         if (level_up) {
-            m.reply(`_Minaste y encontraste *${minedXP} XP*._ ✨⛏️\n\n🎉 ¡Felicitaciones, subiste al nivel *${user.level}*! 🎉`);
+            m.reply(`_Minaste y encontraste *${minedXP} XP*._ ✨⛏️\n\n_¡Felicidades, subiste al nivel *${user.level}*!_ 🎉`);
         } else {
             m.reply(`_Minaste y encontraste *${minedXP} XP*._ ✨⛏️`);
         }
