@@ -4,7 +4,10 @@
 // La clave es el JID de la persona que propone
 const pendingProposals = new Map();
 
-let handler = async (m, { conn, usedPrefix, command, args, groupMetadata, isGroup }) => {
+let handler = async (m, { conn, usedPrefix, command, args, groupMetadata }) => {
+
+    // Verificación más confiable para saber si es un grupo
+    const isGroup = m.chat.endsWith('@g.us');
 
     if (!isGroup) {
         return m.reply('_Este comando solo puede ser utilizado en grupos._');
