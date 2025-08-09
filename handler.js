@@ -5,6 +5,7 @@ import path, { join } from 'path'
 import { unwatchFile, watchFile } from 'fs'
 import chalk from 'chalk'
 import fetch from 'node-fetch'
+import { xpRange, findLevel, canLevelUp } from './lib/levelling.js' // <-- Importación del archivo levelling.js
 
 const { proto } = (await import('@whiskeysockets/baileys')).default
 const isNumber = x => typeof x === 'number' && !isNaN(x)
@@ -12,6 +13,18 @@ const delay = ms => isNumber(ms) && new Promise(resolve => setTimeout(function (
 clearTimeout(this)
 resolve()
 }, ms))
+
+// --- VARIABLES PARA EL SISTEMA DE ROLES ---
+const XP_PER_COMMAND = 50; // La cantidad de XP que daremos por cada comando
+const ROLES = {
+    5: "Penelover 💜",
+    10: "Furry 🐾",
+    25: "Femboy 👯‍♂️",
+    50: "Gay 🏳️‍🌈",
+    75: "Trans 🏳️‍⚧️",
+    100: "Género fluido 👰🏻‍♂️",
+};
+// --- FIN DE LAS VARIABLES ---
 
 export async function handler(chatUpdate) {
 this.msgqueque = this.msgqueque || []
@@ -257,7 +270,7 @@ await delay(time)
 }, time)
 }
 
-m.exp += Math.ceil(Math.random() * 10)
+// m.exp += Math.ceil(Math.random() * 10)  <-- Esta línea ha sido eliminada para evitar conflictos
 
 async function getLidFromJid(id, conn) {
 if (id.endsWith('@lid')) return id
@@ -278,8 +291,7 @@ const isBotAdmin = !!bot?.admin
 
 const ___dirname = path.join(path.dirname(fileURLToPath(import.meta.url)), './plugins')
 
-// Mover la declaración de usedPrefix aquí para que siempre esté disponible en el ámbito del handler
-let usedPrefix = ''; // Inicializarlo aquí
+let usedPrefix = ''; 
 
 for (let name in global.plugins) {
 let plugin = global.plugins[name]
@@ -339,7 +351,7 @@ continue
 }
 if (typeof plugin !== 'function')
 continue
-if ((usedPrefix = (match[0] || '')[0])) { // usedPrefix ahora se asigna, no se declara aquí
+if ((usedPrefix = (match[0] || '')[0])) { 
 let noPrefix = m.text.replace(usedPrefix, '')
 let [command, ...args] = noPrefix.trim().split` `.filter(v => v)
 args = args || []
@@ -475,8 +487,6 @@ text = text.replace(new RegExp(key, 'g'), 'Administrador')
 m.reply(text)
 }
 } finally {
-// El bloque finally siempre se ejecuta, incluso si usedPrefix no ha sido definido
-// Asegúrate de que cualquier uso de usedPrefix aquí sea seguro o maneje el caso en que no exista.
 if (typeof plugin.after === 'function') {
 try {
 await plugin.after.call(this, m, extra)
@@ -486,16 +496,12 @@ console.error(e)
 if (m.coin)
 conn.reply(m.chat, `_ Gastaste *${+m.coin}* *${moneda}*_`, m)
 }
-break // Este break debería estar fuera del finally si quieres que el loop siga
-// O sea, si un plugin lanza un error, break termina el loop, si no, el loop continua.
-// Si el break está dentro del if ((usedPrefix = (match[0] || '')[0])), entonces solo se rompe si se encuentra un comando.
-// Considerando que el error se da en el finally, la lógica parece ser que el loop de plugins no siempre se rompe.
-}} // Este cierre de llave pertenece al for...in global.plugins
+break
+}} 
 
 } catch (e) {
 console.error(e)
 } finally {
-// usedPrefix está disponible aquí porque se declaró más arriba en el scope del handler
 if (opts['queque'] && m.text) {
 const quequeIndex = this.msgqueque.indexOf(m.id || m.key.id)
 if (quequeIndex !== -1)
@@ -509,7 +515,31 @@ let cancellazzione = m.key.participant
 await conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: cancellazzione }})
 }
 if (m.sender && (user = global.db.data.users[m.sender])) {
-user.exp += m.exp
+// Agrega XP por cada comando
+let oldLevel = user.level;
+user.exp += XP_PER_COMMAND;
+
+// Usa la función canLevelUp para verificar si subió de nivel
+if (canLevelUp(oldLevel, user.exp)) {
+    // Si sube de nivel, usa findLevel para obtener el nuevo nivel
+    let newLevel = findLevel(user.exp);
+    user.level = newLevel;
+
+    // Asigna el nuevo rol si el nivel coincide
+    let newRole = ROLES[newLevel];
+    if (newRole) {
+        user.role = newRole;
+    }
+    
+    // Envía el mensaje de felicitación si la función está activada en el grupo
+    if (m.isGroup && global.db.data.chats[m.chat].autolevelup) {
+        let text = `_¡Felicidades, *@${m.sender.split('@')[0]}* subiste al nivel *${newLevel}*!_ 🥳`;
+        if (newRole) {
+            text += `\n_Alcanzaste el rol de *${newRole}*._`;
+        }
+        await conn.reply(m.chat, text, m, { mentions: [m.sender] });
+    }
+}
 user.coin -= m.coin * 1
 }
 
@@ -543,10 +573,7 @@ stat.lastSuccess = now
 try {
 if (!opts['noprint']) await (await import(`./lib/print.js`)).default(m, this)
 } catch (e) { 
-console.log(m, m.quoted, e)} // <<< Esta es la línea 338, aquí 'usedPrefix' NO se usa directamente,
-                                // pero si 'print.js' o 'm' (con su propiedad 'usedPrefix')
-                                // la causan, entonces el problema es en el scope de esas.
-                                // La solución de mover 'let usedPrefix' resolverá esto.
+console.log(m, m.quoted, e)} 
 let settingsREAD = global.db.data.settings[this.user.jid] || {}  
 if (opts['autoread']) await this.readMessages([m.key])
 
@@ -557,8 +584,7 @@ if (!m.fromMe) return this.sendMessage(m.chat, { react: { text: emot, key: m.key
 function pickRandom(list) { return list[Math.floor(Math.random() * list.length)]}
 }}
 
-global.dfail = (type, m, conn, usedPrefix, command) => { // 'conn' es el tercer argumento
-
+global.dfail = (type, m, conn, usedPrefix, command) => { 
     let edadaleatoria = ['10', '28', '20', '40', '18', '21', '15', '11', '9', '17', '25'].getRandom()
     let user2 = m.pushName || 'Anónimo'
     let verifyaleatorio = ['registrar', 'reg', 'verificar', 'verify', 'register'].getRandom()
