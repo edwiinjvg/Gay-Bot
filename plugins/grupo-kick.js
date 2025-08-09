@@ -1,6 +1,6 @@
 var handler = async (m, { conn, args }) => {
     // Verificación de grupo
-    if (!m.isGroup) return m.reply('🔒 Este comando solo se usa en grupos.');
+    if (!m.isGroup) return m.reply('_¡Este comando solo puede ser utilizado en grupos!_');
 
     const groupMetadata = await conn.groupMetadata(m.chat);
 
@@ -10,7 +10,7 @@ var handler = async (m, { conn, args }) => {
 
     // Verificación de admin
     if (!isUserAdmin) {
-        return m.reply('❌ Solo los admins pueden usar este comando.');
+        return m.reply('_¡Solo administradores pueden utilizar este comando._');
     }
 
     // Identificación del usuario a expulsar
@@ -22,10 +22,10 @@ var handler = async (m, { conn, args }) => {
         memberToRemoveId = m.quoted.sender;
     } else if (args[0]) {
         const number = args[0].replace(/[^0-9]/g, '');
-        if (!number) return m.reply('⚠️ Número inválido.');
+        if (!number) return m.reply('_Número inválido._');
         memberToRemoveId = number + '@s.whatsapp.net';
     } else {
-        return m.reply('🚫 Mencioná, respondé o escribí un número para expulsar.');
+        return m.reply('_Menciona, responde o escribe un número para expulsar._');
     }
 
     // Protecciones
@@ -47,7 +47,7 @@ var handler = async (m, { conn, args }) => {
         await conn.groupParticipantsUpdate(m.chat, [memberToRemoveId], 'remove');
         await conn.sendMessage(m.chat, { text: '_¡Un imbécil fue eliminado con éxito!_ 🔥' });
     } catch (e) {
-        await m.reply(`No pude expulsar al usuario. Puede que no tenga permisos.`);
+        await m.reply(`_No pude expulsar al usuario. Puede que no tenga permisos._`);
     }
 };
 
