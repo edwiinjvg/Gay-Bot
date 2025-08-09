@@ -26,12 +26,11 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         return m.reply("_No puedes robarte a ti mismo, gilipollas._");
     }
 
-    const targetUser = global.db.data.users[targetUserJid]; // No usar || {} para evitar el error
+    const targetUser = global.db.data.users[targetUserJid];
     
-    // Nueva verificación más segura para ver si el usuario existe y está registrado
     if (!targetUser || !targetUser.registered) {
-        return m.reply(`_*@${targetUserJid.split('@')[0]}* no está registrado, no puedes robarle._`, {
-            contextInfo: { mentionedJid: [targetUserJid] }
+        return m.reply(`_*@${String(targetUserJid).split('@')[0]}* no está registrado, no puedes robarle._`, {
+            contextInfo: { mentionedJid: [String(targetUserJid)] }
         });
     }
 
@@ -45,15 +44,15 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
     if (targetMoneyBig < MIN_MONEY && targetDiamondsBig < MIN_DIAMONDS) {
         user.lastRob = now;
-        return m.reply(`_*@${targetUserJid.split('@')[0]}* no tiene suficientes monedas ni diamantes para robarle, es un pobretón._ 😹`, {
-            contextInfo: { mentionedJid: [targetUserJid] }
+        return m.reply(`_*@${String(targetUserJid).split('@')[0]}* no tiene suficientes monedas ni diamantes para robarle, es un pobretón._ 😹`, {
+            contextInfo: { mentionedJid: [String(targetUserJid)] }
         });
     }
 
     user.lastRob = now; // El cooldown se activa antes del resultado del robo
 
     // 70% de probabilidad de éxito
-    if (Math.random() < 0.7) {
+    if (Math.random() < 0.8) {
         // --- LÓGICA DE ÉXITO ---
         const cantidadRobadaMonedas = BigInt(Math.floor(Math.random() * (1000 - 500 + 1)) + 500);
         const cantidadRobadaDiamantes = BigInt(Math.floor(Math.random() * (100 - 50 + 1)) + 50);
@@ -76,18 +75,18 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         
         user.exp = (user.exp || 0) + 25;
 
-        await m.reply(`_¡Robo exitoso!_ 😈\n_Le robaste a *@${targetUserJid.split('@')[0]}* ${mensajeRobado.join(' y ')}._`, {
-            contextInfo: { mentionedJid: [m.sender, targetUserJid] }
+        await m.reply(`_¡Robo exitoso!_ 😈\n_Le robaste a *@${String(targetUserJid).split('@')[0]}* ${mensajeRobado.join(' y ')}._`, {
+            contextInfo: { mentionedJid: [String(m.sender), String(targetUserJid)] }
         });
 
     } else {
         // --- LÓGICA DE FRACASO ---
-        const cantidadPerdida = BigInt(Math.floor(Math.random() * (700 - 400 + 1)) + 400);
+        const cantidadPerdida = BigInt(Math.floor(Math.random() * (900 - 400 + 1)) + 400);
         
         user.money = (robMoneyBig - cantidadPerdida < 0n) ? 0n.toString() : (robMoneyBig - cantidadPerdida).toString();
         
-        await m.reply(`_El robo a *@${targetUserJid.split('@')[0]}* falló._ 👮\n_En tu huida perdiste *${cantidadPerdida}* monedas._ 🪙`, {
-            contextInfo: { mentionedJid: [m.sender, targetUserJid] }
+        await m.reply(`_El robo a *@${String(targetUserJid).split('@')[0]}* falló._ 👮\n_En tu huida perdiste *${cantidadPerdida}* monedas._ 🪙`, {
+            contextInfo: { mentionedJid: [String(m.sender), String(targetUserJid)] }
         });
     }
 };
