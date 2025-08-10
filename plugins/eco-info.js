@@ -20,7 +20,7 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
         let registrationId = targetUserData.reg_id || 'N/A';
         let name = targetUserData.name || `@${targetUserJid.split('@')[0]}`;
         let age = targetUserData.age || 'N/A';
-        let money = targetUserData.money || 0;
+        let money = targetUserData.coin || 0; // Usamos 'coin' en lugar de 'money'
         let diamonds = targetUserData.diamonds || 0;
         let role = targetUserData.role || 'Hetere 😴';
         
@@ -39,7 +39,8 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
             mentions.push(partnerJid);
         }
         
-        user.exp = (user.exp || 0) + 5;
+        // Eliminamos esta línea ya que XP se maneja en handler.js
+        // user.exp = (user.exp || 0) + 5; 
 
         let profilePicUrl;
         try {
@@ -72,7 +73,7 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
         let targetUserJid = m.mentionedJid[0] || m.quoted?.sender || m.sender;
         let targetUserData = global.db.data.users[targetUserJid] || {};
 
-        const money = targetUserData.money || 0;
+        const money = targetUserData.coin || 0; // Usamos 'coin' en lugar de 'money'
         const diamonds = targetUserData.diamonds || 0;
         const xp = targetUserData.exp || 0;
         const name = targetUserData.name || `@${targetUserJid.split('@')[0]}`;
