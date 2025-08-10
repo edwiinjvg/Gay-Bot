@@ -133,4 +133,4 @@ handler.tags = ['economía'];
 handler.command = ['slot', 'casino', 'apuesta', 'apostar', 'slot1', 'casino1', 'apuesta1', 'apostar1', 'slot2', 'casino2', 'apuesta2'];
 handler.register = true;
 
-module.exports = handler;
+export default handler;
