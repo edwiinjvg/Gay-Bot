@@ -14,7 +14,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         const horas = Math.floor(tiempoRestante / (60 * 60 * 1000));
         const minutos = Math.floor((tiempoRestante % (60 * 60 * 1000)) / (60 * 1000));
         const segundos = Math.floor((tiempoRestante % (60 * 1000)) / 1000);
-        return conn.reply(m.chat, `_¡Acabaste de robar!_\n_Puedes volver a robar en ${horas}h ${minutos}m ${segundos}s._ ⏰`, m);
+        return conn.reply(m.chat, `_¡Acabaste de robar!_ ⏰\n_Puedes volver a robar en ${horas}h ${minutos}m ${segundos}s._`, m);
     }
 
     let targetUserJid = null;
@@ -34,7 +34,6 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
     const targetUser = global.db.data.users[targetUserJid];
     
-    // Verificación segura para ver si el usuario existe y está registrado
     if (!targetUser || !targetUser.registered) {
         const mentioned = targetUserJid && typeof targetUserJid === 'string' ? [targetUserJid] : [];
         return conn.reply(m.chat, `_*@${String(targetUserJid).split('@')[0]}* no está registrado, no puedes robarle._`, m, {
@@ -42,15 +41,16 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         });
     }
 
-    // --- USANDO BIGINT PARA CÁLCULOS EXACTOS ---
-    const targetMoneyBig = BigInt(targetUser.money || 0);
-    const targetDiamondsBig = BigInt(targetUser.diamonds || 0);
-    const robMoneyBig = BigInt(user.money || 0);
+    // Usando números estándar de JavaScript para la consistencia
+    const targetCoin = targetUser.coin || 0;
+    const targetDiamond = targetUser.diamond || 0;
+    const userCoin = user.coin || 0;
+    const userDiamond = user.diamond || 0;
 
-    const MIN_MONEY = 500n;
-    const MIN_DIAMONDS = 50n;
+    const MIN_COIN = 500;
+    const MIN_DIAMONDS = 50;
 
-    if (targetMoneyBig < MIN_MONEY && targetDiamondsBig < MIN_DIAMONDS) {
+    if (targetCoin < MIN_COIN && targetDiamond < MIN_DIAMONDS) {
         user.lastRob = now;
         const mentioned = targetUserJid && typeof targetUserJid === 'string' ? [targetUserJid] : [];
         return conn.reply(m.chat, `_*@${String(targetUserJid).split('@')[0]}* no tiene suficientes monedas ni diamantes para robarle, es un pobretón._ 😹`, m, {
@@ -60,31 +60,27 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
     user.lastRob = now; // El cooldown se activa antes del resultado del robo
 
-    // 80% de probabilidad de éxito
     if (Math.random() < 0.8) {
         // --- LÓGICA DE ÉXITO ---
-        const cantidadRobadaMonedas = BigInt(Math.floor(Math.random() * (1000 - 500 + 1)) + 500);
-        const cantidadRobadaDiamantes = BigInt(Math.floor(Math.random() * (100 - 50 + 1)) + 50);
-        
-        const robDiamondsBig = BigInt(user.diamonds || 0);
+        const cantidadRobadaMonedas = Math.floor(Math.random() * (1000 - 500 + 1)) + 500;
+        const cantidadRobadaDiamantes = Math.floor(Math.random() * (100 - 50 + 1)) + 50;
         
         let mensajeRobado = [];
 
-        if (targetMoneyBig >= MIN_MONEY) {
-            user.money = (robMoneyBig + cantidadRobadaMonedas).toString();
-            targetUser.money = (targetMoneyBig - cantidadRobadaMonedas).toString();
+        if (targetCoin >= MIN_COIN) {
+            user.coin = userCoin + cantidadRobadaMonedas;
+            targetUser.coin = Math.max(0, targetCoin - cantidadRobadaMonedas);
             mensajeRobado.push(`*${cantidadRobadaMonedas}* monedas 🪙`);
         }
 
-        if (targetDiamondsBig >= MIN_DIAMONDS) {
-            user.diamonds = (robDiamondsBig + cantidadRobadaDiamantes).toString();
-            targetUser.diamonds = (targetDiamondsBig - cantidadRobadaDiamantes).toString();
+        if (targetDiamond >= MIN_DIAMONDS) {
+            user.diamond = userDiamond + cantidadRobadaDiamantes;
+            targetUser.diamond = Math.max(0, targetDiamond - cantidadRobadaDiamantes);
             mensajeRobado.push(`*${cantidadRobadaDiamantes}* diamantes 💎`);
         }
         
         user.exp = (user.exp || 0) + 25;
 
-        // Construcción segura del array de menciones
         const mentioned = [m.sender, targetUserJid].filter(jid => jid && typeof jid === 'string');
         await conn.reply(m.chat, `_¡Robo exitoso!_ 😈\n_Le robaste a *@${String(targetUserJid).split('@')[0]}* ${mensajeRobado.join(' y ')}._`, m, {
             mentions: mentioned
@@ -92,11 +88,10 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
     } else {
         // --- LÓGICA DE FRACASO ---
-        const cantidadPerdida = BigInt(Math.floor(Math.random() * (800 - 400 + 1)) + 400);
+        const cantidadPerdida = Math.floor(Math.random() * (800 - 400 + 1)) + 400;
         
-        user.money = (robMoneyBig - cantidadPerdida < 0n) ? 0n.toString() : (robMoneyBig - cantidadPerdida).toString();
+        user.coin = Math.max(0, userCoin - cantidadPerdida);
         
-        // Construcción segura del array de menciones
         const mentioned = [m.sender, targetUserJid].filter(jid => jid && typeof jid === 'string');
         await conn.reply(m.chat, `- _El robo a *@${String(targetUserJid).split('@')[0]}* falló._ 👮\n- _En tu huida perdiste *${cantidadPerdida}* monedas._ 🪙`, m, {
             mentions: mentioned
@@ -108,6 +103,6 @@ handler.help = ['rob', 'robar'];
 handler.tags = ['juegos', 'economía'];
 handler.command = ['rob', 'robar'];
 handler.register = true;
-handler.group = true; // Agregado para indicar que solo funciona en grupos
+handler.group = true;
 
 export default handler;
