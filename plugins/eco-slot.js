@@ -4,18 +4,15 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
     }
     const user = global.db.data.users[m.sender];
     
-    // --- VERIFICACIÓN DE REGISTRO PARA TODOS LOS COMANDOS ---
     if (!user.registered) {
         return m.reply(`_No estás registrado. Usa el comando *${usedPrefix}reg* para registrarte._`);
     }
 
-    // --- LÓGICA DEL COMANDO .SLOT (.CASINO) ---
     if (command === 'slot' || command === 'casino' || command === 'apuesta' || command === 'apostar') {
         const replyMessage = `_Usa *${usedPrefix}slot1 <cantidad>* para apostar monedas._ 🪙\n_Usa *${usedPrefix}slot2 <cantidad>* para apostar diamantes._ 💎`;
         return m.reply(replyMessage);
     }
     
-    // --- LÓGICA DEL COMANDO .SLOT1 (APUESTA CON MONEDAS) ---
     else if (command === 'slot1' || command === 'casino1' || command === 'apuesta1' || command === 'apostar1') {
         const apuesta = Number(args[0]);
 
@@ -27,14 +24,13 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
             return m.reply(`_La apuesta mínima es de *250* monedas._`);
         }
         
-        const apuestaBig = BigInt(apuesta);
-        const userMoney = BigInt(user.money || 0);
+        const userCoin = user.coin || 0;
 
-        if (userMoney < apuestaBig) {
-            return m.reply(`_No tienes suficientes monedas para apostar *${apuestaBig}*._ 🪙\n\n_Tu saldo actual es de: *${userMoney}* monedas._ 💰`);
+        if (userCoin < apuesta) {
+            return m.reply(`_No tienes suficientes monedas para apostar *${apuesta}*._ 🪙\n\n_Tu saldo actual es de: *${userCoin}* monedas._ 💰`);
         }
 
-        user.money = (userMoney - apuestaBig).toString();
+        user.coin = userCoin - apuesta;
 
         const emojis = ['🍒', '🍑', '🍆'];
         let resultado = [];
@@ -58,23 +54,22 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 `;
 
         if (gana) {
-            const premio = apuestaBig * 2n; 
-            user.money = (BigInt(user.money) + premio).toString();
+            const premio = apuesta * 2; 
+            user.coin = user.coin + premio;
             textoRespuesta += `
 *¡Ganaste!* 😺\n_Has ganado *${premio}* monedas._ 🪙`;
         } else {
             textoRespuesta += `
-*¡Perdiste!* 😿\n_Has perdido *${apuestaBig}* monedas._ 🪙`;
+*¡Perdiste!* 😿\n_Has perdido *${apuesta}* monedas._ 🪙`;
         }
 
         user.exp = (user.exp || 0) + 15;
         
-        textoRespuesta += `\n_Saldo actual: ${user.money} monedas_ 💰`;
+        textoRespuesta += `\n_Saldo actual: ${user.coin} monedas_ 💰`;
 
         await m.reply(textoRespuesta);
     }
 
-    // --- LÓGICA DEL COMANDO .SLOT2 (APUESTA CON DIAMANTES) ---
     else if (command === 'slot2' || command === 'casino2' || command === 'apuesta2') {
         const apuesta = Number(args[0]);
 
@@ -86,14 +81,13 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
             return m.reply(`_La apuesta mínima es de *25* diamantes._`);
         }
         
-        const apuestaBig = BigInt(apuesta);
-        const userDiamonds = BigInt(user.diamonds || 0);
+        const userDiamond = user.diamond || 0;
         
-        if (userDiamonds < apuestaBig) {
-            return m.reply(`_No tienes suficientes diamantes para apostar *${apuestaBig}*._ 💎\n\n_Tu saldo actual es de: *${userDiamonds}* diamantes._ 💎`);
+        if (userDiamond < apuesta) {
+            return m.reply(`_No tienes suficientes diamantes para apostar *${apuesta}*._ 💎\n\n_Tu saldo actual es de: *${userDiamond}* diamantes._ 💎`);
         }
 
-        user.diamonds = (userDiamonds - apuestaBig).toString();
+        user.diamond = userDiamond - apuesta;
 
         const emojis = ['🍒', '🍑', '🍆'];
         let resultado = [];
@@ -117,18 +111,18 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 `;
 
         if (gana) {
-            const premio = apuestaBig * 2n; 
-            user.diamonds = (BigInt(user.diamonds) + premio).toString();
+            const premio = apuesta * 2; 
+            user.diamond = user.diamond + premio;
             textoRespuesta += `
 *¡Ganaste!* 😺\n_Has ganado *${premio}* diamantes._ 💎`;
         } else {
             textoRespuesta += `
-*¡Perdiste!* 😿\n_Has perdido *${apuestaBig}* diamantes._ 💎`;
+*¡Perdiste!* 😿\n_Has perdido *${apuesta}* diamantes._ 💎`;
         }
 
         user.exp = (user.exp || 0) + 15;
         
-        textoRespuesta += `\n_Saldo actual: *${user.diamonds}* diamantes_ 💎`;
+        textoRespuesta += `\n_Saldo actual: *${user.diamond}* diamantes_ 💎`;
 
         await m.reply(textoRespuesta);
     }
@@ -136,6 +130,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
 handler.help = ['slot', 'slot1 <cantidad>', 'slot2 <cantidad>'];
 handler.tags = ['economía'];
-handler.command = ['slot', 'casino', 'apuesta', 'apostar', 'slot1', 'casino1', 'apuesta1', 'slot2', 'casino2', 'apuesta1', 'apostar2'];
+handler.command = ['slot', 'casino', 'apuesta', 'apostar', 'slot1', 'casino1', 'apuesta1', 'apostar1', 'slot2', 'casino2', 'apuesta2'];
+handler.register = true;
 
-export default handler;
+module.exports = handler;
