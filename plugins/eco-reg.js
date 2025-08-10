@@ -1,13 +1,15 @@
 const defaultImage = 'https://telegra.ph/file/5a5d20739c9413247c1a8.png';
 
 const handler = async (m, { conn, args, usedPrefix, command }) => {
-    // Inicializar el objeto de usuario si no existe
     if (!global.db.data.users[m.sender]) {
         global.db.data.users[m.sender] = {};
     }
     const user = global.db.data.users[m.sender];
     
-    // --- LÓGICA DEL COMANDO .REG (.REGISTER) ---
+    if (!user.registered && (command !== 'reg' && command !== 'register')) {
+        return m.reply(`_No estás registrado. Usa el comando *${usedPrefix}reg* para registrarte._`);
+    }
+
     if (command === 'reg' || command === 'register') {
         if (args.length < 2) {
             return m.reply(`_Para registrarte, usa: ${usedPrefix}reg <nombre> <edad>_`);
@@ -49,9 +51,9 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
         let bonusMessage = '';
         if (!user.bonusReceived) {
-            user.money = (user.money || 0) + 2500;
-            user.diamonds = (user.diamonds || 0) + 250;
-            user.bonusReceived = true; // Variable que no se borrará al desregistrar
+            user.coin = (user.coin || 0) + 2500; // CORREGIDO: 'money' a 'coin'
+            user.diamond = (user.diamond || 0) + 250; // CORREGIDO: 'diamonds' a 'diamond'
+            user.bonusReceived = true;
             bonusMessage = `_¡Registro exitoso!_ 🎉\n_Recibiste una bonificación de *2500* monedas 🪙 y *250* diamantes._ 💎`;
         } else {
             bonusMessage = `_¡Bienvenido de nuevo, *${name}*!_ 🎉\n_Te has registrado exitosamente._`;
@@ -61,19 +63,16 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 - _*CERTIFICADO DE REGISTRO*_\n\n- _*Nombre:* ${name}_\n- _*Edad:* ${age}_\n- _*ID de Registro:* ${reg_id}_\n- _*Fecha de Registro:* ${reg_date}_
 `.trim();
         
-        // Enviar el certificado con la foto de perfil
         await conn.sendMessage(m.chat, {
             image: { url: profilePic },
             caption: certificate,
             contextInfo: { mentionedJid: [m.sender] }
         });
         
-        // Enviar el mensaje de la bonificación aparte
         await m.reply(bonusMessage);
 
     } 
     
-    // --- LÓGICA DEL COMANDO .UNREG (.UNREGISTER) ---
     else if (command === 'unreg' || command === 'unregister') {
         const input_id = args[0] ? args[0].toUpperCase() : '';
         
@@ -90,12 +89,10 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         delete user.registered;
         delete user.reg_id;
         delete user.reg_date;
-        // Se deja user.bonusReceived para que no se entregue la bonificación de nuevo
         
         return m.reply("_Eliminaste tu registro con éxito. Puedes volver a registrarte con el comando *.reg*._");
     }
 
-    // --- LÓGICA DEL COMANDO .MYID (.ID) ---
     else if (command === 'myid' || command === 'id') {
         if (!user.registered) {
             return m.reply("_No estás registrado. Usa el comando *.reg* para obtener tu ID._");
