@@ -1,5 +1,30 @@
-// Usamos 'require' para importar el archivo JSON, compatible con versiones antiguas de Node.js
-const trabajo = require('../json/work.json');
+const trabajo = [
+    "Trabajaste como diseñador de memes y te dieron",
+    "Le arreglaste el WiFi a una doña y te pagó",
+    "Hiciste delivery en tu bici y te ganaste",
+    "Vendiste empanadas en la esquina y conseguiste",
+    "Ayudaste a un ciego a cruzar la calle y te dio",
+    "Te disfrazaste de bot y entretuviste a la mara, te soltaron",
+    "Chambeaste como DJ en una fiesta y te pagaron",
+    "Le limpiaste el celular a un señor con el dedo y te dio",
+    "Trabajaste de cuidador de gatos y te dieron",
+    "Ayudaste a hackear una tarea y el alumno te soltó",
+    "Vendiste stickers en el grupo y ganaste",
+    "Hiciste freelance programando bots y te pagaron",
+    "Le hiciste la intro a un youtuber y te dio",
+    "Fuiste al mercado a ayudar con las bolsas y te dieron",
+    "Actuaste como NPC en una app de IA y te pagaron",
+    "Te disfrazaste de Pikachu en la plaza y te tiraron",
+    "Fuiste plomero por un día y cobraste",
+    "Hiciste pasteles con tu abuela y te tocó",
+    "Le arreglaste el WhatsApp a una señora y te soltó",
+    "Hiciste memes virales y cobraste por la fama",
+    "Reparaste consolas retro y ganaste",
+    "Enseñaste a un niño a jugar Minecraft y te dieron",
+    "Fuiste jurado en un concurso de baile y ganaste",
+    "Trabajaste en un bar sirviendo jugos y te pagaron",
+    "Vendiste imágenes AI bien mamalonas y te soltaron",
+];
 
 const pickRandom = (list) => {
     return list[Math.floor(list.length * Math.random())];
@@ -28,7 +53,7 @@ const handler = async (m, { conn, usedPrefix, command }) => {
     
     const earnedMoney = Math.floor(Math.random() * (maxMoney - minMoney + 1)) + minMoney;
     
-    user.coin = (user.coin || 0) + earnedMoney;
+    user.coin = (user.coin || 0) + earnedMoney; // CORREGIDO: Usando 'coin' y número
     user.lastWork = now;
     
     user.exp = (user.exp || 0) + 10;
