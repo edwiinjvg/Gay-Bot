@@ -1,8 +1,7 @@
-// URL de imagen por defecto para el comando de minería
-const MINE_IMAGE_URL = 'https://telegra.ph/file/a7e376722d56c0717208d.png';
+// URL de imagen por defecto para el comando de minería (ya no se usa)
+// const MINE_IMAGE_URL = 'https://telegra.ph/file/a7e376722d56c0717208d.png';
 
 const handler = async (m, { conn, args, usedPrefix, command }) => {
-    // Inicializar el objeto de usuario si no existe
     if (!global.db.data.users[m.sender]) {
         global.db.data.users[m.sender] = {};
     }
@@ -26,20 +25,15 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
         const recompensa = Math.floor(Math.random() * (500 - 200 + 1)) + 200;
         
-        const recompensaBig = BigInt(recompensa);
-        const userMoney = BigInt(user.money || 0);
-        user.money = (userMoney + recompensaBig).toString();
+        user.coin = (user.coin || 0) + recompensa;
         user.lastMine = now;
         
         user.exp = (user.exp || 0) + 15;
         
-        const caption = `_¡Minaste y encontraste *${recompensa}* monedas!_ ⛏️\n_Tu saldo actual es de *${user.money}* monedas._ 💰`;
+        const caption = `_¡Minaste y encontraste *${recompensa}* monedas!_ ⛏️\n_Tu saldo actual es de *${user.coin}* monedas._ 💰`;
 
-        await conn.sendMessage(m.chat, {
-            image: { url: MINE_IMAGE_URL },
-            caption: caption,
-            contextInfo: { mentionedJid: [m.sender] }
-        });
+        // Ahora solo responde con texto, sin intentar enviar la imagen.
+        await m.reply(caption);
     }
 
     // --- LÓGICA DEL COMANDO .MINEXP (.MINAR2) ---
@@ -54,7 +48,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
             const tiempoRestante = cooldown - (now - user.lastMineXP);
             const horas = Math.floor(tiempoRestante / (60 * 60 * 1000));
             const minutos = Math.floor((tiempoRestante % (60 * 60 * 1000)) / (60 * 1000));
-            const segundos = Math.floor((remainingMilliseconds % (1000 * 60)) / 1000);
+            const segundos = Math.floor((tiempoRestante % (60 * 1000)) / 1000);
             return m.reply(`_¡Acabaste de minar!_ ⛏️\n_Puedes volver a minar *XP* en ${horas}h ${minutos}m y ${segundos}s._ ⏰`);
         }
 
@@ -62,22 +56,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         user.exp = (user.exp || 0) + minedXP;
         user.lastMineXP = now;
 
-        const xp_before_level_up = user.exp_to_level_up || 1000;
-        const level_before = user.level || 0;
-        let level_up = false;
-
-        while (user.exp >= xp_before_level_up) {
-            user.level = level_before + 1;
-            user.exp -= xp_before_level_up;
-            user.exp_to_level_up = user.level * 1000;
-            level_up = true;
-        }
-
-        if (level_up) {
-            m.reply(`_Minaste y encontraste *${minedXP} XP*._ ✨⛏️\n\n_¡Felicidades, subiste al nivel *${user.level}*!_ 🎉`);
-        } else {
-            m.reply(`_Minaste y encontraste *${minedXP} XP*._ ✨⛏️`);
-        }
+        m.reply(`_Minaste y encontraste *${minedXP} XP*._ ✨⛏️`);
     }
     
     // --- LÓGICA DEL COMANDO .MINE3 (.MINEDI) ---
@@ -98,10 +77,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
         const minedDiamonds = Math.floor(Math.random() * (50 - 20 + 1)) + 20;
         
-        const userDiamonds = BigInt(user.diamonds || 0);
-        const minedDiamondsBig = BigInt(minedDiamonds);
-
-        user.diamonds = (userDiamonds + minedDiamondsBig).toString();
+        user.diamond = (user.diamond || 0) + minedDiamonds;
         user.lastMine3 = now;
 
         return m.reply(`_Minaste y encontraste *${minedDiamonds} diamante(s)*._ 💎`);
