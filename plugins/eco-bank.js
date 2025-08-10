@@ -4,16 +4,14 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
     }
     const user = global.db.data.users[m.sender];
     
-    // --- VERIFICACIÓN DE REGISTRO PARA TODOS LOS COMANDOS ---
     if (!user.registered) {
         return m.reply(`_No estás registrado. Usa el comando *${usedPrefix}reg* para registrarte._`);
     }
 
-    // --- LÓGICA DEL COMANDO .BANK (.BANCO) ---
     if (command === 'bank' || command === 'banco') {
-        const userMoney = BigInt(user.money || 0);
-        const userBankMoney = BigInt(user.bankMoney || 0);
-        const total = userMoney + userBankMoney;
+        const userCoin = user.coin || 0;
+        const userBankMoney = user.bankMoney || 0;
+        const total = userCoin + userBankMoney;
 
         const saldoMessage = `- _*Saldo en el banco:* ${userBankMoney} monedas._ 🏦\n- _*Dinero total:* ${total} monedas._ 🪙`;
         
@@ -23,7 +21,6 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         await m.reply(instruccionesMessage);
     }
 
-    // --- LÓGICA DEL COMANDO .BANKG (.GUARDAR) ---
     else if (command === 'bankg' || command === 'guardar') {
         const cantidad = Number(args[0]);
 
@@ -36,25 +33,23 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
             return m.reply(`_El monto mínimo para guardar dinero en el banco es de *${MIN_GUARDAR}* monedas._`);
         }
 
-        const userMoney = BigInt(user.money || 0);
-        const userBankMoney = BigInt(user.bankMoney || 0);
-        const cantidadBig = BigInt(cantidad);
+        const userCoin = user.coin || 0;
+        const userBankMoney = user.bankMoney || 0;
 
-        const comision = cantidadBig / 7n;
-        const totalDescontar = cantidadBig + comision;
+        const comision = Math.floor(cantidad / 7);
+        const totalDescontar = cantidad + comision;
 
-        if (userMoney < totalDescontar) {
+        if (userCoin < totalDescontar) {
             return m.reply(`_No tienes suficientes monedas. Necesitas *${totalDescontar}* (incluyendo la comisión de *${comision}*)._`);
         }
 
-        user.money = (userMoney - totalDescontar).toString();
-        user.bankMoney = (userBankMoney + cantidadBig).toString();
+        user.coin = userCoin - totalDescontar;
+        user.bankMoney = userBankMoney + cantidad;
         user.exp = (user.exp || 0) + 20;
 
-        return m.reply(`- _Guardaste *${cantidadBig}* monedas en el banco._ 🏦\n- _*Comisión cobrada:* ${comision} monedas._ 🤖\n- _*Dinero en el banco:* ${user.bankMoney} monedas._ 🪙\n- _*Tu saldo actual:* ${user.money} monedas_ 💰`);
+        return m.reply(`- _Guardaste *${cantidad}* monedas en el banco._ 🏦\n- _*Comisión cobrada:* ${comision} monedas._ 🤖\n- _*Dinero en el banco:* ${user.bankMoney} monedas._ 🪙\n- _*Tu saldo actual:* ${user.coin} monedas_ 💰`);
     }
 
-    // --- LÓGICA DEL COMANDO .BANKR (.RETIRAR) ---
     else if (command === 'bankr' || command === 'retirar') {
         const cantidad = Number(args[0]);
 
@@ -62,19 +57,18 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
             return m.reply("_Ingresa una cantidad válida para retirar._");
         }
 
-        const userMoney = BigInt(user.money || 0);
-        const userBankMoney = BigInt(user.bankMoney || 0);
-        const cantidadBig = BigInt(cantidad);
+        const userCoin = user.coin || 0;
+        const userBankMoney = user.bankMoney || 0;
 
-        if (userBankMoney < cantidadBig) {
+        if (userBankMoney < cantidad) {
             return m.reply(`_No tienes suficientes monedas en el banco. Tu saldo en el banco es de: *${userBankMoney}* monedas._`);
         }
 
-        user.money = (userMoney + cantidadBig).toString();
-        user.bankMoney = (userBankMoney - cantidadBig).toString();
+        user.coin = userCoin + cantidad;
+        user.bankMoney = userBankMoney - cantidad;
         user.exp = (user.exp || 0) + 20;
 
-        return m.reply(`- _Retiraste *${cantidadBig}* monedas del banco._ 🏦\n- _*Dinero en el banco:* ${user.bankMoney} monedas._ 🪙\n- _*Tu saldo actual:* ${user.money} monedas._ 💰`);
+        return m.reply(`- _Retiraste *${cantidad}* monedas del banco._ 🏦\n- _*Dinero en el banco:* ${user.bankMoney} monedas._ 🪙\n- _*Tu saldo actual:* ${user.coin} monedas._ 💰`);
     }
 };
 
