@@ -1,4 +1,5 @@
-import trabajo from '../json/work.json' assert { type: 'json' };
+// Usamos 'require' para importar el archivo JSON, compatible con versiones antiguas de Node.js
+const trabajo = require('../json/work.json');
 
 const pickRandom = (list) => {
     return list[Math.floor(list.length * Math.random())];
