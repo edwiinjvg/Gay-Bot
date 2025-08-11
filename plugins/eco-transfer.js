@@ -25,7 +25,12 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
         let targetUserJid;
         if (m.isGroup) {
-            targetUserJid = m.mentionedJid[0] || m.quoted?.sender || null;
+            // CORREGIDO: Reemplazado 'm.quoted?.sender' por una comprobación 'if'
+            if (m.quoted && m.quoted.sender) {
+                targetUserJid = m.quoted.sender;
+            } else {
+                targetUserJid = m.mentionedJid[0] || null;
+            }
         } else {
             return m.reply("_¡Este comando solo puede ser utilizado en grupos!_");
         }
@@ -86,7 +91,12 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
         let targetUserJid;
         if (m.isGroup) {
-            targetUserJid = m.mentionedJid[0] || m.quoted?.sender || null;
+            // CORREGIDO: Reemplazado 'm.quoted?.sender' por una comprobación 'if'
+            if (m.quoted && m.quoted.sender) {
+                targetUserJid = m.quoted.sender;
+            } else {
+                targetUserJid = m.mentionedJid[0] || null;
+            }
         } else {
             return m.reply("_Este comando solo puede ser utilizado en grupos para transferir a otro usuario._");
         }
