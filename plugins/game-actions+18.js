@@ -19,8 +19,12 @@ const handler = async (m, { conn, usedPrefix, command }) => {
         return m.reply(`_Menciona a un usuario o responde a un mensaje para usar *${usedPrefix + command}*._`);
     }
 
-    let name = conn.getName(who);
-    let name2 = conn.getName(m.sender);
+    // -- INICIO DE LA CORRECCIÓN --
+    // Usamos el número de usuario en lugar del nombre para que la mención funcione
+    let senderNumber = m.sender.split('@')[0];
+    let targetNumber = who.split('@')[0];
+    // -- FIN DE LA CORRECCIÓN --
+
     const mentions = [m.sender, who];
     
     let str;
@@ -28,47 +32,47 @@ const handler = async (m, { conn, usedPrefix, command }) => {
 
     if (['fuck', 'follar', 'coger'].includes(command)) {
         videos = videoUrls.fuck;
-        str = `_*@${name2}* se cogió bien duro a *@${name || who}*_ 🥵`;
+        str = `_*@${senderNumber}* se cogió bien duro a *@${targetNumber}*_ 🥵`;
     }
     
     else if (['anal', 'culiar'].includes(command)) {
         videos = videoUrls.anal;
-        str = `_*@${name2}* le partió el culo a *@${name || who}*_ 🍑`;
+        str = `_*@${senderNumber}* le partió el culo a *@${targetNumber}*_ 🍑`;
     }
     
     else if (['blowjob', 'bj', 'mamada'].includes(command)) {
         videos = videoUrls.blowjob;
-        str = `_*@${name2}* le chupó la verga a *@${name || who}*_ 🍆`;
+        str = `_*@${senderNumber}* le chupó la verga a *@${targetNumber}*_ 🍆`;
     }
     
     else if (['sixnine', '69'].includes(command)) {
         videos = videoUrls.sixnine;
-        str = `_*@${name2}* le está haciendo un 69 a *@${name || who}*_ 🥵`;
+        str = `_*@${senderNumber}* le está haciendo un 69 a *@${targetNumber}*_ 🥵`;
     }
 
     else if (['cum', 'leche'].includes(command)) {
         videos = videoUrls.cum;
-        str = `_*@${name2}* dejó todo lleno de leche a *@${name || who}*_ 🥛`;
+        str = `_*@${senderNumber}* dejó todo lleno de leche a *@${targetNumber}*_ 🥛`;
     }
     
     else if (['grabboobs', 'agarrartetas'].includes(command)) {
         videos = videoUrls.grabboobs;
-        str = `_*@${name2}* le agarró las tetas a *@${name || who}*_ 🍒`;
+        str = `_*@${senderNumber}* le agarró las tetas a *@${targetNumber}*_ 🍒`;
     }
 
     else if (['spank', 'nalgada'].includes(command)) {
         videos = videoUrls.spank;
-        str = `_*@${name2}* le dió una nalgada a *@${name || who}*_ 👋`;
+        str = `_*@${senderNumber}* le dió una nalgada a *@${targetNumber}*_ 👋`;
     }
     
     else if (['suckboobs', 'chupartetas'].includes(command)) {
         videos = videoUrls.suckboobs;
-        str = `_*@${name2}* le chupó las tetas a *@${name || who}*_ 👅`;
+        str = `_*@${senderNumber}* le chupó las tetas a *@${targetNumber}*_ 👅`;
     }
 
     else if (['yuri', 'lesbianas', 'tijeras'].includes(command)) {
         videos = videoUrls.yuri;
-        str = `_*@${name2}* hizo tijeras con *@${name || who}*_ 🥵`;
+        str = `_*@${senderNumber}* hizo tijeras con *@${targetNumber}*_ 🥵`;
     }
     
     if (videos) {
@@ -115,7 +119,6 @@ const videoUrls = {
     anal: [
         'https://telegra.ph/file/7185b0be7a315706d086a.mp4', 'https://telegra.ph/file/a11625fef11d628d3c8df.mp4', 
         'https://telegra.ph/file/062b9506656e89b069618.mp4', 'https://telegra.ph/file/1325494a54adc9a87ec56.mp4', 
-        'https://qu.ax/KKazS.mp4', 'https://qu.ax/ieJeB.mp4', 'https://qu.ax/MCdGn.mp4'
     ],
     blowjob: [
         'https://telegra.ph/file/0260766c6b36537aa2802.mp4', 'https://telegra.ph/file/2c1c68c9e310f60f1ded1.mp4', 
