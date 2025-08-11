@@ -3,7 +3,7 @@ import chalk from 'chalk'
 import { fileURLToPath } from 'url'
 
 global.owner = [
-  ['573005094862', 'Edwin', true],
+  ['573005094862@s.whatsapp.net', 'Edwin', true],
 ]
 
 global.mods = []
@@ -17,9 +17,17 @@ global.moneda = '.'
 global.libreria = 'Baileys'
 global.baileys = 'V 6.7.16'
 global.vs = '2.2.0'
+global.sessions = 'Sessions'
+global.yukiJadibts = false // <-- Editado para desactivar los sub-bots
 
-global.group = '🏳️‍🌈'
+global.namecanal = '🏳️‍🌈'
+global.idcanal = ''
+global.idcanal2 = ''
+global.canal = ''
+global.canalreg = ''
 
+global.ch = {
+  ch1: '120363420941524030@newsletter'
 }
 
 global.multiplier = 69
