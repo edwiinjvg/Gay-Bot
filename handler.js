@@ -601,10 +601,4 @@ global.dfail = (type, m, conn, usedPrefix, command) => {
 
     if (msg)
         return conn.reply(m.chat, msg, m, { contextInfo: rcanal }).then(() => conn.sendMessage(m.chat, { react: { text: '❌', key: m.key } }))
-
-    let file = global.__filename(import.meta.url, true)
-    watchFile(file, async () => {
-        unwatchFile(file)
-        console.log(chalk.magenta("Se actualizo 'handler.js'"))
-    })
 }
