@@ -252,7 +252,7 @@ if (!isROwner && opts['self']) return
 if (opts['swonly'] && m.chat !== 'status@broadcast')  return
 if (typeof m.text !== 'string')
 m.text = ''
-// Funcion para setprimary By Ado
+
 if (m.isGroup) {
   let chat = global.db.data.chats[m.chat];
   if (chat?.primaryBot && this?.user?.jid !== chat.primaryBot) {
@@ -606,14 +606,5 @@ global.dfail = (type, m, conn, usedPrefix, command) => {
     watchFile(file, async () => {
         unwatchFile(file)
         console.log(chalk.magenta("Se actualizo 'handler.js'"))
-
-        if (global.conns && global.conns.length > 0) {
-            const users = [...new Set([...global.conns
-                .filter(conn => conn.user && conn.ws.socket && conn.ws.socket.readyState !== ws.CLOSED)
-                .map(conn => conn)])]
-            for (const userr of users) {
-                userr.subreloadHandler(false)
-            }
-        }
     })
 }
