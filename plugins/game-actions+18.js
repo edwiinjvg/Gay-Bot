@@ -103,8 +103,7 @@ export default handler;
 const videoUrls = {
     fuck: [
         'https://telegra.ph/file/6ea4ddf2f9f4176d4a5c0.mp4', 'https://telegra.ph/file/e2beba258ba83f09a34df.mp4', 
-        'https://telegra.ph/file/21543bac2383ce0fc6f51.mp4', 'https://telegra.ph/file/1baf2e8577d5118c03438.mp4', 
-        'https://telegra.ph/file/80aa0e43656667b07d0b4.mp4', 'https://telegra.ph/file/7638618cf43e499007765.mp4', 
+        'https://telegra.ph/file/21543bac2383ce0fc6f51.mp4',
         'https://telegra.ph/file/1c7d59e637f8e5915dbbc.mp4', 'https://telegra.ph/file/e7078700d16baad953348.mp4', 
         'https://telegra.ph/file/100ba1caee241e5c439de.mp4', 'https://telegra.ph/file/3b1d6ef30a5e53518b13b.mp4', 
         'https://telegra.ph/file/249518bf45c1050926d9c.mp4', 'https://telegra.ph/file/34e1fb2f847cbb0ce0ea2.mp4', 
