@@ -133,9 +133,7 @@ const videoUrls = {
         'https://telegra.ph/file/9243544e7ab350ce747d7.mp4', 'https://telegra.ph/file/fadc180ae9c212e2bd3e1.mp4', 
         'https://telegra.ph/file/79a5a0042dd8c44754942.mp4',
         'https://telegra.ph/file/0103144b636efcbdc069b.mp4', 'https://telegra.ph/file/4d97457142dff96a3f382.mp4', 
-        'https://telegra.ph/file/b1b4c9f48eaae4a79ae0e.mp4', 'https://telegra.ph/file/5094ac53709aa11683a54.mp4', 
-        'https://telegra.ph/file/5094ac53709aa11683a54.mp4', 'https://telegra.ph/file/dc279553e1ccfec6783f3.mp4', 
-        'https://telegra.ph/file/acdb5c2703ee8390aaf33.mp4'
+        'https://telegra.ph/file/b1b4c9f48eaae4a79ae0e.mp4', 'https://telegra.ph/file/5094ac53709aa11683a54.mp4',  'https://telegra.ph/file/dc279553e1ccfec6783f3.mp4',
     ],
     grabboobs: [
         'https://telegra.ph/file/e6bf14b93dfe22c4972d0.mp4', 'https://telegra.ph/file/075db3ebba7126d2f0d95.mp4', 
