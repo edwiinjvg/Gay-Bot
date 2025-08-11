@@ -104,8 +104,7 @@ const videoUrls = {
     fuck: [
         'https://telegra.ph/file/6ea4ddf2f9f4176d4a5c0.mp4', 'https://telegra.ph/file/e2beba258ba83f09a34df.mp4', 
         'https://telegra.ph/file/21543bac2383ce0fc6f51.mp4',
-        'https://telegra.ph/file/1c7d59e637f8e5915dbbc.mp4', 'https://telegra.ph/file/e7078700d16baad953348.mp4', 'https://telegra.ph/file/34e1fb2f847cbb0ce0ea2.mp4', 
-        'https://telegra.ph/file/52c82a0269bb69d5c9fc4.mp4', 'https://telegra.ph/file/ca64bfe2eb8f7f8c6b12c.mp4', 
+        'https://telegra.ph/file/1c7d59e637f8e5915dbbc.mp4', 'https://telegra.ph/file/e7078700d16baad953348.mp4', 'https://telegra.ph/file/ca64bfe2eb8f7f8c6b12c.mp4', 
         'https://telegra.ph/file/8e94da8d393a6c634f6f9.mp4', 'https://telegra.ph/file/216b3ab73e1d98d698843.mp4', 
         'https://telegra.ph/file/1dec277caf371c8473c08.mp4', 'https://telegra.ph/file/bbf6323509d48f4a76c13.mp4', 
         'https://telegra.ph/file/f8e4abb6923b95e924724.mp4', 'https://telegra.ph/file/bd4d5a957466eee06a208.mp4', 
