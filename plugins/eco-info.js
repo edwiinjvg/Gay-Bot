@@ -17,8 +17,8 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
         let targetUserData = global.db.data.users[targetUserJid] || {};
 
         if (!targetUserData.registered) {
-             return m.reply(`_*@${String(targetUserJid).split('@')[0]}* no está registrado.`, {
-                contextInfo: { mentionedJid: [String(targetUserJid)] }
+             return conn.reply(m.chat, `_*@${String(targetUserJid).split('@')[0]}* no está registrado.`, m, {
+                mentions: [targetUserJid]
             });
         }
 
@@ -77,8 +77,8 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
         let targetUserData = global.db.data.users[targetUserJid] || {};
 
         if (!targetUserData.registered) {
-             return m.reply(`_*@${String(targetUserJid).split('@')[0]}* no está registrado.`, {
-                contextInfo: { mentionedJid: [String(targetUserJid)] }
+             return conn.reply(m.chat, `_*@${String(targetUserJid).split('@')[0]}* no está registrado.`, m, {
+                mentions: [targetUserJid]
             });
         }
 
@@ -103,8 +103,8 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
 - _*XP:* ${xp}_ ✨`;
         }
         
-        await m.reply(replyMessage, {
-            contextInfo: { mentionedJid: mentions }
+        await conn.reply(m.chat, replyMessage, m, {
+            mentions: mentions
         });
     }
 
@@ -114,8 +114,8 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
         let targetUserData = global.db.data.users[targetUserJid] || {};
 
         if (!targetUserData.registered) {
-             return m.reply(`_*@${String(targetUserJid).split('@')[0]}* no está registrado.`, {
-                contextInfo: { mentionedJid: [String(targetUserJid)] }
+             return conn.reply(m.chat, `_*@${String(targetUserJid).split('@')[0]}* no está registrado.`, m, {
+                mentions: [targetUserJid]
             });
         }
         
@@ -148,8 +148,8 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
 - _*Progreso:* ${progressBar} ${xpPercentage}%_\n\n_Le falta *${xpRemaining}* XP para el nivel *${level + 1}*._ ⚡`;
         }
 
-        return m.reply(replyMessage, {
-            contextInfo: { mentionedJid: mentions }
+        return conn.reply(m.chat, replyMessage, m, {
+            mentions: mentions
         });
     }
 };
