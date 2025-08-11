@@ -105,6 +105,8 @@ const videoUrls = {
         'https://telegra.ph/file/6ea4ddf2f9f4176d4a5c0.mp4',
         'https://telegra.ph/file/21543bac2383ce0fc6f51.mp4',
         'https://telegra.ph/file/1c7d59e637f8e5915dbbc.mp4', 'https://telegra.ph/file/e7078700d16baad953348.mp4',
+'https://files.catbox.moe/7ito13.mp4',
+'https://files.catbox.moe/6to3zj.mp4',
     ],
     anal: [ 'https://telegra.ph/file/a11625fef11d628d3c8df.mp4',
     ],
