@@ -16,12 +16,18 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
         let targetUserJid = m.mentionedJid[0] || m.quoted?.sender || m.sender;
         let targetUserData = global.db.data.users[targetUserJid] || {};
 
-        let registrationStatus = targetUserData.name ? '_Sí_ ✅' : '_No_ ❌';
+        if (!targetUserData.registered) {
+             return m.reply(`_*@${String(targetUserJid).split('@')[0]}* no está registrado.`, {
+                contextInfo: { mentionedJid: [String(targetUserJid)] }
+            });
+        }
+
+        let registrationStatus = '_Sí_ ✅';
         let registrationId = targetUserData.reg_id || 'N/A';
         let name = targetUserData.name || `@${targetUserJid.split('@')[0]}`;
         let age = targetUserData.age || 'N/A';
-        let money = targetUserData.coin || 0; // CORRECTO: Usamos 'coin'
-        let diamonds = targetUserData.diamond || 0; // CORREGIDO: Usamos 'diamond'
+        let coin = targetUserData.coin || 0;
+        let diamond = targetUserData.diamond || 0;
         let role = targetUserData.role || 'Hetere 😴';
         
         let level = targetUserData.level || 0;
@@ -55,8 +61,8 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
 - _*Pareja:*_ ${partnerInfo}
 - _*Nivel:* ${level}_ 📈
 - _*XP:* ${xp}/${xpForNextLevel}_ ✨
-- _*Balance:* ${money}_ 🪙
-- _*Diamantes:* ${diamonds}_ 💎 `;
+- _*Balance:* ${coin}_ 🪙
+- _*Diamantes:* ${diamond}_ 💎 `;
 
         await conn.sendMessage(m.chat, {
             image: { url: profilePicUrl },
@@ -70,48 +76,81 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
         let targetUserJid = m.mentionedJid[0] || m.quoted?.sender || m.sender;
         let targetUserData = global.db.data.users[targetUserJid] || {};
 
-        const money = targetUserData.coin || 0; // CORRECTO: Usamos 'coin'
-        const diamonds = targetUserData.diamond || 0; // CORREGIDO: Usamos 'diamond'
+        if (!targetUserData.registered) {
+             return m.reply(`_*@${String(targetUserJid).split('@')[0]}* no está registrado.`, {
+                contextInfo: { mentionedJid: [String(targetUserJid)] }
+            });
+        }
+
+        const coin = targetUserData.coin || 0;
+        const diamond = targetUserData.diamond || 0;
         const xp = targetUserData.exp || 0;
         const name = targetUserData.name || `@${targetUserJid.split('@')[0]}`;
         const mentions = [targetUserJid];
         
+        let replyMessage;
         if (targetUserJid === m.sender) {
-            await m.reply(`
+            replyMessage = `
 - _Tu saldo actual es de:_
-- _*Monedas:* ${money}_ 💰
-- _*Diamantes:* ${diamonds}_ 💎
-- _*XP:* ${xp}_ ✨`);
+- _*Monedas:* ${coin}_ 💰
+- _*Diamantes:* ${diamond}_ 💎
+- _*XP:* ${xp}_ ✨`;
         } else {
-            await m.reply(`
+            replyMessage = `
 - _El saldo de *${name}* es de:_
-- _*Monedas:* ${money}_ 💰
-- _*Diamantes:* ${diamonds}_ 💎
-- _*XP:* ${xp}_ ✨`, {
-                contextInfo: { mentionedJid: mentions }
-            });
+- _*Monedas:* ${coin}_ 💰
+- _*Diamantes:* ${diamond}_ 💎
+- _*XP:* ${xp}_ ✨`;
         }
+        
+        await m.reply(replyMessage, {
+            contextInfo: { mentionedJid: mentions }
+        });
     }
 
     // --- LÓGICA DEL COMANDO .LEVEL (.LVL) ---
     else if (command === 'level' || command === 'lvl') {
-        const level = user.level || 0;
-        const xp = user.exp || 0;
-        const role = user.role || "Hetere 😴";
+        let targetUserJid = m.mentionedJid[0] || m.quoted?.sender || m.sender;
+        let targetUserData = global.db.data.users[targetUserJid] || {};
+
+        if (!targetUserData.registered) {
+             return m.reply(`_*@${String(targetUserJid).split('@')[0]}* no está registrado.`, {
+                contextInfo: { mentionedJid: [String(targetUserJid)] }
+            });
+        }
+        
+        const level = targetUserData.level || 0;
+        const xp = targetUserData.exp || 0;
+        const role = targetUserData.role || "Hetere 😴";
         const xpForNextLevel = (level + 1) * 1000;
         const xpRemaining = xpForNextLevel - xp;
+        const name = targetUserData.name || `@${targetUserJid.split('@')[0]}`;
         
         const xpPercentage = Math.min(100, Math.floor((xp / xpForNextLevel) * 100));
         const progressBar = "█".repeat(Math.floor(xpPercentage / 10)) + "░".repeat(10 - Math.floor(xpPercentage / 10));
 
-        const replyMessage = `
+        let replyMessage;
+        let mentions = [targetUserJid];
+        
+        if (targetUserJid === m.sender) {
+            replyMessage = `
 - _Estadísticas de Nivel_ 📊
 - _*Nivel:* ${level}_ 👤
 - _*Rol:* ${role}_
 - _*XP:* ${xp} / ${xpForNextLevel}_ ✨
 - _*Progreso:* ${progressBar} ${xpPercentage}%_\n\n_Te falta *${xpRemaining}* XP para el nivel *${level + 1}*._ ⚡`;
+        } else {
+            replyMessage = `
+- _Estadísticas de Nivel de *${name}*_ 📊
+- _*Nivel:* ${level}_ 👤
+- _*Rol:* ${role}_
+- _*XP:* ${xp} / ${xpForNextLevel}_ ✨
+- _*Progreso:* ${progressBar} ${xpPercentage}%_\n\n_Le falta *${xpRemaining}* XP para el nivel *${level + 1}*._ ⚡`;
+        }
 
-        return m.reply(replyMessage);
+        return m.reply(replyMessage, {
+            contextInfo: { mentionedJid: mentions }
+        });
     }
 };
 
