@@ -15,7 +15,7 @@ resolve()
 }, ms))
 
 // --- VARIABLES PARA EL SISTEMA DE ROLES ---
-const XP_PER_COMMAND = 50; // La cantidad de XP que daremos por cada comando
+const XP_PER_COMMAND = 250; // La cantidad de XP que daremos por cada comando
 const ROLES = {
     5: "Penelover 💜",
     10: "Furry 🐾",
@@ -51,11 +51,11 @@ if (user) {
 if (!isNumber(user.exp))
 user.exp = 0
 if (!isNumber(user.coin))
-user.coin = 10
+user.coin = 500
 if (!isNumber(user.joincount))
 user.joincount = 1
 if (!isNumber(user.diamond))
-user.diamond = 3
+user.diamond = 50
 if (!isNumber(user.lastadventure))
 user.lastadventure = 0
 if (!isNumber(user.lastclaim))
@@ -123,9 +123,9 @@ user.warn = 0
 } else
 global.db.data.users[m.sender] = {
 exp: 0,
-coin: 10,
+coin: 500,
 joincount: 1,
-diamond: 3,
+diamond: 50,
 lastadventure: 0,
 health: 100,
 lastclaim: 0,
@@ -152,7 +152,7 @@ banned: false,
 useDocument: false,
 bank: 0,
 level: 0,
-role: 'Nuv',
+role: 'Hetere 😴',
 premium: false,
 premiumTime: 0,                 
 }
@@ -187,7 +187,7 @@ chat.modoadmin = false
 if (!('antiLink' in chat))
 chat.antiLink = true
 if (!('reaction' in chat))
-chat.reaction = false
+chat.reaction = true
 if (!('nsfw' in chat))
 chat.nsfw = false
 if (!('antifake' in chat))
@@ -200,7 +200,7 @@ chat.expired = 0
 global.db.data.chats[m.chat] = {
 isBanned: false,
 sAutoresponder: '',
-welcome: false,
+welcome: true,
 autolevelup: false,
 autoresponder: false,
 delete: false,
@@ -212,7 +212,7 @@ antiBot2: false,
 modoadmin: false,
 antiLink: true,
 antifake: false,
-reaction: false,
+reaction: true,
 nsfw: false,
 expired: 0, 
 antiLag: false,
