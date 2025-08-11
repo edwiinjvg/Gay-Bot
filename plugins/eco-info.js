@@ -1,4 +1,4 @@
-const defaultImage = 'https://telegra.ph/file/5a5d20739c9413247c1a8.png';
+const defaultImage = 'https://telegra.ph/file/d95e548239089f816c278.png'; // NUEVA IMAGEN
 
 const handler = async (m, { conn, usedPrefix, command, args }) => {
     if (!global.db.data.users[m.sender]) {
