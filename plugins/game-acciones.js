@@ -3,7 +3,7 @@ import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const mediaPath = path.join(__dirname, '..', 'storage', 'actions');
+const mediaPath = path.join(__dirname, '..', 'media', 'funny');
 
 const handler = async (m, { conn, usedPrefix, command }) => {
     let who;
@@ -23,32 +23,62 @@ const handler = async (m, { conn, usedPrefix, command }) => {
 
     if (['abrazar', 'abrazo', 'abrazos', 'hug'].includes(command)) {
         const gifPath = path.join(mediaPath, 'hug-darker-than-black.mp4');
-        await conn.sendFile(m.chat, gifPath, 'hug.mp4', `*@${sender}* *le dió un fuerte abrazo a* *@${target}* 🫂`, m, null, { mentions });
+        await conn.sendMessage(m.chat, {
+            video: { url: gifPath },
+            caption: `*@${sender}* *le dió un fuerte abrazo a* *@${target}* 🫂`,
+            gifPlayback: true,
+            mentions
+        }, { quoted: m });
     }
 
     else if (['besar', 'besa', 'beso', 'kiss'].includes(command)) {
         const gifPath = path.join(mediaPath, 'kiss.mp4');
-        await conn.sendFile(m.chat, gifPath, 'kiss.mp4', `*@${sender}* *besó de lengua a* *@${target}* 👅`, m, null, { mentions });
+        await conn.sendMessage(m.chat, {
+            video: { url: gifPath },
+            caption: `*@${sender}* *besó de lengua a* *@${target}* 👅`,
+            gifPlayback: true,
+            mentions
+        }, { quoted: m });
     }
     
     else if (['bofetada', 'bofetear', 'bofetadas'].includes(command)) {
         const gifPath = path.join(mediaPath, 'slap-jjk.mp4');
-        await conn.sendFile(m.chat, gifPath, 'slap.mp4', `*@${sender}* *le dió una bofetada a* *@${target}*`, m, null, { mentions });
+        await conn.sendMessage(m.chat, {
+            video: { url: gifPath },
+            caption: `*@${sender}* *le dió una bofetada a* *@${target}*`,
+            gifPlayback: true,
+            mentions
+        }, { quoted: m });
     }
     
     else if (['golpear', 'golpe', 'puñetazo', 'puñetazazo', 'puño'].includes(command)) {
         const gifPath = path.join(mediaPath, 'some-guy-getting-punch-anime-punching-some-guy-anime.mp4');
-        await conn.sendFile(m.chat, gifPath, 'punch.mp4', `*¡@${sender}* *le reventó la cara a* *@${target}!* 👊`, m, null, { mentions });
+        await conn.sendMessage(m.chat, {
+            video: { url: gifPath },
+            caption: `*¡@${sender}* *le reventó la cara a* *@${target}!* 👊`,
+            gifPlayback: true,
+            mentions
+        }, { quoted: m });
     }
     
     else if (['luchar', 'pelea'].includes(command)) {
         const gifPath = path.join(mediaPath, 'sung-jin-woo-jinwoo.mp4');
-        await conn.sendFile(m.chat, gifPath, 'fight.mp4', `*¡@${sender}* *tuvo una pelea intensa con* *@${target}!* 🤺`, m, null, { mentions });
+        await conn.sendMessage(m.chat, {
+            video: { url: gifPath },
+            caption: `*¡@${sender}* *tuvo una pelea intensa con* *@${target}!* 🤺`,
+            gifPlayback: true,
+            mentions
+        }, { quoted: m });
     }
     
     else if (['matar', 'mata', 'kill'].includes(command)) {
         const gifPath = path.join(mediaPath, 'yumeko-mirai-nikki.mp4');
-        await conn.sendFile(m.chat, gifPath, 'kill.mp4', `*¡@${sender}* *mató brutalmente a* *@${target}!* 💀`, m, null, { mentions });
+        await conn.sendMessage(m.chat, {
+            video: { url: gifPath },
+            caption: `*¡@${sender}* *mató brutalmente a* *@${target}!* 💀`,
+            gifPlayback: true,
+            mentions
+        }, { quoted: m });
     }
 };
 
