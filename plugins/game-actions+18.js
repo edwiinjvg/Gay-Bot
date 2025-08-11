@@ -119,10 +119,9 @@ const videoUrls = {
     anal: [ 'https://telegra.ph/file/a11625fef11d628d3c8df.mp4',
     ],
     blowjob: [
-        'https://telegra.ph/file/0260766c6b36537aa2802.mp4', 'https://telegra.ph/file/2c1c68c9e310f60f1ded1.mp4', 
+        'https://telegra.ph/file/0260766c6b36537aa2802.mp4', 'https://telegra.ph/file/2c1c68c9e310f60f1ded1.mp4',
         'https://telegra.ph/file/e14f5a31d3b3c279f5593.mp4', 'https://telegra.ph/file/e020aa808f154a30b8da7.mp4', 
         'https://telegra.ph/file/1cafb3e72664af94d45c0.mp4', 'https://telegra.ph/file/72b49d3b554df64e377bb.mp4', 
-        'https://telegra.ph/file/9687aedfd58a3110c7f88.mp4', 'https://telegra.ph/file/c799ea8a1ed0fd336579c.mp4', 
         'https://telegra.ph/file/7352d18934971201deed5.mp4', 'https://telegra.ph/file/379edd38bac6de4258843.mp4'
     ],
     sixnine: [
