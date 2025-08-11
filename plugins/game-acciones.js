@@ -3,7 +3,7 @@ import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const mediaPath = path.join(__dirname, '..', 'media', 'funny');
+const mediaPath = path.join(__dirname, '..', 'storage', 'actions');
 
 const handler = async (m, { conn, usedPrefix, command }) => {
     let who;
