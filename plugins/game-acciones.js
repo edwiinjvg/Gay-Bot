@@ -10,11 +10,11 @@ const handler = async (m, { conn, usedPrefix, command }) => {
     if (m.isGroup) {
         who = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : false;
     } else {
-        return m.reply('_Este comando solo puede ser utilizado en grupos._');
+        return m.reply('_¡Este comando solo puede ser utilizado en grupos!_');
     }
 
     if (!who) {
-        return m.reply(`_Menciona a un usuario o responde a un mensaje para usar *${usedPrefix + command}*._`);
+        return m.reply(`_Menciona a un usuario o responde a un mensaje para utilizar *${usedPrefix + command}*._`);
     }
 
     let sender = m.sender.replace(/@.+/, '');
@@ -25,7 +25,7 @@ const handler = async (m, { conn, usedPrefix, command }) => {
         const gifPath = path.join(mediaPath, 'hug-darker-than-black.mp4');
         await conn.sendMessage(m.chat, {
             video: { url: gifPath },
-            caption: `*@${sender}* *le dió un fuerte abrazo a* *@${target}* 🫂`,
+            caption: `_*@${sender}* le dió un fuerte abrazo a *@${target}*._ 🫂`,
             gifPlayback: true,
             mentions
         }, { quoted: m });
@@ -35,7 +35,7 @@ const handler = async (m, { conn, usedPrefix, command }) => {
         const gifPath = path.join(mediaPath, 'kiss.mp4');
         await conn.sendMessage(m.chat, {
             video: { url: gifPath },
-            caption: `*@${sender}* *besó de lengua a* *@${target}* 👅`,
+            caption: `_*@${sender}* besó de lengua a *@${target}*._👅`,
             gifPlayback: true,
             mentions
         }, { quoted: m });
@@ -45,7 +45,7 @@ const handler = async (m, { conn, usedPrefix, command }) => {
         const gifPath = path.join(mediaPath, 'slap-jjk.mp4');
         await conn.sendMessage(m.chat, {
             video: { url: gifPath },
-            caption: `*@${sender}* *le dió una bofetada a* *@${target}*`,
+            caption: `_*@${sender}* le dió una bofetada a *@${target}*._`,
             gifPlayback: true,
             mentions
         }, { quoted: m });
@@ -55,17 +55,17 @@ const handler = async (m, { conn, usedPrefix, command }) => {
         const gifPath = path.join(mediaPath, 'some-guy-getting-punch-anime-punching-some-guy-anime.mp4');
         await conn.sendMessage(m.chat, {
             video: { url: gifPath },
-            caption: `*¡@${sender}* *le reventó la cara a* *@${target}!* 👊`,
+            caption: `_*¡@${sender}* le reventó la cara a *@${target}!*_ 👊`,
             gifPlayback: true,
             mentions
         }, { quoted: m });
     }
     
-    else if (['luchar', 'pelea'].includes(command)) {
+    else if (['luchar', 'pelea', 'pelear'].includes(command)) {
         const gifPath = path.join(mediaPath, 'sung-jin-woo-jinwoo.mp4');
         await conn.sendMessage(m.chat, {
             video: { url: gifPath },
-            caption: `*¡@${sender}* *tuvo una pelea intensa con* *@${target}!* 🤺`,
+            caption: `_*¡@${sender}* tuvo una pelea a muerte con *@${target}!*_ 🤺`,
             gifPlayback: true,
             mentions
         }, { quoted: m });
@@ -75,7 +75,7 @@ const handler = async (m, { conn, usedPrefix, command }) => {
         const gifPath = path.join(mediaPath, 'yumeko-mirai-nikki.mp4');
         await conn.sendMessage(m.chat, {
             video: { url: gifPath },
-            caption: `*¡@${sender}* *mató brutalmente a* *@${target}!* 💀`,
+            caption: `_*¡@${sender}* asesinó brutalmente a *@${target}!*_ 💀`,
             gifPlayback: true,
             mentions
         }, { quoted: m });
@@ -87,7 +87,7 @@ handler.help = [
     'besar', 'besa', 'beso', 'kiss',
     'bofetada', 'bofetear', 'bofetadas',
     'golpear', 'golpe', 'puñetazo', 'puñetazazo', 'puño',
-    'luchar', 'pelea',
+    'luchar', 'pelea', 'pelear',
     'matar', 'mata', 'kill'
 ];
 handler.tags = ['reactions'];
@@ -96,7 +96,7 @@ handler.command = [
     'besar', 'besa', 'beso', 'kiss',
     'bofetada', 'bofetear', 'bofetadas',
     'golpear', 'golpe', 'puñetazo', 'puñetazazo', 'puño',
-    'luchar', 'pelea',
+    'luchar', 'pelea', 'pelear',
     'matar', 'mata', 'kill'
 ];
 handler.group = true;
