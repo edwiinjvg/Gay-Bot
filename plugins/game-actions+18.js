@@ -116,9 +116,7 @@ const videoUrls = {
         'https://telegra.ph/file/a91d94a51dba34dc1bed9.mp4', 'https://telegra.ph/file/b08996c47ff1b38e13df0.mp4', 
         'https://telegra.ph/file/58bcc3cd79cecda3acdfa.mp4'
     ],
-    anal: [
-        'https://telegra.ph/file/7185b0be7a315706d086a.mp4', 'https://telegra.ph/file/a11625fef11d628d3c8df.mp4', 
-        'https://telegra.ph/file/062b9506656e89b069618.mp4', 'https://telegra.ph/file/1325494a54adc9a87ec56.mp4', 
+    anal: [ 'https://telegra.ph/file/a11625fef11d628d3c8df.mp4',
     ],
     blowjob: [
         'https://telegra.ph/file/0260766c6b36537aa2802.mp4', 'https://telegra.ph/file/2c1c68c9e310f60f1ded1.mp4', 
