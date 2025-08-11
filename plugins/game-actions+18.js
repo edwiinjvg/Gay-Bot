@@ -147,7 +147,7 @@ const videoUrls = {
         'https://telegra.ph/file/d11af77009e15383a5f3e.mp4', 'https://telegra.ph/file/b24f36949398986232952.mp4',
         'https://telegra.ph/file/aae61f727baf48c0a25f8.mp4', 'https://telegra.ph/file/8baea377988065dd28520.mp4',
         'https://telegra.ph/file/553649d8f95f7ff86b9f2.mp4', 'https://telegra.ph/file/c3b386d99c84e7c914a6e.mp4',
-        'https://telegra.ph/file/a438a1aec11241b8a63eb.mp4', 'https://telegra.ph/file/0c5a22faacbc91d4e93a5.mp4',
+        'https://telegra.ph/file/a438a1aec11241b8a63eb.mp4',
         'https://telegra.ph/file/d999becfa325549d1c976.mp4'
     ]
 };
