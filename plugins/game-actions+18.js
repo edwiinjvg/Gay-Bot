@@ -133,9 +133,7 @@ const videoUrls = {
         'https://telegra.ph/file/61d85d10baf2e3b9a4cde.mp4', 'https://telegra.ph/file/538c95e4f1c481bcc3cce.mp4', 'https://telegra.ph/file/05c1bd3a2ec54428ac2fc.mp4'
     ],
     spank: [ 
-'https://telegra.ph/file/07fe0023525be2b2579f9.mp4', 
-        'https://telegra.ph/file/f830f235f844e30d22e8e.mp4', 'https://telegra.ph/file/e278ca6dc7d26a2cfda46.mp4', 
-        'https://files.catbox.moe/mf3tve.mp4', 'https://files.catbox.moe/hobfrw.mp4',
+'https://files.catbox.moe/mf3tve.mp4', 'https://files.catbox.moe/hobfrw.mp4',
 'https://files.catbox.moe/yjulgu.mp4',
     ],
     suckboobs: [
