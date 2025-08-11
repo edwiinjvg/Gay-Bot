@@ -1,4 +1,4 @@
-const defaultImage = 'https://telegra.ph/GayBot-08-11'; // NUEVA IMAGEN
+const defaultImage = 'https://telegra.ph/file/d95e548239089f816c278.png';
 
 const handler = async (m, { conn, usedPrefix, command, args }) => {
     if (!global.db.data.users[m.sender]) {
@@ -17,7 +17,7 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
         let targetUserData = global.db.data.users[targetUserJid] || {};
 
         if (!targetUserData.registered) {
-             return conn.reply(m.chat, `_*@${String(targetUserJid).split('@')[0]}* no está registrado.`, m, {
+             return conn.reply(m.chat, `_*@${String(targetUserJid).split('@')[0]}* no está registrado._`, m, {
                 mentions: [targetUserJid]
             });
         }
@@ -61,14 +61,15 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
 - _*Pareja:*_ ${partnerInfo}
 - _*Nivel:* ${level}_ 📈
 - _*XP:* ${xp}/${xpForNextLevel}_ ✨
-- _*Balance:* ${coin}_ 🪙
+- _*Monedas:* ${coin}_ 🪙
 - _*Diamantes:* ${diamond}_ 💎 `;
 
-        await conn.sendMessage(m.chat, {
+        // CORREGIDO: Usando conn.reply() para responder al mensaje original
+        await conn.reply(m.chat, {
             image: { url: profilePicUrl },
             caption: replyMessage,
             contextInfo: { mentionedJid: mentions }
-        });
+        }, m);
     }
 
     // --- LÓGICA DEL COMANDO .BALANCE (.BAL) ---
