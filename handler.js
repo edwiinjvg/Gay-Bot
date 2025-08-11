@@ -1,4 +1,4 @@
-import { smsg } from './lib/simple.js'
+Import { smsg } from './lib/simple.js'
 import { format } from 'util' 
 import { fileURLToPath } from 'url'
 import path, { join } from 'path'
@@ -439,6 +439,30 @@ if (plugin.register == true && _user.registered == false) {
 fail('unreg', m, this, usedPrefix, command) 
 continue
 }
+
+// CORRECCIÓN: El código para otorgar XP se movió aquí, dentro del bloque de comando
+if (m.sender && (_user = global.db.data.users[m.sender])) {
+    let oldLevel = _user.level;
+    _user.exp += XP_PER_COMMAND;
+
+    if (canLevelUp(oldLevel, _user.exp)) {
+        let newLevel = findLevel(_user.exp);
+        _user.level = newLevel;
+
+        let newRole = ROLES[newLevel];
+        if (newRole) {
+            _user.role = newRole;
+        }
+        
+        if (m.isGroup && global.db.data.chats[m.chat].autolevelup) {
+            let text = `_¡Felicidades, *@${m.sender.split('@')[0]}* subiste al nivel *${newLevel}*!_ 🥳`;
+            if (newRole) {
+                text += `\n_Alcanzaste el rol de *${newRole}*._`;
+            }
+            await conn.reply(m.chat, text, m, { mentions: [m.sender] });
+        }
+    }
+}
 m.isCommand = true
 let xp = 'exp' in plugin ? parseInt(plugin.exp) : 10
 m.exp += xp
@@ -514,34 +538,7 @@ let bang = m.key.id
 let cancellazzione = m.key.participant
 await conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: cancellazzione }})
 }
-if (m.sender && (user = global.db.data.users[m.sender])) {
-// Agrega XP por cada comando
-let oldLevel = user.level;
-user.exp += XP_PER_COMMAND;
 
-// Usa la función canLevelUp para verificar si subió de nivel
-if (canLevelUp(oldLevel, user.exp)) {
-    // Si sube de nivel, usa findLevel para obtener el nuevo nivel
-    let newLevel = findLevel(user.exp);
-    user.level = newLevel;
-
-    // Asigna el nuevo rol si el nivel coincide
-    let newRole = ROLES[newLevel];
-    if (newRole) {
-        user.role = newRole;
-    }
-    
-    // Envía el mensaje de felicitación si la función está activada en el grupo
-    if (m.isGroup && global.db.data.chats[m.chat].autolevelup) {
-        let text = `_¡Felicidades, *@${m.sender.split('@')[0]}* subiste al nivel *${newLevel}*!_ 🥳`;
-        if (newRole) {
-            text += `\n_Alcanzaste el rol de *${newRole}*._`;
-        }
-        await conn.reply(m.chat, text, m, { mentions: [m.sender] });
-    }
-}
-user.coin -= m.coin * 1
-}
 
 let stat
 if (m.plugin) {
