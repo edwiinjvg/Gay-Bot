@@ -64,12 +64,12 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
 - _*Monedas:* ${coin}_ 🪙
 - _*Diamantes:* ${diamond}_ 💎 `;
 
-        // CORREGIDO: Usando conn.reply() para responder al mensaje original
-        await conn.reply(m.chat, {
+        // CORRECCIÓN: Se usa sendMessage con la opción quoted para que el bot responda
+        await conn.sendMessage(m.chat, {
             image: { url: profilePicUrl },
             caption: replyMessage,
             contextInfo: { mentionedJid: mentions }
-        }, m);
+        }, { quoted: m });
     }
 
     // --- LÓGICA DEL COMANDO .BALANCE (.BAL) ---
