@@ -102,7 +102,7 @@ export default handler;
 // Video URLs para los comandos NSFW
 const videoUrls = {
     fuck: [
-        'https://telegra.ph/file/6ea4ddf2f9f4176d4a5c0.mp4', 'https://telegra.ph/file/e2beba258ba83f09a34df.mp4', 
+        'https://telegra.ph/file/6ea4ddf2f9f4176d4a5c0.mp4',
         'https://telegra.ph/file/21543bac2383ce0fc6f51.mp4',
         'https://telegra.ph/file/1c7d59e637f8e5915dbbc.mp4', 'https://telegra.ph/file/e7078700d16baad953348.mp4',
     ],
