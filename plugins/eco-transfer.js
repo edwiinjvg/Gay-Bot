@@ -25,7 +25,6 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
         let targetUserJid;
         if (m.isGroup) {
-            // CORREGIDO: Reemplazado 'm.quoted?.sender' por una comprobación 'if'
             if (m.quoted && m.quoted.sender) {
                 targetUserJid = m.quoted.sender;
             } else {
@@ -71,8 +70,10 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 - _*Saldo de:* *@${m.sender.split('@')[0]}*: *${user.coin}* monedas._ 💰
 - _*Saldo de:* *@${targetUserJid.split('@')[0]}*: *${targetUser.coin}* monedas._ 💰`;
 
+        // CORRECCIÓN: Se construye el array de menciones de forma más segura
+        const mentions = [m.sender, targetUserJid].filter(Boolean); // Filtra los valores nulos o indefinidos
         await conn.reply(m.chat, replyMessage, m, {
-            mentions: [m.sender, targetUserJid]
+            mentions: mentions
         });
     }
 
@@ -91,7 +92,6 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
         let targetUserJid;
         if (m.isGroup) {
-            // CORREGIDO: Reemplazado 'm.quoted?.sender' por una comprobación 'if'
             if (m.quoted && m.quoted.sender) {
                 targetUserJid = m.quoted.sender;
             } else {
@@ -137,8 +137,10 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 - _*Saldo de:* *@${m.sender.split('@')[0]}*: *${user.diamond}* diamantes._ 💎
 - _*Saldo de:* *@${targetUserJid.split('@')[0]}*: *${targetUser.diamond}* diamantes._ 💎`;
 
+        // CORRECCIÓN: Se construye el array de menciones de forma más segura
+        const mentions = [m.sender, targetUserJid].filter(Boolean); // Filtra los valores nulos o indefinidos
         await conn.reply(m.chat, replyMessage, m, {
-            mentions: [m.sender, targetUserJid]
+            mentions: mentions
         });
     }
 };
