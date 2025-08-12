@@ -5,7 +5,7 @@ const emojis = ['🍒', '🍑', '🍆', '🔥', '👑', '💫', '🌟', '✨', '
 
 const handler = async (m, { conn, usedPrefix, command, args }) => {
     if (!m.isGroup) {
-        return m.reply('_Este comando solo se puede utilizar en grupos._');
+        return m.reply('_¡Este comando solo puede ser utilizado en grupos!_');
     }
 
     // --- CORRECCIÓN AQUÍ ---
@@ -18,7 +18,7 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
 
     const topText = args.join(' ');
     if (!topText) {
-        return m.reply(`_Escribe un texto para tu top. Ejemplo: *${usedPrefix + command} los más hermosos*_`);
+        return m.reply(`_Escribe un texto para tu top._`);
     }
 
     let top10Participants = [];
