@@ -1,21 +1,4 @@
-// Archivo: grupo-mute.js
-
 let handler = async (m, { conn, args, usedPrefix, command, groupMetadata, isOwner, isAdmin, isBotAdmin }) => {
-    // Verificar si es un grupo
-    if (!m.isGroup) {
-        return m.reply('_¡Este comando solo puede ser utilizado en grupos!_');
-    }
-    
-    // Verificar si el que usa el comando es admin
-    if (!isAdmin) {
-        return m.reply('_¡Este comando solo puede ser utilizado por administradores!_');
-    }
-    
-    // Verificar si el bot es admin
-    if (!isBotAdmin) {
-        return m.reply('_¡Necesito ser administrador del grupo para poder ejecutar este comando!_');
-    }
-    
     // Identificar al usuario a silenciar
     let user;
     if (m.mentionedJid && m.mentionedJid[0]) {
