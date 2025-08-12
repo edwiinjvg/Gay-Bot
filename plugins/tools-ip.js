@@ -1,42 +1,49 @@
-import axios from 'axios'
+import { fileTypeFromBuffer } from 'file-type';
+import axios from 'axios';
+import fs from 'fs';
+import { tmpdir } from 'os';
 
-let handler = async (m, { conn, text }) => {
-//await m.reply('🧑🏻‍💻 Buscando...')
-let bot = '🍭 Buscando espere un momento....'
-conn.reply(m.chat, bot, m)
-  if (!text) return conn.reply(m.chat, `${emoji} Por favor, ingresa una *IP*.`, m)
+let handler = async (m, { conn, usedPrefix, command }) => {
+    // Verificar si se está respondiendo a una imagen
+    if (!m.quoted || !m.quoted.mimetype.startsWith('image/')) {
+        return conn.reply(m.chat, `_Responde a una imagen con el comando para obtener una URL._`, m);
+    }
+    
+    try {
+        await m.reply('_Subiendo imagen, por favor espera..._');
+        
+        // Descargar la imagen a la que se respondió
+        const media = await m.quoted.download();
+        
+        // Determinar el tipo de archivo y extensión
+        const fileType = await fileTypeFromBuffer(media);
+        if (!fileType) {
+            return conn.reply(m.chat, '_No se pudo determinar el tipo de archivo._', m);
+        }
 
-  axios.get(`http://ip-api.com/json/${text}?fields=status,message,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,mobile,hosting,query`).then ((res) => {
-    const data = res.data
+        // Subir la imagen a telegra.ph
+        const response = await axios.post('https://telegra.ph/upload', media, {
+            headers: {
+                'Content-Type': fileType.mime
+            }
+        });
+        
+        // Extraer la URL
+        const data = response.data;
+        if (data && data[0] && data[0].src) {
+            const imageUrl = 'https://telegra.ph' + data[0].src;
+            await conn.reply(m.chat, `_¡Imagen subida con éxito!_\n\n*URL:* ${imageUrl}`, m);
+        } else {
+            await conn.reply(m.chat, '_Ocurrió un error al subir la imagen._', m);
+        }
+    } catch (e) {
+        console.error(e);
+        await conn.reply(m.chat, '_Ocurrió un error al procesar la imagen. Inténtalo de nuevo más tarde._', m);
+    }
+};
 
-      if (String(data.status) !== "success") {
-        throw new Error(data.message || "Falló")
-      }
-    let ipsearch = `
-☁️ *I N F O - I P* ☁️
+handler.help = ['tourl'];
+handler.tags = ['tools'];
+handler.command = ['tourl', 'telegraph'];
 
-IP : ${data.query}
-País : ${data.country}
-Código de País : ${data.countryCode}
-Provincia : ${data.regionName}
-Código de Provincia : ${data.region}
-Ciudad : ${data.city}
-Distrito : ${data.district}
-Código Postal : ${res.data.zip}
-Zona Horaria : ${data.timezone}
-ISP : ${data.isp}
-Organización : ${data.org}
-AS : ${data.as}
-Mobile : ${data.mobile ? "Si" : "No"}
-Hosting : ${data.hosting ? "Si" : "No"}
-`.trim()
-
-conn.reply(m.chat, ipsearch, m)
-})
-}
-
-handler.help = ['ip <alamat ip>']
-handler.tags = ['owner']
-handler.command = ['ip']
-
-export default handler
+export default handler;
