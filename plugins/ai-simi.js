@@ -9,7 +9,7 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
     try {
         await conn.sendPresenceUpdate('composing', m.chat);
         
-        // --- USANDO LA API DE BRAINSHOP DIRECTAMENTE (MÁS ESTABLE) ---
+        // --- USANDO LA API DE BRAINSHOP ---
         // Traducimos el texto a inglés para la API de Brainshop
         let translatedText = (await translate(text, { to: 'en' })).text;
         let nombre = m.pushName || 'Usuario';
@@ -18,6 +18,11 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
         let api = await fetch(`http://api.brainshop.ai/get?bid=153868&key=rcKonOgrUFmn5usX&uid=${nombre}&msg=${encodeURIComponent(translatedText)}`);
         let res = await api.json();
         
+        // Verificamos si la respuesta contiene el texto que necesitamos.
+        if (!res.cnt) {
+            throw new Error('La API de Brainshop no devolvió una respuesta válida.');
+        }
+
         // Traducimos la respuesta de Brainshop de vuelta a español
         let translatedResponse = (await translate(res.cnt, { to: 'es' })).text;
         await m.reply(translatedResponse);
@@ -26,7 +31,8 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
 
     } catch (e) {
         console.error('Error al comunicarse con la API de Brainshop:', e);
-        return m.reply('_Ocurrió un error inesperado al comunicarme con el bot._');
+        // Enviamos un mensaje de error al chat para que el usuario sepa que algo falló
+        await m.reply('_Ocurrió un error inesperado al comunicarme con el bot. Es posible que el servicio esté caído._');
     }
 };
 
