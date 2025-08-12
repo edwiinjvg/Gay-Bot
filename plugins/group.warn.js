@@ -50,13 +50,13 @@ var handler = async (m, { conn, text, command }) => {
 
     // Mensaje de advertencia incluyendo la razón
     await conn.reply(m.chat, `
-- _¡*@${memberToWarn.split('@')[0]}* ha sido advertido!_\n- _*Razón:* ${reason}_\n- _*Advertencias:* ${newWarnCount}/${maxWarns}_\n_Si alcanzas 3 advertencias, serás expulsado del grupo._`, m, { mentions: [memberToWarn] });
+- _¡@${memberToWarn.split('@')[0]} ha sido advertido!_\n- _*Razón:* ${reason}_\n- _*Advertencias:* ${newWarnCount}/${maxWarns}_\n\n_Si alcanzas 3 advertencias, serás expulsado del grupo._`, m, { mentions: [memberToWarn] });
 
     // Si las advertencias alcanzan el límite, expulsar al usuario
     if (newWarnCount >= maxWarns) {
         try {
             await conn.groupParticipantsUpdate(m.chat, [memberToWarn], 'remove');
-            await conn.reply(m.chat, `_¡*@${memberToWarn.split('@')[0]}* alcanzó el máximo de *${maxWarns}* advertencias y ha sido expulsado!_`, m, { mentions: [memberToWarn] });
+            await conn.reply(m.chat, `_¡@${memberToWarn.split('@')[0]} alcanzó el máximo de *${maxWarns}* advertencias y ha sido expulsado!_`, m, { mentions: [memberToWarn] });
             user.warn = 0; // Reiniciar advertencias después de ser expulsado
         } catch (e) {
             console.error(e);
