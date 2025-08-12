@@ -1,4 +1,4 @@
-var handler = async (m, { conn, text, command }) => {
+var handler = async (m, { conn, text, command, groupMetadata }) => {
     // Lógica para encontrar al usuario
     let memberToWarn = null;
 
@@ -29,11 +29,16 @@ var handler = async (m, { conn, text, command }) => {
 
     // --- Protecciones añadidas ---
     const ownerBot = global.owner[0][0] + '@s.whatsapp.net';
+    const isTargetAdmin = groupMetadata.participants.some(p => p.id === memberToWarn && (p.admin === 'admin' || p.admin === 'superadmin'));
+
     if (memberToWarn === m.sender) {
         return conn.reply(m.chat, `_¡No puedes advertirte a ti mismo!_`, m);
     }
     if (memberToWarn === ownerBot) {
         return conn.reply(m.chat, `_¡No puedes advertir a mi dueño!_`, m);
+    }
+    if (isTargetAdmin) {
+        return conn.reply(m.chat, `_¡No puedes advertir a un administrador!_`, m);
     }
     // --- Fin de protecciones ---
 
