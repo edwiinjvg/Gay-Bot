@@ -8,7 +8,9 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
         return m.reply('_Este comando solo se puede utilizar en grupos._');
     }
 
-    const participants = m.isGroup ? await conn.groupFetchParticipants(m.chat) : [];
+    // --- CORRECCIÓN AQUÍ ---
+    const metadata = m.isGroup ? await conn.groupMetadata(m.chat) : {};
+    const participants = metadata.participants;
     
     if (!Array.isArray(participants) || participants.length === 0) {
         return m.reply('_Este grupo no tiene participantes._');
@@ -21,14 +23,12 @@ const handler = async (m, { conn, usedPrefix, command, args }) => {
 
     let top10Participants = [];
     
-    // Si hay menos de 10 participantes, se repiten aleatoriamente para completar la lista
     if (participants.length < 10) {
         for (let i = 0; i < 10; i++) {
             const randomIndex = Math.floor(Math.random() * participants.length);
             top10Participants.push(participants[randomIndex]);
         }
     } else {
-        // Si hay 10 o más, se eligen 10 de forma aleatoria sin repetir
         const shuffledParticipants = [...participants].sort(() => Math.random() - 0.5);
         top10Participants = shuffledParticipants.slice(0, 10);
     }
