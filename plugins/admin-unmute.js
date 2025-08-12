@@ -1,21 +1,4 @@
-// Archivo: grupo-unmute.js
-
 let handler = async (m, { conn, args, groupMetadata, isOwner, isAdmin, isBotAdmin }) => {
-    // Verificar si es un grupo
-    if (!m.isGroup) {
-        return m.reply('_Este comando solo puede ser utilizado en grupos._');
-    }
-    
-    // Verificar si el que usa el comando es admin
-    if (!isAdmin) {
-        return m.reply('_¡Solo administradores pueden utilizar este comando!_');
-    }
-
-    // Verificar si el bot es admin
-    if (!isBotAdmin) {
-        return m.reply('_¡Necesito ser administrador para poder ejecutar este comando!_');
-    }
-    
     // Identificar al usuario a desmutear
     let user;
     if (m.mentionedJid && m.mentionedJid[0]) {
@@ -30,13 +13,19 @@ let handler = async (m, { conn, args, groupMetadata, isOwner, isAdmin, isBotAdmi
         return m.reply('_Menciona o responde a un usuario para desmutearlo._');
     }
     
-    // Protecciones
+    // --- Lógica de protecciones modificada ---
     if (user === m.sender) {
-        return m.reply('¿A ti mismo?');
+        // Permitir que un admin se desmutee a sí mismo
+        if (!isAdmin) {
+            return m.reply('_Solo los administradores pueden desmutearse a sí mismos._');
+        }
     }
+    
+    // Permitir que el bot se desmutee a sí mismo
     if (user === conn.user.jid) {
-        return m.reply('_¡No puedo desmutearme a mí mismo!_');
+      // No hay mensaje de error, simplemente procedemos a la acción.
     }
+    // --- Fin de la lógica de protecciones ---
     
     const userTarget = global.db.data.users[user];
 
