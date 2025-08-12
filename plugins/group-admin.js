@@ -1,5 +1,5 @@
 const handler = async (m, { conn, usedPrefix, command, text }) => {
-    // --- Lógica para encontrar al usuario (más robusta) ---
+    // --- Lógica para encontrar al usuario ---
     let number;
     if (!text && !m.quoted) {
         return conn.reply(m.chat, `_Debes mencionar o responder a alguien para usar este comando._`, m);
@@ -20,32 +20,18 @@ const handler = async (m, { conn, usedPrefix, command, text }) => {
     let user = number + '@s.whatsapp.net';
     // --- Fin de la lógica para encontrar al usuario ---
 
-    // Definimos la acción según el comando
-    let action;
-    let actionText;
-
-    if (['promote', 'admin'].includes(command)) {
-        action = 'promote';
-        actionText = 'promovido a administrador';
-    } else if (['demote', 'unadmin'].includes(command)) {
-        action = 'demote';
-        actionText = 'degradado a miembro';
-    } else {
-        return; // Comando no reconocido
-    }
-
     try {
-        await conn.groupParticipantsUpdate(m.chat, [user], action);
-        await conn.reply(m.chat, `_¡@${number} ha sido ${actionText}!_`, m, { mentions: [user] });
+        await conn.groupParticipantsUpdate(m.chat, [user], 'promote');
+        await conn.reply(m.chat, `_¡@${number} ha sido promovido a administrador!_`, m, { mentions: [user] });
     } catch (e) {
         console.error(e);
         await conn.reply(m.chat, `_¡Oops! No pude procesar a esa persona._`, m);
     }
 };
 
-handler.help = ['promote @user', 'demote @user'];
+handler.help = ['promote @user', 'admin @user'];
 handler.tags = ['admin'];
-handler.command = ['promote', 'admin', 'demote', 'unadmin'];
+handler.command = ['promote', 'admin'];
 handler.group = true;
 handler.botAdmin = true;
 handler.admin = true;
