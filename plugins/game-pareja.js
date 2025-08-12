@@ -1,24 +1,26 @@
 // Archivo: juegos-pareja.js
 
 // Estado temporal para las propuestas pendientes
-// La clave es el JID de la persona que propone
 const pendingProposals = new Map();
 
 let handler = async (m, { conn, usedPrefix, command, args, groupMetadata }) => {
 
     const isGroup = m.chat.endsWith('@g.us');
     if (!isGroup) {
-        if (['pareja', 'proponer', 'aceptar', 'rechazar', 'terminar', 'romper'].includes(command)) {
+        if (['pareja', 'proponer', 'aceptar', 'rechazar', 'terminar', 'romper', 'mipareja'].includes(command)) {
             return m.reply('_Este comando solo puede ser utilizado en grupos._');
         }
     }
 
+    // Asegurarse de que el usuario proponente esté registrado
+    global.db.data.users[m.sender] = global.db.data.users[m.sender] || {};
+    global.db.data.users[m.sender].marry = global.db.data.users[m.sender].marry || null;
+
     // Lógica para 'proponer'
     if (['pareja', 'proponer'].includes(command)) {
-        
-        let user = global.db.data.users[m.sender];
-        if (user && user.marry) {
-            const partnerJid = user.marry;
+
+        if (global.db.data.users[m.sender].marry) {
+            const partnerJid = global.db.data.users[m.sender].marry;
             const partnerNumber = partnerJid.split('@')[0];
             return m.reply(`_Ya tienes pareja, infiel de mierda._ 💔\n_*@${partnerNumber}* date cuenta._`, null, { mentions: [partnerJid] });
         }
@@ -34,6 +36,16 @@ let handler = async (m, { conn, usedPrefix, command, args, groupMetadata }) => {
 
         if (targetUserJid === m.sender) {
             return m.reply('_No puedes hacerte pareja de ti mismo, eso sería raro..._ 💀');
+        }
+
+        // Asegurarse de que el usuario objetivo también esté registrado
+        global.db.data.users[targetUserJid] = global.db.data.users[targetUserJid] || {};
+        global.db.data.users[targetUserJid].marry = global.db.data.users[targetUserJid].marry || null;
+
+        if (global.db.data.users[targetUserJid].marry) {
+             const partnerJid = global.db.data.users[targetUserJid].marry;
+             const partnerNumber = partnerJid.split('@')[0];
+             return m.reply(`_Esa persona ya tiene pareja. No puedes robarle la pareja a @${partnerNumber}._ 💔`, null, { mentions: [targetUserJid, partnerJid] });
         }
 
         const existingProposal = Array.from(pendingProposals.values()).find(
@@ -73,11 +85,7 @@ let handler = async (m, { conn, usedPrefix, command, args, groupMetadata }) => {
 
     // Lógica para 'aceptar'
     } else if (command === 'aceptar') {
-
-        const proposal = Array.from(pendingProposals.values()).find(
-            p => p.target === m.sender
-        );
-
+        const proposal = Array.from(pendingProposals.values()).find(p => p.target === m.sender);
         if (!proposal) {
             return m.reply('_No tienes ninguna propuesta de pareja pendiente._ 🥺');
         }
@@ -102,10 +110,7 @@ let handler = async (m, { conn, usedPrefix, command, args, groupMetadata }) => {
 
     // Lógica para 'rechazar'
     } else if (command === 'rechazar') {
-
-        const proposal = Array.from(pendingProposals.values()).find(
-            p => p.target === m.sender
-        );
+        const proposal = Array.from(pendingProposals.values()).find(p => p.target === m.sender);
 
         if (!proposal) {
             return m.reply('_No tienes ninguna propuesta de pareja pendiente._ 🥺');
@@ -127,19 +132,15 @@ let handler = async (m, { conn, usedPrefix, command, args, groupMetadata }) => {
 
     // Lógica para 'terminar'
     } else if (['terminar', 'romper'].includes(command)) {
-
-        const user = global.db.data.users[m.sender];
-        if (!user.marry) {
+        if (!global.db.data.users[m.sender].marry) {
             return m.reply("_No tienes pareja como para terminar una relación, perdedor._ 😹");
         }
 
-        const partnerJid = user.marry;
-        const partner = global.db.data.users[partnerJid];
-
-        if (partner) {
-            partner.marry = null;
+        const partnerJid = global.db.data.users[m.sender].marry;
+        if (global.db.data.users[partnerJid]) {
+            global.db.data.users[partnerJid].marry = null;
         }
-        user.marry = null;
+        global.db.data.users[m.sender].marry = null;
         
         const mentionUser = `@${m.sender.split('@')[0]}`;
         const mentionPartner = `@${partnerJid.split('@')[0]}`;
@@ -150,11 +151,8 @@ let handler = async (m, { conn, usedPrefix, command, args, groupMetadata }) => {
 
     // Lógica para 'mipareja'
     } else if (command === 'mipareja') {
-
-        const user = global.db.data.users[m.sender];
-        
-        if (user.marry) {
-            const partnerJid = user.marry;
+        if (global.db.data.users[m.sender].marry) {
+            const partnerJid = global.db.data.users[m.sender].marry;
             const mention = `@${partnerJid.split('@')[0]}`;
             await conn.reply(m.chat, `_Tu pareja es ${mention}._ 💕`, m, {
                 mentions: [partnerJid]
