@@ -33,7 +33,7 @@ var handler = async (m, { conn, args }) => {
     // Verificar si el usuario a expulsar es admin del grupo
     const isTargetAdmin = groupMetadata.participants.some(p => p.id === memberToRemoveId && (p.admin === 'admin' || p.admin === 'superadmin'));
     if (isTargetAdmin) {
-      return m.reply("_No puedes eliminar a un administrador._");
+      return m.reply("_¡No puedes eliminar a un administrador!_");
     }
 
     // Ejecución del comando
