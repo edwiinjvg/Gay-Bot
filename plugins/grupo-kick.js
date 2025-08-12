@@ -30,6 +30,12 @@ var handler = async (m, { conn, args }) => {
         return m.reply('_¡No puedes eliminar al dueño del bot!_');
     }
 
+    // Verificar si el usuario a expulsar es admin del grupo
+    const isTargetAdmin = groupMetadata.participants.some(p => p.id === memberToRemoveId && (p.admin === 'admin' || p.admin === 'superadmin'));
+    if (isTargetAdmin) {
+      return m.reply("_No puedes eliminar a un administrador._");
+    }
+
     // Ejecución del comando
     try {
         await conn.groupParticipantsUpdate(m.chat, [memberToRemoveId], 'remove');
@@ -44,6 +50,6 @@ handler.tags = ['group'];
 handler.command = ['ban', 'kick'];
 handler.group = true;
 handler.admin = true;
-handler.botAdmin = true; // Agregué esta línea para que tu handler.js pueda verificar si el bot es admin.
+handler.botAdmin = true;
 
 export default handler;
