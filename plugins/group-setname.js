@@ -5,7 +5,7 @@ var handler = async (m, { conn, text, usedPrefix, command }) => {
     
     try {
         await conn.groupUpdateSubject(m.chat, text);
-        await conn.reply(m.chat, `_¡El nombre del grupo ha sido cambiado a *"${text}"* exitosamente!_`, m);
+        await conn.reply(m.chat, `_¡El nombre del grupo ha sido cambiado a: *"${text}"* exitosamente!_`, m);
     } catch (e) {
         console.error(e);
         await conn.reply(m.chat, '_Ocurrió un error al intentar cambiar el nombre._', m);
