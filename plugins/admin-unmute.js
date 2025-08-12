@@ -31,7 +31,7 @@ let handler = async (m, { conn, args, groupMetadata, isOwner, isAdmin, isBotAdmi
 
     // Verificar si el usuario está silenciado
     if (!userTarget || !userTarget.muto) {
-        return m.reply(`_¡*@${user.split('@')[0]}* no está silenciado!_`, null, { mentions: [user] });
+        return m.reply(`_¡@${user.split('@')[0]} no está silenciado!_`, null, { mentions: [user] });
     }
 
     // Desmutear al usuario
