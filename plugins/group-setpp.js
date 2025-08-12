@@ -1,26 +1,26 @@
-import { makeWASocket } from '@whiskeysockets/baileys';
-
-let handler = async (m, { conn, usedPrefix, command }) => {
-  let q = m.quoted ? m.quoted : m;
-  let mime = (q.msg || q).mimetype || q.mediaType || '';
-
-  if (/image/.test(mime)) {
-    let img = await q.download();
-    if (!img) return m.reply(`Te faltó la imagen para el perfil del grupo.`);
-
-    try {
-      await conn.updateProfilePicture(m.chat, img);
-      m.reply(` Perfecto.`);
-      m.react(done)
-    } catch (e) {
-      m.reply(`︎Ocurrió un error: ${e.message}`);
+var handler = async (m, { conn, usedPrefix, command }) => {
+    // Verificar si se está respondiendo a una imagen
+    if (!m.quoted || !m.quoted.mimetype.startsWith('image/')) {
+        return conn.reply(m.chat, `_Responde a una imagen con este comando para cambiar la foto del grupo, por ejemplo: ${usedPrefix + command}_`, m);
     }
-  } else {
-    return m.reply(`Te faltó la imagen para cambiar el perfil del grupo.`);
-  }
+    
+    try {
+        // Descargar la imagen a la que se respondió
+        const media = await m.quoted.download();
+        
+        // Usar la imagen descargada para actualizar la foto de perfil del grupo
+        await conn.updateProfilePicture(m.chat, media);
+        
+        await conn.reply(m.chat, `_¡La foto de perfil del grupo ha sido cambiada con éxito!_`, m);
+    } catch (e) {
+        console.error(e);
+        await conn.reply(m.chat, '_Ocurrió un error al cambiar la foto. Asegúrate de que el bot sea administrador y de que la imagen sea válida._', m);
+    }
 };
 
-handler.command = ['setpp', 'groupimg'];
+handler.help = ['setpp'];
+handler.tags = ['group'];
+handler.command = ['setpp', 'setprofilepic'];
 handler.group = true;
 handler.admin = true;
 handler.botAdmin = true;
