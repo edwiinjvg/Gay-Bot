@@ -7,7 +7,7 @@ import { FormData } from 'formdata-node';
 let handler = async (m, { conn, usedPrefix, command }) => {
   let q = m.quoted ? m.quoted : m;
   let mime = (q.msg || q).mimetype || '';
-  if (!mime) return conn.reply(m.chat, `📍 *Responde a una imagen, sticker, video o audio para subirlo a Catbox.*`, m);
+  if (!mime) return conn.reply(m.chat, `_Responde a una imagen, sticker, video o audio para que lo suba a la nube._`, m);
 
   await m.react("📤");
 
@@ -15,16 +15,15 @@ let handler = async (m, { conn, usedPrefix, command }) => {
     let media = await q.download();
     let link = await catbox(media);
 
-    let txt = `*乂 U P L O A D E R 乂*\n\n`;
-    txt += `🌐 *Enlace:* ${link}\n`;
-    txt += `📦 *Tamaño:* ${formatBytes(media.length)}\n\n`;
+    let txt = `
+- _*Subido con éxito*_ ✅\n- _*Link:* ${link}_\n- _*Tamaño:* ${formatBytes(media.length)}_`.trim();
 
-    await conn.reply(m.chat, txt, m);
+    await conn.reply(m.chat, '```' + txt + '```', m);
     await m.react("✅");
   } catch (e) {
     console.error(e);
     await m.react("❌");
-    return conn.reply(m.chat, `⚠️ Error al subir el archivo a Catbox.`, m);
+    return conn.reply(m.chat, `_Algo salió mal, no pude subir tu archivo._`, m);
   }
 };
 
@@ -35,7 +34,6 @@ handler.register = true;
 
 export default handler;
 
-// 📦 Formatear tamaño de archivos
 function formatBytes(bytes) {
   if (bytes === 0) return '0 B';
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
@@ -43,7 +41,6 @@ function formatBytes(bytes) {
   return `${(bytes / (1024 ** i)).toFixed(2)} ${sizes[i]}`;
 }
 
-// 🐱 Subir archivo a Catbox
 async function catbox(content) {
   const { ext, mime } = (await fileTypeFromBuffer(content)) || { ext: 'bin', mime: 'application/octet-stream' };
   const blob = new Blob([content], { type: mime });
