@@ -1,4 +1,4 @@
-const handler = async (m, { conn, usedPrefix, command }) => {
+var handler = async (m, { conn, usedPrefix, command }) => {
     // Verificar si el comando fue usado respondiendo a un mensaje
     if (!m.quoted) {
         return conn.reply(m.chat, '_Responde a un mensaje para borrarlo._', m);
