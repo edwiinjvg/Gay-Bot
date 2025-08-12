@@ -17,7 +17,7 @@ var handler = async (m, { conn, participants, usedPrefix, command }) => {
     }
     
     // Construir el mensaje con la lista de advertencias
-    let message = `*[ ADVERTENCIAS DEL GRUPO ] ⚠️*\n\n`;
+    let message = `*[ ADVERTENCIAS DEL GRUPO ]*\n\n`;
     for (let i = 0; i < warnList.length; i++) {
         let user = warnList[i].user;
         let warns = warnList[i].warns;
