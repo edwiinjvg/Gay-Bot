@@ -1,26 +1,26 @@
-var handler = async (m, { conn, usedPrefix, command }) => {
-    // Verificar si se está respondiendo a una imagen
-    if (!m.quoted || !m.quoted.mimetype.startsWith('image/')) {
-        return conn.reply(m.chat, `_Responde a una imagen para cambiar la foto del grupo._`, m);
-    }
-    
+import { makeWASocket } from '@whiskeysockets/baileys';
+
+let handler = async (m, { conn, usedPrefix, command }) => {
+  let q = m.quoted ? m.quoted : m;
+  let mime = (q.msg || q).mimetype || q.mediaType || '';
+
+  if (/image/.test(mime)) {
+    let img = await q.download();
+    if (!img) return m.reply(`Te faltó la imagen para el perfil del grupo.`);
+
     try {
-        // Descargar la imagen a la que se respondió
-        const media = await m.quoted.download();
-        
-        // Usar la imagen descargada para actualizar la foto de perfil del grupo
-        await conn.updateProfilePicture(m.chat, media);
-        
-        await conn.reply(m.chat, `_¡La foto de perfil del grupo ha sido actualizada con éxito!_`, m);
+      await conn.updateProfilePicture(m.chat, img);
+      m.reply(` Perfecto.`);
+      m.react(done)
     } catch (e) {
-        console.error(e);
-        await conn.reply(m.chat, '_Ocurrió un error al intentar cambiar la foto._', m);
+      m.reply(`︎Ocurrió un error: ${e.message}`);
     }
+  } else {
+    return m.reply(`Te faltó la imagen para cambiar el perfil del grupo.`);
+  }
 };
 
-handler.help = ['setpp'];
-handler.tags = ['group'];
-handler.command = ['setpp', 'setprofilepic'];
+handler.command = ['setpp', 'groupimg'];
 handler.group = true;
 handler.admin = true;
 handler.botAdmin = true;
