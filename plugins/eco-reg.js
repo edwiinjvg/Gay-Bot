@@ -1,4 +1,4 @@
-const defaultImage = 'https://telegra.ph/file/5a5d20739c9413247c1a8.png';
+const defaultImage = 'https://files.catbox.moe/dm3770.jpg';
 
 const handler = async (m, { conn, args, usedPrefix, command }) => {
     if (!global.db.data.users[m.sender]) {
