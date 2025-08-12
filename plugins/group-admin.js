@@ -1,50 +1,53 @@
-//código creado por 🐉𝙉𝙚𝙤𝙏𝙤𝙠𝙮𝙤 𝘽𝙚𝙖𝙩𝙨
-var handler = async (m, { conn, usedPrefix, command, text }) => {
-  let number;
-
-  if (!text && !m.quoted) {
-    return conn.reply(m.chat, `📌 *¿Eh?*  
-Debes mencionar o responder a alguien si quieres que lo haga admin~ 💅`, m);
-  }
-
-  if (isNaN(text)) {
-    if (text.includes('@')) {
-      number = text.split('@')[1];
+const handler = async (m, { conn, usedPrefix, command, text }) => {
+    // --- Lógica para encontrar al usuario (más robusta) ---
+    let number;
+    if (!text && !m.quoted) {
+        return conn.reply(m.chat, `_Debes mencionar o responder a alguien para usar este comando._`, m);
     }
-  } else {
-    number = text;
-  }
+    if (isNaN(text)) {
+        if (text.includes('@')) {
+            number = text.split('@')[1];
+        }
+    } else {
+        number = text;
+    }
+    if (!number && m.quoted) {
+        number = m.quoted.sender.split('@')[0];
+    }
+    if (!number) {
+        return conn.reply(m.chat, `_No encontré a nadie válido para procesar._`, m);
+    }
+    let user = number + '@s.whatsapp.net';
+    // --- Fin de la lógica para encontrar al usuario ---
 
-  if (!number && m.quoted) {
-    number = m.quoted.sender.split('@')[0];
-  }
+    // Definimos la acción según el comando
+    let action;
+    let actionText;
 
-  if (!number) {
-    return conn.reply(m.chat, `🙃 *Nop~* No encontré a nadie válido para promover.`, m);
-  }
+    if (['promote', 'admin'].includes(command)) {
+        action = 'promote';
+        actionText = 'promovido a administrador';
+    } else if (['demote', 'unadmin'].includes(command)) {
+        action = 'demote';
+        actionText = 'degradado a miembro';
+    } else {
+        return; // Comando no reconocido
+    }
 
-  if (number.length > 13 || number.length < 10) {
-    return conn.reply(m.chat, `⚠️ *Ese número no es válido, baka...* 😤`, m);
-  }
-
-  let user = number + '@s.whatsapp.net';
-
-  try {
-    await conn.groupParticipantsUpdate(m.chat, [user], 'promote');
-    conn.reply(m.chat, `🎀 *¡Listo~!*  
-@${number} ahora es admin del grupo. ¡Más te vale que no abuses de tu poder! 😌`, m, { mentions: [user] });
-  } catch (e) {
-    conn.reply(m.chat, `❌ *¡Oops!* No pude hacer admin a esa persona...  
-¿Estás segura de que tengo permisos suficientes? 😔`, m);
-  }
+    try {
+        await conn.groupParticipantsUpdate(m.chat, [user], action);
+        await conn.reply(m.chat, `_¡@${number} ha sido ${actionText}!_`, m, { mentions: [user] });
+    } catch (e) {
+        console.error(e);
+        await conn.reply(m.chat, `_¡Oops! No pude procesar a esa persona._`, m);
+    }
 };
 
-handler.help = ['promote'];
-handler.tags = ['grupo'];
-handler.command = ['promote', 'darpija', 'promover'];
+handler.help = ['promote @user', 'demote @user'];
+handler.tags = ['admin'];
+handler.command = ['promote', 'admin', 'demote', 'unadmin'];
 handler.group = true;
-handler.admin = true;
 handler.botAdmin = true;
-handler.fail = null;
+handler.admin = true;
 
 export default handler;
