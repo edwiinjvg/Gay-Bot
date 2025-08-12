@@ -1,49 +1,46 @@
-import { fileTypeFromBuffer } from 'file-type';
-import axios from 'axios';
-import fs from 'fs';
-import { tmpdir } from 'os';
+import uploadFile from '../lib/uploadFile.js'
+import uploadImage from '../lib/uploadImage.js'
+import fetch from 'node-fetch'
 
-let handler = async (m, { conn, usedPrefix, command }) => {
-    // Verificar si se está respondiendo a una imagen
-    if (!m.quoted || !m.quoted.mimetype.startsWith('image/')) {
-        return conn.reply(m.chat, `_Responde a una imagen con el comando para obtener una URL._`, m);
-    }
-    
-    try {
-        await m.reply('_Subiendo imagen, por favor espera..._');
-        
-        // Descargar la imagen a la que se respondió
-        const media = await m.quoted.download();
-        
-        // Determinar el tipo de archivo y extensión
-        const fileType = await fileTypeFromBuffer(media);
-        if (!fileType) {
-            return conn.reply(m.chat, '_No se pudo determinar el tipo de archivo._', m);
-        }
+let handler = async (m) => {
+  let q = m.quoted ? m.quoted : m
+  let mime = (q.msg || q).mimetype || ''
+  if (!mime) return conn.reply(m.chat, `${emoji} Por favor, responda a una *Imagen* o *Vídeo.*`, m)
+  await m.react(rwait)
+  try {
+  let media = await q.download()
+  let isTele = /image\/(png|jpe?g|gif)|video\/mp4/.test(mime)
+  let link = await (isTele ? uploadImage : uploadFile)(media)
+  let img = await (await fetch(`${link}`)).buffer()
+  let txt = `乂  *L I N K - E N L A C E*  乂\n\n`
+      txt += `*» Enlace* : ${link}\n`
+      txt += `*» Acortado* : ${await shortUrl(link)}\n`
+      txt += `*» Tamaño* : ${formatBytes(media.length)}\n`
+      txt += `*» Expiración* : ${isTele ? 'No expira' : 'Desconocido'}\n\n`
+      txt += `> *${dev}*`
 
-        // Subir la imagen a telegra.ph
-        const response = await axios.post('https://telegra.ph/upload', media, {
-            headers: {
-                'Content-Type': fileType.mime
-            }
-        });
-        
-        // Extraer la URL
-        const data = response.data;
-        if (data && data[0] && data[0].src) {
-            const imageUrl = 'https://telegra.ph' + data[0].src;
-            await conn.reply(m.chat, `_¡Imagen subida con éxito!_\n\n*URL:* ${imageUrl}`, m);
-        } else {
-            await conn.reply(m.chat, '_Ocurrió un error al subir la imagen._', m);
-        }
-    } catch (e) {
-        console.error(e);
-        await conn.reply(m.chat, '_Ocurrió un error al procesar la imagen. Inténtalo de nuevo más tarde._', m);
-    }
-};
+await conn.sendFile(m.chat, img, 'thumbnail.jpg', txt, m, fkontak)
+await m.react(done)
+} catch {
+await m.react(error)
+}}
+handler.help = ['tourl']
+handler.tags = ['transformador']
+handler.register = true
+handler.command = ['tourl', 'upload']
 
-handler.help = ['tourl'];
-handler.tags = ['tools'];
-handler.command = ['tourl', 'telegraph'];
+export default handler
 
-export default handler;
+function formatBytes(bytes) {
+  if (bytes === 0) {
+    return '0 B';
+  }
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
+  const i = Math.floor(Math.log(bytes) / Math.log(1024))
+  return `${(bytes / 1024 ** i).toFixed(2)} ${sizes[i]}`;
+}
+
+async function shortUrl(url) {
+        let res = await fetch(`https://tinyurl.com/api-create.php?url=${url}`)
+        return await res.text()
+}
