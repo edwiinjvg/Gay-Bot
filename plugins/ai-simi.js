@@ -1,33 +1,18 @@
-import fetch from 'node-fetch'
+import fetch from 'node-fetch';
 import { translate } from '@vitalets/google-translate-api'; // Asegúrate de tener esta librería instalada
 
-let handler = m => m
-handler.before = async (m) => {
-    // No respondemos a los mensajes del propio bot
-    if (m.fromMe) return
-    let chat = global.db.data.chats[m.chat]
-    
-    // Si el modo Simsimi no está activado en el chat, no hacemos nada
-    if (!chat.simi) return
-    
-    // Lista de comandos que no queremos que responda Simsimi
-    const commandBlacklist = ['serbot', 'bots', 'jadibot', 'menu', 'play', 'play2', 'playdoc', 'tiktok', 'facebook', 'menu2', 'infobot', 'estado', 'ping', 'instalarbot', 'sc', 'sticker', 's', 'wm', 'qc'];
-    
-    // Verificamos si el mensaje es un comando de la lista negra
-    if (commandBlacklist.some(command => m.text.includes(command))) {
-        return;
+const handler = async (m, { conn, text, usedPrefix, command }) => {
+    // Si el usuario no escribe nada después del comando, le pedimos un texto.
+    if (!text) {
+        return m.reply(`_¿Qué quieres que le diga a Simsimi?_ 😼\n_Usa el comando así: *${usedPrefix + command} hola bot*_`);
     }
 
-    if (!m.text) return
-    
-    let textodem = m.text;
-    
     try {
-        await conn.sendPresenceUpdate('composing', m.chat)
+        await conn.sendPresenceUpdate('composing', m.chat);
         
         // --- OPCIÓN 1: API de Simsimi ---
         // Se usa una API de Simsimi que es fiable y no requiere clave
-        let simsimi = await fetch(`https://api.simsimi.fun/v2/?text=${encodeURIComponent(textodem)}&lc=es&cf=true`);
+        let simsimi = await fetch(`https://api.simsimi.fun/v2/?text=${encodeURIComponent(text)}&lc=es&cf=true`);
         let res = await simsimi.json();
         
         // Verificamos si la respuesta es válida
@@ -43,7 +28,7 @@ handler.before = async (m) => {
         // Este sistema de IA recuerda conversaciones
         try {
             // Traducimos el texto a inglés para la API de Brainshop
-            let reis = await translate(textodem, { to: 'en' });
+            let reis = await translate(text, { to: 'en' });
             let nombre = m.pushName || 'Usuario';
             
             // Hacemos la llamada a la API de Brainshop
@@ -58,10 +43,13 @@ handler.before = async (m) => {
 
         } catch (e2) {
             console.error('Error en el fallback de Brainshop:', e2);
-            // Si todo falla, no respondemos para evitar bucles de error.
+            // Si todo falla, no respondemos.
         }
     }
-    return true
-}
+};
 
-export default handler
+handler.help = ['simi <texto>'];
+handler.tags = ['diversion'];
+handler.command = ['simi'];
+
+export default handler;
