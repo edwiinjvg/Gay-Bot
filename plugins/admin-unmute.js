@@ -36,7 +36,7 @@ let handler = async (m, { conn, args, groupMetadata, isOwner, isAdmin, isBotAdmi
 
     // Desmutear al usuario
     userTarget.muto = false;
-    await m.reply(`_¡*@${user.split('@')[0]}* desmuteado con éxito!_`, null, { mentions: [user] });
+    await m.reply(`_¡@${user.split('@')[0]} desmuteado con éxito!_`, null, { mentions: [user] });
 };
 
 handler.help = ['unmute @usuario'];
