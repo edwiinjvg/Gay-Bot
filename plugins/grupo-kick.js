@@ -1,17 +1,5 @@
 var handler = async (m, { conn, args }) => {
-    // Verificación de grupo
-    if (!m.isGroup) return m.reply('_¡Este comando solo puede ser utilizado en grupos!_');
-
     const groupMetadata = await conn.groupMetadata(m.chat);
-
-    // Obtener información del usuario que envía el comando
-    const userParticipant = groupMetadata.participants.find(p => p.id === m.sender);
-    const isUserAdmin = userParticipant?.admin === 'admin' || userParticipant?.admin === 'superadmin';
-
-    // Verificación de admin
-    if (!isUserAdmin) {
-        return m.reply('_¡Solo administradores pueden utilizar este comando._');
-    }
 
     // Identificación del usuario a expulsar
     let memberToRemoveId = null;
@@ -56,5 +44,6 @@ handler.tags = ['group'];
 handler.command = ['ban', 'kick'];
 handler.group = true;
 handler.admin = true;
+handler.botAdmin = true; // Agregué esta línea para que tu handler.js pueda verificar si el bot es admin.
 
 export default handler;
