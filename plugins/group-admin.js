@@ -2,18 +2,15 @@ const handler = async (m, { conn, usedPrefix, command, participants, isBotAdmin,
     if (!m.isGroup) {
         return m.reply('_¡Este comando solo puede ser utilizado en grupos!_');
     }
-    
-    // Verificamos si el remitente es un administrador del grupo
+
     if (!isAdmin) {
         return m.reply('_¡Solo los administradores pueden utilizar este comando!_');
     }
 
-    // Verificamos si el bot es un administrador del grupo
     if (!isBotAdmin) {
         return m.reply('_¡Necesito ser administrador para poder ejecutar este comando!_');
     }
 
-    // Buscamos al usuario objetivo. Puede ser por mención o respondiendo a un mensaje.
     let users = m.mentionedJid[0] ? [m.mentionedJid[0]] : m.quoted ? [m.quoted.sender] : [];
 
     if (users.length === 0) {
@@ -21,7 +18,6 @@ const handler = async (m, { conn, usedPrefix, command, participants, isBotAdmin,
         return m.reply(`_Menciona a la persona o responde a su mensaje para ${action}la.`);
     }
 
-    // Definimos la acción según el comando
     let action = command === 'promote' || command === 'admin' ? 'promote' : 'demote';
     let actionText = command === 'promote' || command === 'admin' ? 'promovido a administrador' : 'degradado a miembro';
 
@@ -34,7 +30,7 @@ const handler = async (m, { conn, usedPrefix, command, participants, isBotAdmin,
     }
 };
 
-handler.help = ['promote @user', 'demote @user', 'admin @user', 'unadmin @user'];
+handler.help = ['promote @user', 'demote @user'];
 handler.tags = ['admin'];
 handler.command = ['promote', 'admin', 'demote', 'unadmin'];
 handler.group = true;
