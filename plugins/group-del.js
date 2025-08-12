@@ -1,6 +1,6 @@
 let handler = async (m, { conn, usedPrefix, command }) => {
 
-if (!m.quoted) return conn.reply(m.chat, `_Responde al mensaje que quieres eliminar._`, m)
+if (!m.quoted) return conn.reply(m.chat, `_Responde a un mensaje para borrarlo._`, m)
 try {
 let delet = m.message.extendedTextMessage.contextInfo.participant
 let bang = m.message.extendedTextMessage.contextInfo.stanzaId
@@ -10,9 +10,9 @@ return conn.sendMessage(m.chat, { delete: m.quoted.vM.key })
 }}
 
 handler.help = ['delete']
-handler.tags = ['grupo']
+handler.tags = ['group']
 handler.command = ['del','delete', 'borrar']
-handler.group = false
+handler.group = true
 handler.admin = true
 handler.botAdmin = true
 
