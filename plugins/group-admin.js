@@ -37,7 +37,7 @@ var handler = async (m, { conn, usedPrefix, command, text }) => {
 
 handler.help = ['promote'];
 handler.tags = ['grupo'];
-handler.command = ['promote', 'darpija', 'promover'];
+handler.command = ['promote', 'admin', 'promover'];
 handler.group = true;
 handler.admin = true;
 handler.botAdmin = true;
