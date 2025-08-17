@@ -103,7 +103,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
 
     if (!Buffer.isBuffer(stiker)) throw new Error('No se pudo generar el sticker')
 
-    await conn.sendMessage(m.chat, { sticker: stiker, contextInfo: externalAdReply }, { quoted: m }) // <-- CON vista previa
+    await conn.sendMessage(m.chat, { sticker: stiker, contextInfo: ...externalAdReply }, { quoted: m }) // <-- CON vista previa
     await m.react('✅')
   } catch (e) {
     console.error(e)
