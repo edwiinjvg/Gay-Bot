@@ -11,9 +11,9 @@ global.mods = []
 global.prems = []
 
 global.namebot = '𝙂𝙖𝙮𝘽𝙤𝙩 🤖'
-global.packname = 'By Edwin'
-global.author = '𝙂𝙖𝙮𝘽𝙤𝙩 🤖'
-global.vs = '2.2.0'
+global.packname = '𝙂𝙖𝙮𝘽𝙤𝙩 🤖'
+global.author = 'By Edwin'
+global.vs = '2.0'
 
 
 let file = fileURLToPath(import.meta.url)
