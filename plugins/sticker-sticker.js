@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
-import { spawn } from 'child_process'
 import fluent_ffmpeg from 'fluent-ffmpeg'
 import fetch from 'node-fetch'
 import { fileTypeFromBuffer } from 'file-type'
@@ -68,14 +67,25 @@ async function sticker(img, url, packname, author) {
   return await addExif(buffer, packname, author)
 }
 
-const handler = async (m, { conn }) => {
+const handler = async (m, { conn, args, usedPrefix, command }) => {
   const q = m.quoted ? m.quoted : m
   const mime = (q.msg || q).mimetype || ''
 
-  if (!/image|video/.test(mime)) {
+  // --- CONFIGURACIÓN DE LA VISTA PREVIA DEL ENLACE ---
+  const externalAdReply = {
+    title: '𝙂𝙖𝙮𝘽𝙤𝙩 🤖',
+    body: '¡𝘌𝘭 𝘮𝘦𝘫𝘰𝘳 𝘣𝘰𝘵 𝘥𝘦𝘭 𝘶𝘯𝘪𝘷𝘦𝘳𝘴𝘰!',
+    mediaType: 1,
+    renderLargerThumbnail: false,
+    sourceUrl: '', // <-- Pega aquí tu enlace de grupo
+    thumbnail: fs.readFileSync('./storage/img/menu.jpg'), // <-- Asegúrate que la ruta del archivo sea correcta
+  };
+  // ---------------------------------------------------
+
+  if (!/image|video/g.test(mime)) {
     return conn.sendMessage(
       m.chat,
-      { text: `_Responde a imagen/video/gif para convertir en sticker_\n`, contextInfo: global.group },
+      { text: `_Responde a imagen/video/gif para convertir en sticker_`, contextInfo: externalAdReply },
       { quoted: m }
     )
   }
@@ -93,14 +103,14 @@ const handler = async (m, { conn }) => {
 
     if (!Buffer.isBuffer(stiker)) throw new Error('No se pudo generar el sticker')
 
-    await conn.sendMessage(m.chat, { sticker: stiker, contextInfo: global.group }, { quoted: m })
+    await conn.sendMessage(m.chat, { sticker: stiker, contextInfo: externalAdReply }, { quoted: m })
     await m.react('✅')
   } catch (e) {
     console.error(e)
     await m.react('❌')
     await conn.sendMessage(
       m.chat,
-      { text: '_Ocurrió un error, inténtalo de nuevo_', contextInfo: global.group },
+      { text: '_Ocurrió un error, inténtalo de nuevo_', contextInfo: externalAdReply },
       { quoted: m }
     )
   }
