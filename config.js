@@ -22,7 +22,7 @@ global.group = {
         mediaType: 1,
         renderLargerThumbnail: false,
         sourceUrl: 'https://chat.whatsapp.com/Ht3wajnuYpK1ZSKZpD9RKs?mode=ac_t',
-        thumbnail: fs.readFileSync('.storage/img/menu.jpg'),
+        thumbnail: fs.readFileSync('./storage/img/menu.jpg'),
     }
 }
 
