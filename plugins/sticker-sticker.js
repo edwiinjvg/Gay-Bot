@@ -77,7 +77,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
     body: '¡𝘌𝘭 𝘮𝘦𝘫𝘰𝘳 𝘣𝘰𝘵 𝘥𝘦𝘭 𝘶𝘯𝘪𝘷𝘦𝘳𝘴𝘰!',
     mediaType: 1,
     renderLargerThumbnail: false,
-    sourceUrl: '', // <-- Pega aquí tu enlace de grupo
+    sourceUrl: 'https://chat.whatsapp.com/JiFl3pP7HQC4qbXBXddWI4', // <-- Pega aquí tu enlace de grupo
     thumbnail: fs.readFileSync('./storage/img/menu.jpg'), // <-- Asegúrate que la ruta del archivo sea correcta
   };
   // ---------------------------------------------------
