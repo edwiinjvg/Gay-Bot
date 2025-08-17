@@ -65,7 +65,7 @@ _Usa *${usedPrefix}on <opción>* o *${usedPrefix}off <opción>* para cambiar el 
 
 handler.command = ['on', 'off']
 handler.group = true
-handler.register = true
+handler.register = false
 handler.tags = ['group']
 handler.help = ['on <opción>', 'off <opción>']
 
