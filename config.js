@@ -18,7 +18,7 @@ global.vs = '2.2.0'
 global.group = {
     externalAdReply: {
         title: '𝙂𝙖𝙮𝘽𝙤𝙩 🤖',
-        body: '_¡El mejor bot del universo!',
+        body: '_¡El mejor bot del universo!_',
         mediaType: 1,
         renderLargerThumbnail: false,
         sourceUrl: '',
