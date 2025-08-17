@@ -89,8 +89,8 @@ const handler = async (m, { conn, args }) => {
   await m.react('⌛')
 
   const externalAdReply = {
-    title: global.packname || '𝙂𝙖𝙮𝘽𝙤𝙩 🤖',
-    body: global.author || 'Edwin',
+    title: global.packname,
+    body: global.author,
     mediaType: 1,
     renderLargerThumbnail: false,
     sourceUrl: global.group ? global.group.contextInfo.externalAdReply.sourceUrl : '',
@@ -123,7 +123,7 @@ const handler = async (m, { conn, args }) => {
     })
 
     const imgBuffer = Buffer.from(res.data.result.image, 'base64')
-    const stiker = await sticker(imgBuffer, false, global.packname || 'GayBot 🤖', global.author || 'Edwin')
+    const stiker = await sticker(imgBuffer, false, global.packname, global.author) // <-- Sin valores de respaldo
 
     await conn.sendMessage(m.chat, {
       sticker: stiker,
@@ -147,5 +147,6 @@ const handler = async (m, { conn, args }) => {
 handler.help = ['qc']
 handler.tags = ['sticker']
 handler.command = /^(qc|quotely)$/i
+handler.register = false
 
 export default handler
