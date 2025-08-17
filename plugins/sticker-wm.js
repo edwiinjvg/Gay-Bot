@@ -11,7 +11,6 @@ async function addExif(webpSticker, packname, author) {
     'sticker-pack-id': stickerPackId,
     'sticker-pack-name': packname,
     'sticker-pack-publisher': author,
-    emojis: ['🏳️‍⚧️', '🏳️‍🌈', '🍆']
   }
   const exifAttr = Buffer.from([
     0x49, 0x49, 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00,
@@ -30,14 +29,29 @@ let handler = async (m, { conn, text }) => {
   let q = m.quoted ? m.quoted : m
   let mime = (q.msg || q).mimetype || ''
   if (!/webp/.test(mime)) return m.reply('_Responde a un sticker para cambiar el wm._')
+  
+  const externalAdReply = {
+    title: global.packname,
+    body: global.author,
+    mediaType: 1,
+    renderLargerThumbnail: false,
+    sourceUrl: global.group ? global.group.contextInfo.externalAdReply.sourceUrl : '',
+    thumbnail: fs.readFileSync('./storage/img/menu.jpg'),
+  };
 
   let [packname, author] = text.split('|').map(v => v.trim())
-  if (!packname) packname = 'GayBot 🤖'
-  if (!author) author = 'Edwin'
+  if (!packname) packname = global.packname
+  if (!author) author = global.author
 
   let media = await q.download()
   let buffer = await addExif(media, packname, author)
-  await conn.sendMessage(m.chat, { sticker: buffer }, { quoted: m })
+  
+  await conn.sendMessage(m.chat, { 
+    sticker: buffer,
+    contextInfo: {
+      externalAdReply: externalAdReply
+    }
+  }, { quoted: m })
 }
 
 handler.help = ['wm']
