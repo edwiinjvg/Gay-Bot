@@ -12,7 +12,7 @@ global.prems = []
 
 global.namebot = '𝙂𝙖𝙮𝘽𝙤𝙩 🤖'
 global.packname = '𝙂𝙖𝙮𝘽𝙤𝙩 🤖'
-global.author = 'By Edwin'
+global.author = '𝘉𝘺 𝘌𝘥𝘸𝘪𝘯'
 global.vs = '2.0'
 
 
