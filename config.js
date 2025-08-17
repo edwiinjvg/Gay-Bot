@@ -21,8 +21,8 @@ global.group = {
         body: 'grupo',
         mediaType: 1,
         renderLargerThumbnail: true,
-        thumbnailUrl: 'https://i.ibb.co/L951y2D/thumbnail-personalizado.jpg',
-        sourceUrl: 'https://chat.whatsapp.com/TuEnlaceDeGrupo', // Cambia esto por el enlace de tu grupo
+        thumbnailUrl: 'https://files.catbox.moe/bhsp52.jpg',
+        sourceUrl: 'https://chat.whatsapp.com/Ht3wajnuYpK1ZSKZpD9RKs?mode=ac_t', // Cambia esto por el enlace de tu grupo
     }
 }
 // --- FIN DEL CÓDIGO ---
