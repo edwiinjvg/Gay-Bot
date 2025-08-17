@@ -93,7 +93,7 @@ const handler = async (m, { conn, args }) => {
     body: global.author,
     mediaType: 1,
     renderLargerThumbnail: false,
-    sourceUrl: global.group ? global.group.contextInfo.externalAdReply.sourceUrl : 'https://chat.whatsapp.com/JiFl3pP7HQC4qbXBXddWI4',
+    sourceUrl: global.group ? global.group.contextInfo.externalAdReply.sourceUrl : '',
     thumbnail: fs.readFileSync('./storage/img/menu.jpg'),
   };
 
