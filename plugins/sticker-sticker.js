@@ -75,7 +75,7 @@ const handler = async (m, { conn }) => {
   if (!/image|video/.test(mime)) {
     return conn.sendMessage(
       m.chat,
-      { text: `_Responde a imagen/video/gif para convertir en sticker_\n`, ...global.group },
+      { text: `_Responde a imagen/video/gif para convertir en sticker_\n`, contextInfo: global.group },
       { quoted: m }
     )
   }
@@ -93,14 +93,14 @@ const handler = async (m, { conn }) => {
 
     if (!Buffer.isBuffer(stiker)) throw new Error('No se pudo generar el sticker')
 
-    await conn.sendMessage(m.chat, { sticker: stiker, ...global.group }, { quoted: m })
+    await conn.sendMessage(m.chat, { sticker: stiker, contextInfo: global.group }, { quoted: m })
     await m.react('✅')
   } catch (e) {
     console.error(e)
     await m.react('❌')
     await conn.sendMessage(
       m.chat,
-      { text: '_Ocurrió un error, inténtalo de nuevo_', ...global.group },
+      { text: '_Ocurrió un error, inténtalo de nuevo_', contextInfo: global.group },
       { quoted: m }
     )
   }
