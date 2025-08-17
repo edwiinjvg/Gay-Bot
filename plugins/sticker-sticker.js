@@ -71,16 +71,14 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
   const q = m.quoted ? m.quoted : m
   const mime = (q.msg || q).mimetype || ''
 
-  // --- CONFIGURACIÓN DE LA VISTA PREVIA DEL ENLACE ---
   const externalAdReply = {
     title: '𝙂𝙖𝙮𝘽𝙤𝙩 🤖',
     body: '¡𝘌𝘭 𝘮𝘦𝘫𝘰𝘳 𝘣𝘰𝘵 𝘥𝘦𝘭 𝘶𝘯𝘪𝘷𝘦𝘳𝘴𝘰!',
     mediaType: 1,
     renderLargerThumbnail: false,
-    sourceUrl: 'https://chat.whatsapp.com/JiFl3pP7HQC4qbXBXddWI4', // <-- Pega aquí tu enlace de grupo
-    thumbnail: fs.readFileSync('./storage/img/menu.jpg'), // <-- Asegúrate que la ruta del archivo sea correcta
+    sourceUrl: '',
+    thumbnail: fs.readFileSync('./storage/img/menu.jpg'),
   };
-  // ---------------------------------------------------
 
   if (!/image|video/g.test(mime)) {
     return conn.sendMessage(
