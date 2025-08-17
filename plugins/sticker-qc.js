@@ -88,12 +88,12 @@ const handler = async (m, { conn, args }) => {
   
   await m.react('⌛')
 
-  const externalAdReply = {
-    title: global.packname,
-    body: global.author,
+    const externalAdReply = {
+    title: '𝙂𝙖𝙮𝘽𝙤𝙩 🤖',
+    body: '¡𝘌𝘭 𝘮𝘦𝘫𝘰𝘳 𝘣𝘰𝘵 𝘥𝘦𝘭 𝘶𝘯𝘪𝘷𝘦𝘳𝘴𝘰!',
     mediaType: 1,
     renderLargerThumbnail: false,
-    sourceUrl: global.group ? global.group.contextInfo.externalAdReply.sourceUrl : '',
+    sourceUrl: '',
     thumbnail: fs.readFileSync('./storage/img/menu.jpg'),
   };
 
