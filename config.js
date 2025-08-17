@@ -12,11 +12,7 @@ global.prems = []
 global.namebot = '𝗚𝗮𝘆𝗕𝗼𝘁 🤖'
 global.packname = '𝗚𝗮𝘆𝗕𝗼𝘁 🤖'
 global.author = 'Edwin'
-
-global.libreria = 'Baileys'
-global.baileys = 'V 6.7.16'
 global.vs = '2.2.0'
-global.sessions = 'Sessions'
 
 
 let file = fileURLToPath(import.meta.url)
