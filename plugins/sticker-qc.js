@@ -10,7 +10,6 @@ import axios from 'axios'
 const tmp = path.join(process.cwd(), 'tmp')
 if (!fs.existsSync(tmp)) fs.mkdirSync(tmp)
 
-
 async function addExif(webpSticker, packname, author, categories = [''], extra = {}) {
   const img = new webp.Image()
   const stickerPackId = crypto.randomBytes(32).toString('hex')
@@ -33,7 +32,6 @@ async function addExif(webpSticker, packname, author, categories = [''], extra =
   img.exif = exif
   return await img.save(null)
 }
-
 
 async function sticker(img, url, packname, author) {
   if (url) {
@@ -87,21 +85,17 @@ const handler = async (m, { conn, args }) => {
   let quien = m.quoted ? m.quoted.sender : m.sender
   let nombre = m.quoted ? m.quoted.name : m.name
   let fotoPerfil = await conn.profilePictureUrl(quien, 'image').catch(_ => 'https://telegra.ph/file/320b066dc81928b782c7b.png')
-
-  // Detectar si es subbot y leer nombre desde config.json
-  let nombrePack = global.packname || 'GayBot 🤖'
-  try {
-    const botActual = conn.user?.jid?.split('@')[0].replace(/\D/g, '')
-    const configPath = path.join('./JadiBots', botActual, 'config.json')
-    if (fs.existsSync(configPath)) {
-      const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'))
-      if (config.name) nombrePack = config.name
-    }
-  } catch (err) {
-    console.log('No se pudo leer config del sub-bot:', err)
-  }
-
+  
   await m.react('⌛')
+
+  const externalAdReply = {
+    title: global.packname || '𝙂𝙖𝙮𝘽𝙤𝙩 🤖',
+    body: global.author || 'Edwin',
+    mediaType: 1,
+    renderLargerThumbnail: false,
+    sourceUrl: global.group ? global.group.contextInfo.externalAdReply.sourceUrl : '',
+    thumbnail: fs.readFileSync('./storage/img/menu.jpg'),
+  };
 
   try {
     const datos = {
@@ -129,16 +123,22 @@ const handler = async (m, { conn, args }) => {
     })
 
     const imgBuffer = Buffer.from(res.data.result.image, 'base64')
-    const stiker = await sticker(imgBuffer, false, nombrePack, global.author || '© Made with ☁︎ Wirk ✧')
+    const stiker = await sticker(imgBuffer, false, global.packname || 'GayBot 🤖', global.author || 'Edwin')
 
-    await conn.sendMessage(m.chat, { sticker: stiker, ...global.rcanal }, { quoted: m })
+    await conn.sendMessage(m.chat, {
+      sticker: stiker,
+      contextInfo: {
+        externalAdReply: externalAdReply
+      }
+    }, { quoted: m })
+    
     await m.react('✅')
   } catch (e) {
     console.error(e)
     await m.react('❌')
     await conn.sendMessage(
       m.chat,
-      { text: '_Ocurrió un error, inténtalo de nuevo._', ...global.rcanal },
+      { text: '_Ocurrió un error, inténtalo de nuevo._' },
       { quoted: m }
     )
   }
@@ -147,6 +147,5 @@ const handler = async (m, { conn, args }) => {
 handler.help = ['qc']
 handler.tags = ['sticker']
 handler.command = /^(qc|quotely)$/i
-handler.register = true
 
 export default handler
