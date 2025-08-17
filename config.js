@@ -21,7 +21,7 @@ global.group = {
         body: 'grupo',
         mediaType: 1,
         renderLargerThumbnail: false,
-        sourceUrl: 'https://chat.whatsapp.com/JiFl3pP7HQC4qbXBXddWI4',
+        sourceUrl: '',
         thumbnail: fs.readFileSync('./storage/img/menu.jpg'),
     }
 }
