@@ -3,7 +3,7 @@ import chalk from 'chalk'
 import { fileURLToPath } from 'url'
 
 global.owner = [
-  ['573005094862@s.whatsapp.net', 'Edwin', true],
+  ['573005094862', 'Edwin', true],
 ]
 
 global.mods = []
@@ -12,7 +12,6 @@ global.prems = []
 global.namebot = '𝗚𝗮𝘆𝗕𝗼𝘁 🤖'
 global.packname = '𝗚𝗮𝘆𝗕𝗼𝘁 🤖'
 global.author = 'Edwin'
-global.moneda = '.'
 
 global.libreria = 'Baileys'
 global.baileys = 'V 6.7.16'
