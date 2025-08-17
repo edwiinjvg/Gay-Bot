@@ -15,7 +15,6 @@ global.packname = '𝙂𝙖𝙮𝘽𝙤𝙩 🤖'
 global.author = 'Edwin'
 global.vs = '2.2.0'
 
-}
 
 let file = fileURLToPath(import.meta.url)
 watchFile(file, () => {
