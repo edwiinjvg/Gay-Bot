@@ -20,7 +20,7 @@ global.group = {
         title: '𝙂𝙖𝙮𝘽𝙤𝙩 🤖',
         body: 'grupo',
         mediaType: 1,
-        renderLargerThumbnail: true,
+        renderLargerThumbnail: false,
         thumbnailUrl: 'https://files.catbox.moe/bhsp52.jpg',
         sourceUrl: 'https://chat.whatsapp.com/Ht3wajnuYpK1ZSKZpD9RKs?mode=ac_t', // Cambia esto por el enlace de tu grupo
     }
