@@ -21,7 +21,7 @@ global.group = {
         body: 'grupo',
         mediaType: 1,
         renderLargerThumbnail: false,
-        thumbnailUrl: 'https://files.catbox.moe/bhsp52.jpg',
+        thumbnailUrl: 'https://i.ibb.co/30B37gH/gaybot.png',
         sourceUrl: 'https://chat.whatsapp.com/Ht3wajnuYpK1ZSKZpD9RKs?mode=ac_t', // Cambia esto por el enlace de tu grupo
     }
 }
