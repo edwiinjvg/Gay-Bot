@@ -1,16 +1,14 @@
-console.clear()
-console.log('Iniciando GayBot... ⌛')
-
 import { join, dirname } from 'path'
-import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import { setupMaster, fork } from 'cluster'
 import { watchFile, unwatchFile } from 'fs'
 import cfonts from 'cfonts'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const require = createRequire(__dirname)
+const script = join(__dirname, 'main.js')
 
+console.clear()
+console.log('Iniciando GayBot... ⌛')
 
 cfonts.say('GayBot 🤖', {
   font: 'block',        
@@ -19,7 +17,6 @@ cfonts.say('GayBot 🤖', {
   env: 'node'
 })
 
-
 cfonts.say('Autor: Edwin 👤', {
   font: 'console',     
   align: 'center',
@@ -27,35 +24,40 @@ cfonts.say('Autor: Edwin 👤', {
   env: 'node'
 })
 
-let isWorking = false
+let is      = false
 
-async function launch(scripts) {
-  if (isWorking) return
-  isWorking = true
+function start(file) {
+  if (is) return
+  is = true
+  
+  const child = fork(file)
+  
+  child.on('message', data => {
+    console.log('[REINICIANDO]', data)
+    switch (data) {
+      case 'reset':
+        child.kill()
+        is = false
+        start.apply(this, arguments)
+        break
+      case 'uptime':
+        child.send(process.uptime())
+        break
+    }
+  })
+  
+  child.on('exit', (code, signal) => {
+    is = false
+    console.error(`Ocurrió un error con código ${code} y señal ${signal}`)
+    start(file)
+  })
 
-  for (const script of scripts) {
-    const args = [join(__dirname, script), ...process.argv.slice(2)]
-
-    setupMaster({
-      exec: args[0],
-      args: args.slice(1),
-    })
-
-    let child = fork()
-
-    child.on('exit', (code) => {
-      console.log(`Proceso terminado con código ${code}`)
-      isWorking = false
-      launch(scripts)
-
-      if (code === 0) return
-      watchFile(args[0], () => {
-        unwatchFile(args[0])
-        console.log('Archivo actualizado, reiniciando...')
-        launch(scripts)
-      })
-    })
-  }
+  // Reiniciar si se detectan cambios en el archivo
+  watchFile(file, () => {
+    unwatchFile(file)
+    console.log('Archivo actualizado, reiniciando...')
+    start(file)
+  })
 }
 
-launch(['main.js'])
+start(script)
