@@ -140,8 +140,10 @@ export async function handler(chatUpdate) {
         let _user = global.db.data && global.db.data.users && global.db.data.users[m.sender]
         const detectwhat = m.sender.includes('@lid') ? '@lid' : '@s.whatsapp.net';
         const isOwner = (global.owner || []).map(([number]) => number).map(v => v.replace(/[^0-9]/g, '') + detectwhat).includes(m.sender) || m.fromMe;
-        const isMods = isOwner || global.mods.map(v => v.replace(/[^0-9]/g, '') + detectwhat).includes(m.sender)
-        const isPrems = isOwner || global.prems.map(v => v.replace(/[^0-9]/g, '') + detectwhat).includes(m.sender) || _user.premium == true
+        // CORRECCIÓN APLICADA AQUÍ: Se verifica si global.mods existe
+        const isMods = isOwner || (global.mods || []).map(v => v.replace(/[^0-9]/g, '') + detectwhat).includes(m.sender)
+        // CORRECCIÓN APLICADA AQUÍ: Se verifica si global.prems existe
+        const isPrems = isOwner || (global.prems || []).map(v => v.replace(/[^0-9]/g, '') + detectwhat).includes(m.sender) || _user.premium == true
 
         if (m.isBaileys) return
         if (opts['nyimak']) return
