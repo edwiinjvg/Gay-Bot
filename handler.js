@@ -85,6 +85,12 @@ export async function handler(chatUpdate) {
                     premium: false,
                     premiumTime: 0,
                 }
+            
+            // Añade esta línea para registrar cambios en el usuario
+            if (global.db.writeQueue) {
+                global.db.writeQueue.add(m.sender);
+            }
+
             let chat = global.db.data.chats[m.chat]
             if (typeof chat !== 'object') global.db.data.chats[m.chat] = {}
             if (chat) {
@@ -308,6 +314,10 @@ export async function handler(chatUpdate) {
                                 mentions: [m.sender]
                             });
                         }
+                    }
+                    // Añade esta línea para registrar cambios en el usuario
+                    if (global.db.writeQueue) {
+                        global.db.writeQueue.add(m.sender);
                     }
                 }
                 m.isCommand = true
