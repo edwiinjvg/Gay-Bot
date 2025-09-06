@@ -4,9 +4,7 @@ import { fileURLToPath } from 'url'
 import fs from 'fs'
 
 global.prefix = ['.', '-', '/', '#']
-global.owner = [
-  ['573005094862', 'Edwin', true],
-]
+global.owner = ['573005094862']
 
 global.mods = []
 global.prems = []
