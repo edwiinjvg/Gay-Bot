@@ -1,6 +1,6 @@
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
-import { setupMaster, fork } from 'cluster'
+import cluster from 'cluster'
 import { watchFile, unwatchFile } from 'fs'
 import cfonts from 'cfonts'
 
@@ -30,7 +30,7 @@ function start(file) {
   if (is) return
   is = true
   
-  const child = fork(file)
+  const child = cluster.fork(file)
   
   child.on('message', data => {
     console.log('[REINICIANDO]', data)
@@ -60,4 +60,8 @@ function start(file) {
   })
 }
 
+cluster.setupMaster({
+  exec: script,
+  args: [script, ...process.argv.slice(2)],
+})
 start(script)
