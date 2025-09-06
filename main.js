@@ -1,35 +1,33 @@
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '1';
 import fs from 'fs'
-
-// Forzar carpeta temporal a ./tmp
-process.env.TMPDIR = path.join(process.cwd(), 'tmp')
-
-// Crear la carpeta si no existe
-if (!fs.existsSync(process.env.TMPDIR)) {
-  fs.mkdirSync(process.env.TMPDIR, { recursive: true })
-}
-
-import './config.js';
-import { createRequire } from 'module';
-import path, { join } from 'path';
-import { fileURLToPath, pathToFileURL } from 'url';
-import { platform } from 'process';
-import * as ws from 'ws';
-import { readdirSync, statSync, unlinkSync, existsSync, readFileSync, watch, mkdirSync } from 'fs';
-import yargs from 'yargs';
-import chalk from 'chalk';
-import syntaxerror from 'syntax-error';
-import { tmpdir } from 'os';
-import { format } from 'util';
-import pino from 'pino';
-import { Boom } from '@hapi/boom';
+import { exec } from 'child_process' // Importar 'exec' para la limpieza
+import chalk from 'chalk'
+import syntaxerror from 'syntax-error'
+import { tmpdir } from 'os'
+import { format } from 'util'
+import pino from 'pino'
+import { Boom } from '@hapi/boom'
 import { makeWASocket, protoType, serialize } from './lib/simple.js';
-import { Low, JSONFile } from 'lowdb';
-import lodash from 'lodash';
-import readline from 'readline';
-import NodeCache from 'node-cache';
-import qrcode from 'qrcode-terminal';
-import { spawn } from 'child_process';
+import { Low, JSONFile } from 'lowdb'
+import lodash from 'lodash'
+import readline from 'readline'
+import NodeCache from 'node-cache'
+import qrcode from 'qrcode-terminal'
+import { spawn } from 'child_process'
+import path, { join } from 'path'
+import { fileURLToPath, pathToFileURL } from 'url'
+import { platform } from 'process'
+import * as ws from 'ws'
+import yargs from 'yargs'
+import {
+  readdirSync,
+  statSync,
+  unlinkSync,
+  existsSync,
+  readFileSync,
+  watch
+} from 'fs'
+
 
 const { proto } = (await import('@whiskeysockets/baileys')).default;
 const {
@@ -153,7 +151,7 @@ global.conn = makeWASocket(connectionOptions);
 import { handler } from './handler.js';
 
 async function handleLogin() {
-  if (conn.authState.creds.registered) {
+  if (global.conn.authState.creds.registered) {
     console.log(chalk.green('Sesión principal ya registrada.'));
     return;
   }
@@ -180,10 +178,10 @@ async function handleLogin() {
       phoneNumber = phoneNumber.replace(/^0/, '');
     }
 
-    if (typeof conn.requestPairingCode === 'function') {
+    if (typeof global.conn.requestPairingCode === 'function') {
       try {
-        if (conn.ws.readyState === ws.OPEN) {
-          let code = await conn.requestPairingCode(phoneNumber);
+        if (global.conn.ws.readyState === ws.OPEN) {
+          let code = await global.conn.requestPairingCode(phoneNumber);
           code = code?.match(/.{1,4}/g)?.join('-') || code;
           console.log(chalk.cyan('Tu código de emparejamiento es:', code));
         } else {
@@ -197,7 +195,7 @@ async function handleLogin() {
     }
   } else {
     console.log(chalk.yellow('Generando código QR, escanéalo con tu WhatsApp...'));
-    conn.ev.on('connection.update', ({ qr }) => {
+    global.conn.ev.on('connection.update', ({ qr }) => {
       if (qr) qrcode.generate(qr, { small: true });
     });
   }
@@ -205,19 +203,42 @@ async function handleLogin() {
 
 await handleLogin();
 
-conn.isInit = false;
-conn.well = false;
+global.conn.isInit = false;
+global.conn.well = false;
 
-if (!opts['test']) {
+// Nuevo código para la cola de escritura
+global.db.writeQueue = new Set();
+let isWriting = false;
+
+setInterval(async () => {
+    if (global.db.writeQueue.size === 0 || isWriting) {
+        return;
+    }
+
+    isWriting = true;
+    try {
+        await global.db.write();
+        console.log(chalk.green(`✓ Base de datos guardada. Se actualizaron los datos de ${global.db.writeQueue.size} usuarios.`));
+        global.db.writeQueue.clear();
+    } catch (error) {
+        console.error(chalk.red('✗ Error al guardar la base de datos:', error));
+    } finally {
+        isWriting = false;
+    }
+}, 30 * 1000); // Se sigue ejecutando cada 30 segundos, pero de forma más eficiente.
+
+// El código para la limpieza de archivos temporales se mantiene igual
+if (!global.opts['test']) {
   if (global.db) {
-    setInterval(async () => {
-      if (global.db.data) await global.db.write();
-      if (opts['autocleartmp']) {
-        const tmp = [tmpdir(), 'tmp', 'serbot'];
-        tmp.forEach((filename) => {
-          spawn('find', [filename, '-amin', '3', '-type', 'f', '-delete']);
-        });
-      }
+    setInterval(() => {
+        if (global.opts['autocleartmp']) {
+            const tmp = [tmpdir(), 'tmp', 'serbot'];
+            tmp.forEach((dir) => {
+                exec(`find "${dir}" -amin 3 -type f -delete`, (err) => {
+                    if (err) console.error(`Error en la limpieza: ${err.message}`);
+                });
+            });
+        }
     }, 30 * 1000);
   }
 }
@@ -234,18 +255,18 @@ function clearTmp() {
 }
 
 setInterval(() => {
-  if (global.stopped === 'close' || !conn || !conn.user) return;
+  if (global.stopped === 'close' || !global.conn || !global.conn.user) return;
   clearTmp();
 }, 180000);
 
 async function connectionUpdate(update) {
   const { connection, lastDisconnect, isNewLogin } = update;
   global.stopped = connection;
-  if (isNewLogin) conn.isInit = true;
+  if (isNewLogin) global.conn.isInit = true;
   const code =
     lastDisconnect?.error?.output?.statusCode ||
     lastDisconnect?.error?.output?.payload?.statusCode;
-  if (code && code !== DisconnectReason.loggedOut && conn?.ws.socket == null) {
+  if (code && code !== DisconnectReason.loggedOut && global.conn?.ws.socket == null) {
     await global.reloadHandler(true).catch(console.error);
     global.timestamp.connect = new Date();
   }
@@ -266,28 +287,28 @@ async function connectionUpdate(update) {
   if (connection === 'close') {
     switch (reason) {
       case DisconnectReason.badSession:
-        conn.logger.error(`Sesión principal incorrecta, elimina la carpeta ${global.authFile} y escanea nuevamente.`);
+        global.conn.logger.error(`Sesión principal incorrecta, elimina la carpeta ${global.authFile} y escanea nuevamente.`);
         break;
       case DisconnectReason.connectionClosed:
       case DisconnectReason.connectionLost:
       case DisconnectReason.timedOut:
-        conn.logger.warn(`Conexión principal perdida o cerrada, reconectando...`);
+        global.conn.logger.warn(`Conexión principal perdida o cerrada, reconectando...`);
         await global.reloadHandler(true).catch(console.error);
         break;
       case DisconnectReason.connectionReplaced:
-        conn.logger.error(
+        global.conn.logger.error(
           `Conexión principal reemplazada, se abrió otra sesión. Cierra esta sesión primero.`
         );
         break;
       case DisconnectReason.loggedOut:
-        conn.logger.error(`Sesión principal cerrada, elimina la carpeta ${global.authFile} y escanea nuevamente.`);
+        global.conn.logger.error(`Sesión principal cerrada, elimina la carpeta ${global.authFile} y escanea nuevamente.`);
         break;
       case DisconnectReason.restartRequired:
-        conn.logger.info(`Reinicio necesario del bot principal, reinicia el servidor si hay problemas.`);
+        global.conn.logger.info(`Reinicio necesario del bot principal, reinicia el servidor si hay problemas.`);
         await global.reloadHandler(true).catch(console.error);
         break;
       default:
-        conn.logger.warn(`Desconexión desconocida del bot principal: ${reason || ''} - Estado: ${connection || ''}`);
+        global.conn.logger.warn(`Desconexión desconocida del bot principal: ${reason || ''} - Estado: ${connection || ''}`);
         await global.reloadHandler(true).catch(console.error);
         break;
     }
@@ -302,7 +323,7 @@ global.reloadHandler = async function (restartConn) {
   try {
     const Handler = await import(`./handler.js?update=${Date.now()}`).catch(console.error);
     // Aseguramos que la variable 'handler' global se actualice correctamente
-    if (Handler && Handler.handler) handler = Handler.handler;
+    if (Handler && Handler.handler) global.handler = Handler.handler;
   } catch (e) {
     console.error(`[ERROR] Fallo al cargar handler.js: ${e}`);
   }
@@ -317,18 +338,18 @@ global.reloadHandler = async function (restartConn) {
   }
 
   if (!isInit) {
-    conn.ev.off('messages.upsert', conn.handler);
-    conn.ev.off('connection.update', conn.connectionUpdate);
-    conn.ev.off('creds.update', conn.credsUpdate);
+    global.conn.ev.off('messages.upsert', global.conn.handler);
+    global.conn.ev.off('connection.update', global.conn.connectionUpdate);
+    global.conn.ev.off('creds.update', global.conn.credsUpdate);
   }
 
-  conn.handler = handler.bind(global.conn);
-  conn.connectionUpdate = connectionUpdate.bind(global.conn);
-  conn.credsUpdate = saveCreds.bind(global.conn, true);
+  global.conn.handler = handler.bind(global.conn);
+  global.conn.connectionUpdate = connectionUpdate.bind(global.conn);
+  global.conn.credsUpdate = saveCreds.bind(global.conn, true);
 
-  conn.ev.on('messages.upsert', conn.handler);
-  conn.ev.on('connection.update', conn.connectionUpdate);
-  conn.ev.on('creds.update', conn.credsUpdate);
+  global.conn.ev.on('messages.upsert', global.conn.handler);
+  global.conn.ev.on('connection.update', global.conn.connectionUpdate);
+  global.conn.ev.on('creds.update', global.conn.credsUpdate);
 
   isInit = false;
   return true;
@@ -345,7 +366,7 @@ async function filesInit() {
       const module = await import(file);
       global.plugins[filename] = module.default || module;
     } catch (e) {
-      conn.logger.error(`Error al cargar el plugin '${filename}': ${e}`);
+      global.conn.logger.error(`Error al cargar el plugin '${filename}': ${e}`);
       delete global.plugins[filename];
     }
   }
@@ -356,24 +377,24 @@ global.reload = async (_ev, filename) => {
   if (pluginFilter(filename)) {
     const dir = global.__filename(join(pluginFolder, filename), true);
     if (filename in global.plugins) {
-      if (existsSync(dir)) conn.logger.info(`Updated plugin - '${filename}'`);
+      if (existsSync(dir)) global.conn.logger.info(`Updated plugin - '${filename}'`);
       else {
-        conn.logger.warn(`Deleted plugin - '${filename}'`);
+        global.conn.logger.warn(`Deleted plugin - '${filename}'`);
         return delete global.plugins[filename];
       }
-    } else conn.logger.info(`New plugin - '${filename}'`);
+    } else global.conn.logger.info(`New plugin - '${filename}'`);
 
     const err = syntaxerror(readFileSync(dir), filename, {
       sourceType: 'module',
       allowAwaitOutsideFunction: true,
     });
-    if (err) conn.logger.error(`Syntax error while loading '${filename}':\n${format(err)}`);
+    if (err) global.conn.logger.error(`Syntax error while loading '${filename}':\n${format(err)}`);
     else {
       try {
         const module = await import(`${global.__filename(dir)}?update=${Date.now()}`);
         global.plugins[filename] = module.default || module;
       } catch (e) {
-        conn.logger.error(`Error requiring plugin '${filename}':\n${format(e)}`);
+        global.conn.logger.error(`Error requiring plugin '${filename}':\n${format(e)}`);
       } finally {
         global.plugins = Object.fromEntries(Object.entries(global.plugins).sort(([a], [b]) => a.localeCompare(b)));
       }
